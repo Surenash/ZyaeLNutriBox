@@ -1,0 +1,65 @@
+Based on the comprehensive Mobile App Specification document you provided ("ZyaeL NutriBox - Complete Mobile App Specification.pdf") and the aesthetic details from the Zyael website, I can draft a detailed and precise prompt.
+
+This prompt is designed to build the entire Zyael ecosystem, encompassing the four main user groups, ensuring the aesthetic consistency (deep green theme), and using the required Firebase structure.
+
+---
+
+## Comprehensive Development Prompt: Zyael NutriBox Ecosystem
+
+**Goal:** Create a single-file, highly aesthetic, fully responsive React application that implements the four distinct Zyael NutriBox portals—**Client (User), Nutritionist, Delivery Agent, and Admin Panel**—as detailed in the "Complete Mobile App Specification" document.
+
+**Aesthetic and Technical Requirements:**
+
+1.  **Framework & File Structure:** Build as a single, self-contained **React component file (`.jsx`)** using modern functional components and hooks.
+2.  **Styling & Theme:** Use **Tailwind CSS** exclusively. The primary brand color must be the deep green/teal from the Zyael branding (use **`#006442`**). Use white, light gray, and accent colors (like orange/red for alerts/promotions) to maintain a clean, health-focused, and professional UI. All elements must have rounded corners.
+3.  **Data Persistence:** Use **Firebase Firestore** for all data storage and retrieval.
+4.  **Firebase Setup:**
+    * Initialize Firebase Auth and Firestore using the global variables `__app_id`, `__firebase_config`, and `__initial_auth_token`.
+    * Implement user authentication using the provided token and fall back to anonymous sign-in if the token is unavailable.
+    * Use `onSnapshot` for real-time data updates in all portals.
+    * **Mandatory Firestore Paths:**
+        * **Private/User Data (Client/Nutritionist):** `/artifacts/${appId}/users/${userId}/{collection_name}` (e.g., `user-details`, `progress-reports`).
+        * **Public/Shared Data (Menu/Orders):** `/artifacts/${appId}/public/data/{collection_name}` (e.g., `menu`, `orders`, `nutritionists`).
+5.  **Multi-Portal Architecture:** Implement a landing page/mock login to allow easy switching between the four primary roles (Client, Nutritionist, Delivery Agent, Admin).
+
+---
+
+## Portal-Specific Feature Requirements (Based on Mobile App Specification)
+
+### 1. Client (User) Portal (Focus: Onboarding, Tracking & Connection)
+
+* **Authentication Flow (Mock):** Display mock fields for Login (Phone/Email) and Signup (Full Name, Phone, Email, Password).
+* **Home Dashboard (Mock Data):** Implement a simplified view showing the **Diet Type Selection Grid** and a **Nutritionist Profiles** slider (mock cards).
+* **Diet Selection & Registration Process (Mock Form):** Implement a multi-step form simulating the detailed registration process:
+    * Step 1: Personal Details (Height, Weight, Target Weight).
+    * Step 2: Plan & Diet Type Selection (Duration: 30 days, Diet Type: Vegan/Non-veg).
+    * Step 3: Address Management (Mock entry for Breakfast, Lunch, Dinner addresses).
+* **Food Tracking System (`/Track` Tab):**
+    * **Daily Food Consumption Dashboard:** Show the current day's progress for Calories, Protein, Carbs, and Fats (using mock values and progress bars).
+    * **Meal Details:** Allow clicking on a meal (e.g., "Grilled Chicken Salad") to show its mock **Nutritional Breakdown** and **Ingredients List**.
+* **Daily Operations:** Implement a mock **Skip Meal** function that registers the skip (e.g., updates Firestore with a `skipDate`).
+
+### 2. Nutritionist Portal (Focus: Client Management & Scheduling)
+
+* **Dashboard:** Display mock summary cards for **Pending Consultations** and **Today's Schedule**.
+* **Client Management View:** List mock active clients (e.g., Rohan Sharma). Allow clicking a client to view their detailed **Client Progress View**:
+    * Next Session Date.
+    * Mock Weekly Food Analysis (Meal Completion Rate, Avg Calories, Protein Intake).
+    * **Adjustment Tool (Mock):** A text area to input and save "Adjustments" (which would be stored in the private client path in Firestore).
+* **Session Management:** Implement a mock **Session scheduling** section.
+
+### 3. Delivery Agent Portal (Focus: Route Management & Status Updates)
+
+* **Dashboard:** Show **Today's Orders** categorized by status: "Pickup from Kitchen" and "Deliver to Users."
+* **Order Management:**
+    * Display a list of orders showing **User Name, Address, and Contact Number** (mock data).
+    * Implement **Real-time Status Update Buttons** for each order: `Start Delivery` $\rightarrow$ `Delivered`.
+    * This action **MUST** update the `orders` collection in the public Firestore path.
+* **Earnings Section (Mock):** Simple display of daily/weekly earnings.
+
+### 4. Admin Panel (Focus: Content & Management Oversight)
+
+* **Management Sections:** Display mock sections for **User Management** and **Nutritionist Management**.
+* **Content Management:** Implement a functional interface to **add/edit Meal Menu items** (Meal Name, Diet Type) that writes to the public `menu` collection in Firestore.
+* **Order & Payment Management:** Display a list of all mock orders and a mock revenue summary.
+* **Analytics (Mock):** Display placeholder cards for key reports (e.g., User growth analytics, Popular meal analysis).
