@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import HeroBanner from "@/components/HeroBanner";
 import DietPlanCard from "@/components/DietPlanCard";
 import NutritionistCard from "@/components/NutritionistCard";
@@ -109,10 +110,24 @@ export default function ClientPortal() {
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {activeTab === "home" && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
-          <HeroBanner
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background pb-20"
+    >
+      <AnimatePresence mode="wait">
+        {activeTab === "home" && (
+          <motion.div
+            key="home"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16"
+          >
+            <HeroBanner
             title="Home-Cooked Goodness, Inspired by Mom"
             subtitle="Every meal is thoughtfully crafted by expert nutritionists, inspired by the warmth of a mother's kitchen"
             ctaText="Start Today →"
@@ -120,10 +135,20 @@ export default function ClientPortal() {
             onCtaClick={() => console.log("Start today clicked")}
           />
 
-          <section>
-            <h2 className="text-3xl font-bold text-foreground mb-8">
+          <motion.section
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl font-bold text-foreground mb-8"
+            >
               Choose Your Health Goal
-            </h2>
+            </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {dietPlans.map((plan) => (
                 <DietPlanCard
@@ -133,12 +158,22 @@ export default function ClientPortal() {
                 />
               ))}
             </div>
-          </section>
+          </motion.section>
 
-          <section>
-            <h2 className="text-3xl font-bold text-foreground mb-8">
+          <motion.section
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl font-bold text-foreground mb-8"
+            >
               Meet Our Team of Nutritionists
-            </h2>
+            </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {nutritionists.map((nutritionist) => (
                 <NutritionistCard
@@ -148,20 +183,36 @@ export default function ClientPortal() {
                 />
               ))}
             </div>
-          </section>
+          </motion.section>
 
-          <section>
-            <h2 className="text-3xl font-bold text-foreground mb-8">
+          <motion.section
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-3xl font-bold text-foreground mb-8"
+            >
               Here's What Our Customers Say
-            </h2>
+            </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {testimonials.map((testimonial) => (
                 <TestimonialCard key={testimonial.name} {...testimonial} />
               ))}
             </div>
-          </section>
+          </motion.section>
 
-          <section className="bg-primary/5 rounded-2xl p-8 text-center">
+          <motion.section
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-primary/5 rounded-2xl p-8 text-center"
+          >
             <h2 className="text-3xl font-bold text-foreground mb-4">
               Ready to Start Your Journey?
             </h2>
@@ -175,18 +226,30 @@ export default function ClientPortal() {
             >
               Subscribe Now
             </Button>
-          </section>
-        </div>
-      )}
+          </motion.section>
+        </motion.div>
+        )}
 
-      {activeTab === "track" && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-          <h1 className="text-3xl font-bold text-foreground mb-6">
-            Today's Food Journey
-          </h1>
+        {activeTab === "track" && (
+          <motion.div
+            key="track"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6"
+          >
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-3xl font-bold text-foreground mb-6"
+            >
+              Today's Food Journey
+            </motion.h1>
 
-          <div className="space-y-3">
-            <MealStatusCard
+            <div className="space-y-3">
+              <MealStatusCard
               mealType="Breakfast"
               status="delivered"
               time="8:00 AM"
@@ -198,28 +261,34 @@ export default function ClientPortal() {
               time="1:00 PM"
               onViewDetails={() => console.log("View lunch details")}
             />
-            <MealStatusCard
-              mealType="Dinner"
-              status="in-transit"
-              time="Expected 7:00 PM"
-              onViewDetails={() => console.log("View dinner details")}
-            />
-          </div>
+              <MealStatusCard
+                mealType="Dinner"
+                status="in-transit"
+                time="Expected 7:00 PM"
+                onViewDetails={() => console.log("View dinner details")}
+              />
+            </div>
 
-          <NutritionProgress items={nutritionData} />
+            <NutritionProgress items={nutritionData} />
 
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-2">
-              Meal Insights
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              You're making great progress! Keep up the consistent meal completion to reach your goals faster.
-            </p>
-          </div>
-        </div>
-      )}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-white rounded-xl shadow-md p-6"
+            >
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Meal Insights
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                You're making great progress! Keep up the consistent meal completion to reach your goals faster.
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-    </div>
+    </motion.div>
   );
 }
