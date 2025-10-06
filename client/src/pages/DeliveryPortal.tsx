@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Package, TrendingUp, MapPin } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import DeliveryOrderCard from "@/components/DeliveryOrderCard";
 import StatsCard from "@/components/StatsCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -52,16 +53,32 @@ export default function DeliveryPortal() {
   const completedOrders = orders.filter((o) => o.status === "delivered");
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-[#FF8C00] text-white py-8 mb-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="bg-[#FF8C00] text-white py-8 mb-8"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold mb-2">Delivery Dashboard</h1>
           <p className="text-white/90">Manage your deliveries and routes</p>
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
           <StatsCard
             title="Today's Deliveries"
             value={orders.length.toString()}
@@ -84,9 +101,14 @@ export default function DeliveryPortal() {
             subtitle="Today"
             icon={MapPin}
           />
-        </div>
+        </motion.div>
 
-        <Tabs defaultValue="pickup" className="w-full">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          <Tabs defaultValue="pickup" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="pickup" data-testid="tab-pickup">
               Pickup ({pickupOrders.length})
@@ -100,60 +122,103 @@ export default function DeliveryPortal() {
           </TabsList>
 
           <TabsContent value="pickup" className="space-y-4 mt-6">
-            {pickupOrders.length > 0 ? (
-              pickupOrders.map((order) => (
-                <DeliveryOrderCard
+            <AnimatePresence mode="wait">
+              {pickupOrders.length > 0 ? (
+                pickupOrders.map((order, index) => (
+                  <motion.div
+                    key={order.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <DeliveryOrderCard
                   key={order.id}
                   {...order}
-                  onStatusChange={(newStatus) =>
-                    handleStatusChange(order.id, newStatus)
-                  }
-                />
-              ))
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                No orders to pickup
-              </div>
-            )}
+                      onStatusChange={(newStatus) =>
+                        handleStatusChange(order.id, newStatus)
+                      }
+                    />
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12 text-muted-foreground"
+                >
+                  No orders to pickup
+                </motion.div>
+              )}
+            </AnimatePresence>
           </TabsContent>
 
           <TabsContent value="delivering" className="space-y-4 mt-6">
-            {deliveringOrders.length > 0 ? (
-              deliveringOrders.map((order) => (
-                <DeliveryOrderCard
-                  key={order.id}
-                  {...order}
-                  onStatusChange={(newStatus) =>
-                    handleStatusChange(order.id, newStatus)
-                  }
-                />
-              ))
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                No orders in transit
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {deliveringOrders.length > 0 ? (
+                deliveringOrders.map((order, index) => (
+                  <motion.div
+                    key={order.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <DeliveryOrderCard
+                      key={order.id}
+                      {...order}
+                      onStatusChange={(newStatus) =>
+                        handleStatusChange(order.id, newStatus)
+                      }
+                    />
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12 text-muted-foreground"
+                >
+                  No orders in transit
+                </motion.div>
+              )}
+            </AnimatePresence>
           </TabsContent>
 
           <TabsContent value="completed" className="space-y-4 mt-6">
-            {completedOrders.length > 0 ? (
-              completedOrders.map((order) => (
-                <DeliveryOrderCard
-                  key={order.id}
-                  {...order}
-                  onStatusChange={(newStatus) =>
-                    handleStatusChange(order.id, newStatus)
-                  }
-                />
-              ))
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                No completed deliveries today
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {completedOrders.length > 0 ? (
+                completedOrders.map((order, index) => (
+                  <motion.div
+                    key={order.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <DeliveryOrderCard
+                      key={order.id}
+                      {...order}
+                      onStatusChange={(newStatus) =>
+                        handleStatusChange(order.id, newStatus)
+                      }
+                    />
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-12 text-muted-foreground"
+                >
+                  No completed deliveries today
+                </motion.div>
+              )}
+            </AnimatePresence>
           </TabsContent>
         </Tabs>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

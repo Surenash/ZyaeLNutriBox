@@ -1,4 +1,5 @@
 import { Users, Utensils, TrendingUp, DollarSign } from "lucide-react";
+import { motion } from "framer-motion";
 import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,16 +22,32 @@ import {
 
 export default function AdminPortal() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-[#6B46C1] text-white py-8 mb-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="bg-[#6B46C1] text-white py-8 mb-8"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold mb-2">Admin Panel</h1>
           <p className="text-white/90">Manage your entire ecosystem</p>
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-4 gap-6"
+        >
           <StatsCard
             title="Total Users"
             value="3,247"
@@ -58,10 +75,22 @@ export default function AdminPortal() {
             icon={TrendingUp}
             trend={{ value: "+2.1%", isPositive: true }}
           />
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <section className="bg-white rounded-xl shadow-md p-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        >
+          <motion.section
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-xl shadow-md p-6"
+          >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-foreground">
                 Meal Menu Management
@@ -139,9 +168,15 @@ export default function AdminPortal() {
                 </Button>
               </div>
             </div>
-          </section>
+          </motion.section>
 
-          <section className="bg-white rounded-xl shadow-md p-6">
+          <motion.section
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-xl shadow-md p-6"
+          >
             <h2 className="text-xl font-bold text-foreground mb-6">
               Recent Orders
             </h2>
@@ -171,10 +206,16 @@ export default function AdminPortal() {
                 </div>
               </div>
             </div>
-          </section>
-        </div>
+          </motion.section>
+        </motion.div>
 
-        <section className="bg-white rounded-xl shadow-md p-6">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-xl shadow-md p-6"
+        >
           <h2 className="text-xl font-bold text-foreground mb-6">
             Analytics Overview
           </h2>
@@ -194,8 +235,8 @@ export default function AdminPortal() {
               <p className="text-sm text-muted-foreground">Meal Completion</p>
             </div>
           </div>
-        </section>
+        </motion.section>
       </div>
-    </div>
+    </motion.div>
   );
 }
