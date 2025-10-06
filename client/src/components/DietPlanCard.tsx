@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 interface DietPlanCardProps {
   title: string;
@@ -26,20 +27,35 @@ export default function DietPlanCard({
   onSubscribe,
 }: DietPlanCardProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-200 overflow-hidden group">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -8 }}
+      className="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-shadow duration-300 overflow-hidden group"
+    >
       <div className="relative aspect-square overflow-hidden">
-        <img
+        <motion.img
           src={image}
           alt={title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover"
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.4 }}
         />
         {badge && (
-          <Badge
-            className="absolute top-3 right-3 bg-[#FF8C00] text-white border-0 rounded-full px-3 py-1 text-xs font-semibold"
-            data-testid={`badge-${badge.toLowerCase().replace(/\s+/g, '-')}`}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
           >
-            {badge}
-          </Badge>
+            <Badge
+              className="absolute top-3 right-3 bg-[#FF8C00] text-white border-0 rounded-full px-3 py-1 text-xs font-semibold shadow-lg"
+              data-testid={`badge-${badge.toLowerCase().replace(/\s+/g, '-')}`}
+            >
+              {badge}
+            </Badge>
+          </motion.div>
         )}
       </div>
       <div className="p-6">
@@ -74,6 +90,6 @@ export default function DietPlanCard({
           Subscribe Now
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 }

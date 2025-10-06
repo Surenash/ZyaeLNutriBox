@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { motion } from "framer-motion";
 
 interface NutritionistCardProps {
   name: string;
@@ -20,12 +21,24 @@ export default function NutritionistCard({
   onConsult,
 }: NutritionistCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -5 }}
+      className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
+    >
       <div className="flex items-start gap-4">
-        <Avatar className="w-20 h-20">
-          <AvatarImage src={image} alt={name} />
-          <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-        </Avatar>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <Avatar className="w-20 h-20">
+            <AvatarImage src={image} alt={name} />
+            <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+          </Avatar>
+        </motion.div>
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-foreground mb-1" data-testid={`text-nutritionist-${name.toLowerCase().replace(/\s+/g, '-')}`}>
             {name}
@@ -51,6 +64,6 @@ export default function NutritionistCard({
       >
         Consult Now
       </Button>
-    </div>
+    </motion.div>
   );
 }
