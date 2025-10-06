@@ -1,5 +1,6 @@
 import { CheckCircle2, Clock, Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 interface MealStatusCardProps {
   mealType: string;
@@ -39,26 +40,39 @@ export default function MealStatusCard({
   const Icon = config.icon;
 
   return (
-    <div
-      className="bg-white rounded-xl p-4 border border-border hover-elevate cursor-pointer"
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4 }}
+      whileHover={{ x: 5 }}
+      className="bg-white rounded-xl p-4 border border-border hover-elevate cursor-pointer transition-shadow duration-300"
       onClick={onViewDetails}
       data-testid={`card-meal-${mealType.toLowerCase()}`}
     >
       <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${config.bgColor}`}>
+        <motion.div
+          className={`p-2 rounded-lg ${config.bgColor}`}
+          animate={status === 'in-transit' ? { rotate: [0, 5, -5, 0] } : {}}
+          transition={{ duration: 2, repeat: status === 'in-transit' ? Infinity : 0 }}
+        >
           <Icon className={`w-5 h-5 ${config.color}`} />
-        </div>
+        </motion.div>
         <div className="flex-1">
           <h4 className="font-semibold text-foreground">{mealType}</h4>
           <p className="text-sm text-muted-foreground">{time}</p>
         </div>
-        <Badge
-          className={`${config.bgColor} ${config.color} border-0 rounded-full px-3 py-1 text-xs`}
-          data-testid={`badge-status-${status}`}
+        <motion.div
+          animate={status === 'in-transit' ? { scale: [1, 1.05, 1] } : {}}
+          transition={{ duration: 2, repeat: status === 'in-transit' ? Infinity : 0 }}
         >
-          {config.label}
-        </Badge>
+          <Badge
+            className={`${config.bgColor} ${config.color} border-0 rounded-full px-3 py-1 text-xs`}
+            data-testid={`badge-status-${status}`}
+          >
+            {config.label}
+          </Badge>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
