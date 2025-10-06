@@ -1,5 +1,6 @@
 import { Users, Utensils, TrendingUp, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
+import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,10 +24,7 @@ import {
 export default function AdminPortal() {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      {...pageTransitionVariants}
       className="min-h-screen bg-background"
     >
       <motion.div
@@ -80,14 +78,14 @@ export default function AdminPortal() {
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={viewportConfig}
           transition={{ duration: 0.6 }}
           className="grid grid-cols-1 lg:grid-cols-2 gap-6"
         >
           <motion.section
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={viewportConfig}
             transition={{ duration: 0.5 }}
             className="bg-white rounded-xl shadow-md p-6"
           >
@@ -173,7 +171,7 @@ export default function AdminPortal() {
           <motion.section
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={viewportConfig}
             transition={{ duration: 0.5 }}
             className="bg-white rounded-xl shadow-md p-6"
           >
@@ -212,7 +210,7 @@ export default function AdminPortal() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={viewportConfig}
           transition={{ duration: 0.6 }}
           className="bg-white rounded-xl shadow-md p-6"
         >

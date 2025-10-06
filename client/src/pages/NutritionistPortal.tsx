@@ -1,5 +1,6 @@
 import { Calendar, Users, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import ClientProgressCard from "@/components/ClientProgressCard";
 import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
@@ -34,10 +35,7 @@ export default function NutritionistPortal() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      {...pageTransitionVariants}
       className="min-h-screen bg-background"
     >
       <motion.div
@@ -86,7 +84,7 @@ export default function NutritionistPortal() {
         <motion.section
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={viewportConfig}
           transition={{ duration: 0.6 }}
         >
           <div className="flex items-center justify-between mb-6">
@@ -111,7 +109,7 @@ export default function NutritionistPortal() {
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={viewportConfig}
           transition={{ duration: 0.6 }}
           className="bg-white rounded-xl shadow-md p-6"
         >

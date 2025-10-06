@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Package, TrendingUp, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { listItemVariants, pageTransitionVariants } from "@/lib/animations";
 import DeliveryOrderCard from "@/components/DeliveryOrderCard";
 import StatsCard from "@/components/StatsCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -54,10 +55,7 @@ export default function DeliveryPortal() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      {...pageTransitionVariants}
       className="min-h-screen bg-background"
     >
       <motion.div
@@ -127,9 +125,10 @@ export default function DeliveryPortal() {
                 pickupOrders.map((order, index) => (
                   <motion.div
                     key={order.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
                     transition={{ delay: index * 0.1 }}
                   >
                     <DeliveryOrderCard
@@ -159,9 +158,10 @@ export default function DeliveryPortal() {
                 deliveringOrders.map((order, index) => (
                   <motion.div
                     key={order.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
                     transition={{ delay: index * 0.1 }}
                   >
                     <DeliveryOrderCard
@@ -191,9 +191,10 @@ export default function DeliveryPortal() {
                 completedOrders.map((order, index) => (
                   <motion.div
                     key={order.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
+                    variants={listItemVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
                     transition={{ delay: index * 0.1 }}
                   >
                     <DeliveryOrderCard

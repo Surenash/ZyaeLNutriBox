@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import HeroBanner from "@/components/HeroBanner";
 import DietPlanCard from "@/components/DietPlanCard";
 import NutritionistCard from "@/components/NutritionistCard";
@@ -111,20 +112,14 @@ export default function ClientPortal() {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      {...pageTransitionVariants}
       className="min-h-screen bg-background pb-20"
     >
       <AnimatePresence mode="wait">
         {activeTab === "home" && (
           <motion.div
             key="home"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
+            {...pageTransitionVariants}
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16"
           >
             <HeroBanner
@@ -138,13 +133,13 @@ export default function ClientPortal() {
           <motion.section
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={viewportConfig}
             transition={{ duration: 0.6 }}
           >
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={viewportConfig}
               className="text-3xl font-bold text-foreground mb-8"
             >
               Choose Your Health Goal
@@ -163,13 +158,13 @@ export default function ClientPortal() {
           <motion.section
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={viewportConfig}
             transition={{ duration: 0.6 }}
           >
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={viewportConfig}
               className="text-3xl font-bold text-foreground mb-8"
             >
               Meet Our Team of Nutritionists
@@ -188,13 +183,13 @@ export default function ClientPortal() {
           <motion.section
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={viewportConfig}
             transition={{ duration: 0.6 }}
           >
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={viewportConfig}
               className="text-3xl font-bold text-foreground mb-8"
             >
               Here's What Our Customers Say
@@ -209,7 +204,7 @@ export default function ClientPortal() {
           <motion.section
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={viewportConfig}
             transition={{ duration: 0.6 }}
             className="bg-primary/5 rounded-2xl p-8 text-center"
           >
@@ -233,10 +228,7 @@ export default function ClientPortal() {
         {activeTab === "track" && (
           <motion.div
             key="track"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }}
+            {...pageTransitionVariants}
             className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6"
           >
             <motion.h1
