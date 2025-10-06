@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface StatsCardProps {
   title: string;
@@ -19,28 +20,49 @@ export default function StatsCard({
   trend,
 }: StatsCardProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 border border-border">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.4 }}
+      whileHover={{ y: -5 }}
+      className="bg-white rounded-xl shadow-md p-6 border border-border hover:shadow-lg transition-shadow duration-300"
+    >
       <div className="flex items-start justify-between mb-4">
-        <div className="p-3 bg-primary/10 rounded-lg">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          className="p-3 bg-primary/10 rounded-lg"
+        >
           <Icon className="w-6 h-6 text-primary" />
-        </div>
+        </motion.div>
         {trend && (
-          <span
+          <motion.span
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
             className={`text-sm font-semibold ${
               trend.isPositive ? 'text-[#22C55E]' : 'text-[#FF6B6B]'
             }`}
           >
             {trend.value}
-          </span>
+          </motion.span>
         )}
       </div>
-      <h3 className="text-2xl font-bold text-foreground mb-1" data-testid={`text-stat-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+      <motion.h3
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="text-2xl font-bold text-foreground mb-1"
+        data-testid={`text-stat-${title.toLowerCase().replace(/\s+/g, '-')}`}
+      >
         {value}
-      </h3>
+      </motion.h3>
       <p className="text-sm text-muted-foreground">{title}</p>
       {subtitle && (
         <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
       )}
-    </div>
+    </motion.div>
   );
 }
