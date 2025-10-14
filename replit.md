@@ -36,6 +36,7 @@ Preferred communication style: Simple, everyday language.
 **Connection**: Environment-based `DATABASE_URL` via SQLAlchemy engine with connection pooling (pool_pre_ping, pool_size=5, max_overflow=10, pool_recycle=3600) for stability, automatic table creation on startup.
 **Legacy**: Drizzle ORM schema exists in `shared/schema.ts` but not currently used.
 **Seeded Data**: Database contains 9 meal plans, 4 nutritionists, 4 clients, 3 sessions, and 12 progress logs for development and testing.
+**Auto-Seeding**: Production database automatically seeds on first startup via FastAPI `@app.on_event("startup")` - checks if `meal_plans` table is empty and runs `seed_database()` if true. Ensures published app always has data without manual intervention.
 
 ### Authentication & Security
 
