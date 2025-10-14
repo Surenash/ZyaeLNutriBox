@@ -9,6 +9,14 @@ import MealStatusCard from "@/components/MealStatusCard";
 import NutritionProgress from "@/components/NutritionProgress";
 import BottomNavigation from "@/components/BottomNavigation";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 import heroBanner from "@assets/generated_images/Home-cooked_comfort_food_banner_9590a8d1.png";
 import weightLoss from "@assets/generated_images/Healthy_balanced_meal_food_36201b9b.png";
@@ -160,6 +168,17 @@ export default function ClientPortal() {
     { label: "Fats", current: 25, target: 50, unit: "g", color: "hsl(var(--chart-4))" },
   ];
 
+  const newsArticles = [
+    {
+      title: "How to Identify Your Daily Calorie Needs Based on Your Goals",
+      description: "Understanding your daily calorie needs is a key step in achieving your health and fitness goals, whether...",
+    },
+    {
+      title: "Top 10 Superfoods to Include in Your Daily Diet",
+      description: "Superfoods are nutrient-dense ingredients that offer immense health benefits. Incorporating them into...",
+    },
+  ];
+
   //todo: remove mock functionality
   const cartItems = [
     {
@@ -301,6 +320,22 @@ export default function ClientPortal() {
                 
                 <p className="font-semibold text-foreground">We missed those meals. But more than that, we missed the love that came with them.</p>
               </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                transition={{ delay: 0.2 }}
+                className="mt-8"
+              >
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="rounded-full border-2"
+                  data-testid="button-our-story"
+                >
+                  Our Story
+                </Button>
+              </motion.div>
             </div>
           </motion.section>
 
@@ -391,7 +426,7 @@ export default function ClientPortal() {
                 className="bg-primary text-primary-foreground rounded-full hover-elevate active-elevate-2"
                 data-testid="button-subscribe-cta"
               >
-                Subscribe Now
+                Subcribe Now
               </Button>
             </motion.div>
           </motion.section>
@@ -401,7 +436,7 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
-            className="relative"
+            className="relative px-12"
           >
             <div className="text-center mb-12">
               <motion.h2
@@ -413,48 +448,51 @@ export default function ClientPortal() {
                 News About Nutrition
               </motion.h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportConfig}
-                className="bg-card rounded-2xl overflow-hidden hover-elevate"
-              >
-                <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5"></div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-foreground mb-3">
-                    How to Identify Your Daily Calorie Needs Based on Your Goals
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Understanding your daily calorie needs is a key step in achieving your health and fitness goals, whether...
-                  </p>
-                  <Button variant="outline" className="rounded-full" data-testid="button-read-more-1">
-                    Read More
-                  </Button>
-                </div>
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportConfig}
-                transition={{ delay: 0.1 }}
-                className="bg-card rounded-2xl overflow-hidden hover-elevate"
-              >
-                <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5"></div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-foreground mb-3">
-                    Top 10 Superfoods to Include in Your Daily Diet
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Superfoods are nutrient-dense ingredients that offer immense health benefits. Incorporating them into...
-                  </p>
-                  <Button variant="outline" className="rounded-full" data-testid="button-read-more-2">
-                    Read More
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
+            <Carousel 
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {newsArticles.map((article, index) => (
+                  <CarouselItem key={index} className="md:basis-1/2">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={viewportConfig}
+                      className="bg-card rounded-2xl overflow-hidden hover-elevate h-full"
+                    >
+                      <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5"></div>
+                      <div className="p-6">
+                        <h3 className="text-xl font-semibold text-foreground mb-3">
+                          {article.title}
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          {article.description}
+                        </p>
+                        <Button 
+                          variant="outline" 
+                          className="rounded-full" 
+                          data-testid={`button-read-more-${index + 1}`}
+                        >
+                          Read More
+                        </Button>
+                      </div>
+                    </motion.div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious 
+                className="rounded-full -left-6 shadow-lg" 
+                data-testid="button-news-prev"
+              />
+              <CarouselNext 
+                className="rounded-full -right-6 shadow-lg" 
+                data-testid="button-news-next"
+              />
+            </Carousel>
           </motion.section>
         </motion.div>
         )}
