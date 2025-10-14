@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -13,29 +12,44 @@ import AdminPortal from "@/pages/AdminPortal";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [location, setLocation] = useLocation();
 
-  if (!selectedRole) {
-    return <RoleSelector onRoleSelect={setSelectedRole} />;
-  }
+  const handleRoleSelect = (role: string) => {
+    setLocation(`/${role}`);
+  };
+
+  const isPortalRoute = ['/client', '/kitchen', '/nutritionist', '/delivery', '/admin'].includes(location);
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setSelectedRole(null)}
-        className="fixed top-4 right-4 z-50 px-4 py-2 bg-white text-foreground rounded-full shadow-md hover-elevate active-elevate-2 text-sm font-medium border border-border"
-        data-testid="button-back-to-roles"
-      >
-        ← Back to Roles
-      </button>
+      {isPortalRoute && (
+        <button
+          onClick={() => setLocation('/')}
+          className="fixed top-4 right-4 z-50 px-4 py-2 bg-white text-foreground rounded-full shadow-md hover-elevate active-elevate-2 text-sm font-medium border border-border"
+          data-testid="button-back-to-roles"
+        >
+          ← Back to Roles
+        </button>
+      )}
 
       <Switch>
         <Route path="/">
-          {selectedRole === "client" && <ClientPortal />}
-          {selectedRole === "kitchen" && <KitchenPortal />}
-          {selectedRole === "nutritionist" && <NutritionistPortal />}
-          {selectedRole === "delivery" && <DeliveryPortal />}
-          {selectedRole === "admin" && <AdminPortal />}
+          <RoleSelector onRoleSelect={handleRoleSelect} />
+        </Route>
+        <Route path="/client">
+          <ClientPortal />
+        </Route>
+        <Route path="/kitchen">
+          <KitchenPortal />
+        </Route>
+        <Route path="/nutritionist">
+          <NutritionistPortal />
+        </Route>
+        <Route path="/delivery">
+          <DeliveryPortal />
+        </Route>
+        <Route path="/admin">
+          <AdminPortal />
         </Route>
         <Route component={NotFound} />
       </Switch>
