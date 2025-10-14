@@ -25,6 +25,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Auto-seed production database on startup
+@app.on_event("startup")
+async def startup_event():
+    """Automatically seed the database if it's empty (production initialization)"""
+    db = next(get_db())
+    try:
+        # Check if database has any meal plans
+        meal_plan_count = db.query(models.MealPlan).count()
+        
+        if meal_plan_count == 0:
+            print("📦 Database is empty. Auto-seeding with sample data...")
+            from api.seed_data import seed_database
+            seed_database()
+            print("✅ Database seeded successfully!")
+        else:
+            print(f"✓ Database already initialized with {meal_plan_count} meal plans")
+    except Exception as e:
+        print(f"⚠️  Auto-seed check failed: {e}")
+    finally:
+        db.close()
+
 # WebSocket connection manager
 class ConnectionManager:
     def __init__(self):
