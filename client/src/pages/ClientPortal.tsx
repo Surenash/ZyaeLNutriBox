@@ -65,6 +65,56 @@ export default function ClientPortal() {
       badge: "Healthy Choice",
       image: veganMeal,
     },
+    {
+      title: "Postpartum Moms",
+      description: "Meals crafted for new mothers' recovery",
+      originalPrice: 17000,
+      currentPrice: 15000,
+      rating: 4.8,
+      reviewCount: 1800,
+      badge: "Mom's Magic",
+      image: weightLoss,
+    },
+    {
+      title: "Senior Citizens",
+      description: "Gentle, nutritious meals for healthy aging",
+      originalPrice: 16500,
+      currentPrice: 15000,
+      rating: 4.9,
+      reviewCount: 1500,
+      badge: "Trusted by Families",
+      image: proteinMeal,
+    },
+    {
+      title: "Diabetic Friendly Meals",
+      description: "Gentle, nutritious meals for health management",
+      originalPrice: 16500,
+      currentPrice: 15000,
+      rating: 4.9,
+      reviewCount: 1500,
+      badge: "Trusted by Families",
+      image: pcosMeal,
+    },
+    {
+      title: "Kids Nutrition",
+      description: "Tasty & healthy meals for growing kids",
+      originalPrice: 16000,
+      currentPrice: 15000,
+      rating: 4.6,
+      reviewCount: 1200,
+      badge: "Coming Soon",
+      image: veganMeal,
+    },
+    {
+      title: "Recovery Meals",
+      description: "Special diet meals for patients during recovery",
+      originalPrice: 16500,
+      currentPrice: 15000,
+      rating: 4.7,
+      reviewCount: 1100,
+      badge: "Doctor Approved",
+      image: weightLoss,
+    },
   ];
 
   const nutritionists = [
@@ -86,19 +136,19 @@ export default function ClientPortal() {
 
   const testimonials = [
     {
-      name: "Meera",
+      name: "Meera, 28 – Content Writer",
       role: "Content Writer",
       location: "Bengaluru",
       testimonial:
-        "I signed up after seeing their Instagram ad saying 'Meals made with care.' True to that, I got a call from their nutritionist a few days in. She spoke with me about my stress, eating gaps, and even sleep. It felt like therapy through food.",
+        "I signed up after seeing their Instagram ad saying \"Meals made with care.\" True to that, I got a call from their nutritionist a few days in. She spoke with me about my stress, eating gaps, and even sleep. It felt like therapy through food. Now my mom doesn't just ask if I ate—she says, \"Hope you had your nutrition check too!\"",
       image: customer1,
     },
     {
-      name: "Nikhil",
+      name: "Nikhil, 35 – Sales Manager",
       role: "Sales Manager",
       location: "Bengaluru",
       testimonial:
-        "I'm always on the move, and I hated planning food. A colleague using Zyael Nutri Box recommended it. I liked that it wasn't just meal delivery—every week I get a short nutrition consultation where they tweak my meals based on my schedule and how I feel.",
+        "I'm always on the move, and I hated planning food. A colleague using Zyael Nutri Box recommended it. I liked that it wasn't just meal delivery—every week I get a short nutrition consultation where they tweak my meals based on my schedule and how I feel. It's like having a support system without needing to step out.",
       image: customer2,
     },
   ];
@@ -225,6 +275,40 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
+            className="relative bg-gradient-to-br from-primary/5 to-transparent rounded-3xl p-8 md:p-12"
+          >
+            <div className="text-center mb-8">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                className="text-4xl md:text-5xl font-bold text-foreground mb-6"
+              >
+                The Zyael Nutri Box Story
+              </motion.h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                transition={{ delay: 0.1 }}
+                className="text-lg text-muted-foreground max-w-4xl mx-auto space-y-4 text-left"
+              >
+                <p>There was a time when every morning began with a familiar voice— "Beta, did you eat your breakfast?" Every afternoon, another call— "Lunch box khatam kiya? Kuch aur chahiye kya?"</p>
+                
+                <p>And before bedtime— "Dinner toh le liya na?"</p>
+                
+                <p>That voice was our first nutritionist—our mothers. Their love didn't just fill our stomachs; it nourished our hearts. But as we moved to new cities, chased our careers in Bangalore, Mumbai, or beyond, the calls became fewer, and the meals more rushed, random, or skipped.</p>
+                
+                <p className="font-semibold text-foreground">We missed those meals. But more than that, we missed the love that came with them.</p>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          <motion.section
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={viewportConfig}
+            transition={{ duration: 0.6 }}
             className="relative"
           >
             <div className="text-center mb-12">
@@ -234,17 +318,8 @@ export default function ClientPortal() {
                 viewport={viewportConfig}
                 className="text-4xl md:text-5xl font-bold text-foreground mb-4"
               >
-                Meet Our Expert Nutritionists
+                Meet Our Team of Nutritionist in ZyaelNutriBox
               </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportConfig}
-                transition={{ delay: 0.1 }}
-                className="text-lg text-muted-foreground max-w-2xl mx-auto"
-              >
-                Certified professionals dedicated to your health journey
-              </motion.p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {nutritionists.map((nutritionist) => (
@@ -271,17 +346,8 @@ export default function ClientPortal() {
                 viewport={viewportConfig}
                 className="text-4xl md:text-5xl font-bold text-foreground mb-4"
               >
-                Success Stories
+                Here What Our Customers Say About ZyaelNutribox
               </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportConfig}
-                transition={{ delay: 0.1 }}
-                className="text-lg text-muted-foreground max-w-2xl mx-auto"
-              >
-                Real transformations from real people
-              </motion.p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {testimonials.map((testimonial) => (
@@ -303,7 +369,7 @@ export default function ClientPortal() {
               viewport={viewportConfig}
               className="text-4xl md:text-5xl font-bold text-foreground mb-6"
             >
-              Ready to Start Your Journey?
+              Home-Cooked Goodness, Inspired by Mom & Perfected by Nutritionists
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -312,40 +378,83 @@ export default function ClientPortal() {
               transition={{ delay: 0.1 }}
               className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto"
             >
-              Join thousands of satisfied customers who have transformed their health with ZyaeL NutriBox. Start your personalized nutrition journey today!
+              Every meal is thoughtfully crafted by expert nutritionists, inspired by the warmth of a mother's kitchen. Packed with essential nutrients and made with authentic, home-style recipes — it's not just food, it's comfort with a promise of health.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportConfig}
               transition={{ delay: 0.2 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <Button
                 size="lg"
                 className="bg-primary text-primary-foreground rounded-full hover-elevate active-elevate-2"
-                data-testid="button-subscribe-now"
+                data-testid="button-subscribe-cta"
               >
-                Get Started Now →
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-full border-2"
-                data-testid="button-learn-more"
-              >
-                Learn More
+                Subscribe Now
               </Button>
             </motion.div>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={viewportConfig}
-              transition={{ delay: 0.3 }}
-              className="text-sm text-muted-foreground mt-6"
-            >
-              No commitment required • Cancel anytime
-            </motion.p>
+          </motion.section>
+
+          <motion.section
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={viewportConfig}
+            transition={{ duration: 0.6 }}
+            className="relative"
+          >
+            <div className="text-center mb-12">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+              >
+                News About Nutrition
+              </motion.h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                className="bg-card rounded-2xl overflow-hidden hover-elevate"
+              >
+                <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
+                    How to Identify Your Daily Calorie Needs Based on Your Goals
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Understanding your daily calorie needs is a key step in achieving your health and fitness goals, whether...
+                  </p>
+                  <Button variant="outline" className="rounded-full" data-testid="button-read-more-1">
+                    Read More
+                  </Button>
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                transition={{ delay: 0.1 }}
+                className="bg-card rounded-2xl overflow-hidden hover-elevate"
+              >
+                <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5"></div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
+                    Top 10 Superfoods to Include in Your Daily Diet
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Superfoods are nutrient-dense ingredients that offer immense health benefits. Incorporating them into...
+                  </p>
+                  <Button variant="outline" className="rounded-full" data-testid="button-read-more-2">
+                    Read More
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
           </motion.section>
         </motion.div>
         )}
