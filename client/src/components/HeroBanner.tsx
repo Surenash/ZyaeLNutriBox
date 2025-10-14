@@ -21,7 +21,7 @@ export default function HeroBanner({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="relative w-full h-[500px] rounded-2xl overflow-hidden"
+      className="relative w-full h-[400px] md:h-[500px] rounded-2xl overflow-hidden"
     >
       <motion.img
         src={backgroundImage}
@@ -32,12 +32,12 @@ export default function HeroBanner({
         transition={{ duration: 1.2, ease: "easeOut" }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
-      <div className="relative h-full flex flex-col justify-center px-8 md:px-16 max-w-2xl">
+      <div className="relative h-full flex flex-col justify-center px-6 md:px-16 max-w-2xl">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-4xl md:text-5xl font-bold text-white mb-4"
+          className="text-3xl md:text-5xl font-bold text-white mb-3 md:mb-4"
         >
           {title}
         </motion.h1>
@@ -45,7 +45,7 @@ export default function HeroBanner({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-lg md:text-xl text-white/90 mb-8"
+          className="text-base md:text-xl text-white/90 mb-6 md:mb-8"
         >
           {subtitle}
         </motion.p>

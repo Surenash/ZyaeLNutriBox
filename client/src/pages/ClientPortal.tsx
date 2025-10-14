@@ -259,12 +259,12 @@ export default function ClientPortal() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 md:mb-12">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
-                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+                className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4"
               >
                 Choose Your Health Goal
               </motion.h2>
@@ -273,12 +273,12 @@ export default function ClientPortal() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
                 transition={{ delay: 0.1 }}
-                className="text-lg text-muted-foreground max-w-2xl mx-auto"
+                className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4"
               >
                 Expertly crafted meal plans designed to help you achieve your wellness goals
               </motion.p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {dietPlans.map((plan) => (
                 <DietPlanCard
                   key={plan.title}
@@ -294,14 +294,14 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
-            className="relative bg-gradient-to-br from-primary/5 to-transparent rounded-3xl p-8 md:p-12"
+            className="relative bg-gradient-to-br from-primary/5 to-transparent rounded-2xl md:rounded-3xl p-6 md:p-12"
           >
-            <div className="text-center mb-8">
+            <div className="text-center mb-6 md:mb-8">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
-                className="text-4xl md:text-5xl font-bold text-foreground mb-6"
+                className="text-3xl md:text-5xl font-bold text-foreground mb-4 md:mb-6"
               >
                 The Zyael Nutri Box Story
               </motion.h2>
@@ -310,7 +310,7 @@ export default function ClientPortal() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
                 transition={{ delay: 0.1 }}
-                className="text-lg text-muted-foreground max-w-4xl mx-auto space-y-4 text-left"
+                className="text-base md:text-lg text-muted-foreground max-w-4xl mx-auto space-y-3 md:space-y-4 text-left"
               >
                 <p>There was a time when every morning began with a familiar voice— "Beta, did you eat your breakfast?" Every afternoon, another call— "Lunch box khatam kiya? Kuch aur chahiye kya?"</p>
                 
@@ -325,7 +325,7 @@ export default function ClientPortal() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
                 transition={{ delay: 0.2 }}
-                className="mt-8"
+                className="mt-6 md:mt-8"
               >
                 <Button
                   size="lg"
@@ -346,17 +346,17 @@ export default function ClientPortal() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 md:mb-12">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
-                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+                className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4 px-4"
               >
                 Meet Our Team of Nutritionist in ZyaelNutriBox
               </motion.h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {nutritionists.map((nutritionist) => (
                 <NutritionistCard
                   key={nutritionist.name}
@@ -374,17 +374,17 @@ export default function ClientPortal() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 md:mb-12">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
-                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+                className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4 px-4"
               >
                 Here What Our Customers Say About ZyaelNutribox
               </motion.h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {testimonials.map((testimonial) => (
                 <TestimonialCard key={testimonial.name} {...testimonial} />
               ))}
@@ -396,13 +396,13 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-3xl p-12 md:p-16 text-center border border-primary/10"
+            className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-2xl md:rounded-3xl p-6 md:p-16 text-center border border-primary/10"
           >
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportConfig}
-              className="text-4xl md:text-5xl font-bold text-foreground mb-6"
+              className="text-2xl md:text-5xl font-bold text-foreground mb-4 md:mb-6"
             >
               Home-Cooked Goodness, Inspired by Mom & Perfected by Nutritionists
             </motion.h2>
@@ -411,7 +411,7 @@ export default function ClientPortal() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportConfig}
               transition={{ delay: 0.1 }}
-              className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto"
+              className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-3xl mx-auto"
             >
               Every meal is thoughtfully crafted by expert nutritionists, inspired by the warmth of a mother's kitchen. Packed with essential nutrients and made with authentic, home-style recipes — it's not just food, it's comfort with a promise of health.
             </motion.p>
@@ -436,14 +436,14 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
-            className="relative px-12"
+            className="relative px-0 md:px-12"
           >
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 md:mb-12 px-4">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={viewportConfig}
-                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+                className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4"
               >
                 News About Nutrition
               </motion.h2>
@@ -453,7 +453,7 @@ export default function ClientPortal() {
                 align: "start",
                 loop: true,
               }}
-              className="w-full"
+              className="w-full px-4 md:px-0"
             >
               <CarouselContent>
                 {newsArticles.map((article, index) => (
@@ -465,11 +465,11 @@ export default function ClientPortal() {
                       className="bg-card rounded-2xl overflow-hidden hover-elevate h-full"
                     >
                       <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5"></div>
-                      <div className="p-6">
-                        <h3 className="text-xl font-semibold text-foreground mb-3">
+                      <div className="p-4 md:p-6">
+                        <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2 md:mb-3">
                           {article.title}
                         </h3>
-                        <p className="text-muted-foreground mb-4">
+                        <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
                           {article.description}
                         </p>
                         <Button 
@@ -485,11 +485,11 @@ export default function ClientPortal() {
                 ))}
               </CarouselContent>
               <CarouselPrevious 
-                className="rounded-full -left-6 shadow-lg" 
+                className="rounded-full -left-4 md:-left-6 shadow-lg hidden md:flex" 
                 data-testid="button-news-prev"
               />
               <CarouselNext 
-                className="rounded-full -right-6 shadow-lg" 
+                className="rounded-full -right-4 md:-right-6 shadow-lg hidden md:flex" 
                 data-testid="button-news-next"
               />
             </Carousel>
