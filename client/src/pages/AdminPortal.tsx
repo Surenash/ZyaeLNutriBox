@@ -95,9 +95,8 @@ export default function AdminPortal() {
   // Seed database mutation
   const seedMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest("/api/admin/seed-database", {
-        method: "POST",
-      });
+      const res = await apiRequest("POST", "/api/admin/seed-database");
+      return await res.json();
     },
     onSuccess: () => {
       toast({
@@ -121,10 +120,8 @@ export default function AdminPortal() {
   // Create meal plan mutation
   const createMealMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest("/api/meal-plans", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("POST", "/api/meal-plans", data);
+      return await res.json();
     },
     onSuccess: () => {
       toast({
@@ -153,10 +150,8 @@ export default function AdminPortal() {
   // Create nutritionist mutation
   const createNutritionistMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest("/api/nutritionists", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("POST", "/api/nutritionists", data);
+      return await res.json();
     },
     onSuccess: () => {
       toast({
@@ -184,10 +179,8 @@ export default function AdminPortal() {
   // Create client mutation
   const createClientMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest("/api/clients", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const res = await apiRequest("POST", "/api/clients", data);
+      return await res.json();
     },
     onSuccess: () => {
       toast({
@@ -231,8 +224,10 @@ export default function AdminPortal() {
   // Handle nutritionist form submit
   const handleNutritionistSubmit = () => {
     createNutritionistMutation.mutate({
-      ...nutritionistForm,
-      experience: parseInt(nutritionistForm.experience),
+      name: nutritionistForm.name,
+      email: nutritionistForm.email,
+      specialization: nutritionistForm.specialization,
+      experienceYears: parseInt(nutritionistForm.experience),
       rating: 0,
       reviewCount: 0,
     });

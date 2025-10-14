@@ -5,16 +5,20 @@ import { spawn } from 'child_process';
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 // Proxy all /api requests to FastAPI server on port 3001
+// IMPORTANT: Proxy must come BEFORE body parsers to avoid consuming request body
 app.use('/api', createProxyMiddleware({
   target: 'http://localhost:3001',
   changeOrigin: true,
   ws: false,
   logLevel: 'silent',
+  pathRewrite: { '^/api': '' }, // Remove /api prefix before forwarding
 }));
+
+// Body parsers for non-proxied routes
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Proxy WebSocket connection to FastAPI
 app.use('/ws', createProxyMiddleware({

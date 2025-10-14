@@ -148,6 +148,8 @@ class MealPlanCreate(BaseModel):
     features: Optional[str] = None
     is_active: Optional[bool] = True
 
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
+
 class MealPlanUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
@@ -160,6 +162,8 @@ class MealPlanUpdate(BaseModel):
     image_url: Optional[str] = None
     features: Optional[str] = None
     is_active: Optional[bool] = None
+
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
 
 class MealPlanResponse(BaseModel):
     id: str
@@ -213,6 +217,8 @@ class NutritionistCreate(BaseModel):
     image_url: Optional[str] = None
     experience_years: Optional[int] = 0
 
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
+
 class NutritionistUpdate(BaseModel):
     name: Optional[str] = None
     phone: Optional[str] = None
@@ -222,6 +228,8 @@ class NutritionistUpdate(BaseModel):
     rating: Optional[float] = None
     total_clients: Optional[int] = None
     is_available: Optional[bool] = None
+
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
 
 class NutritionistResponse(BaseModel):
     id: str
@@ -252,12 +260,16 @@ class ClientCreate(BaseModel):
     health_conditions: Optional[str] = None
     dietary_preferences: Optional[str] = None
 
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
+
 class ClientUpdate(BaseModel):
     nutritionist_id: Optional[str] = None
     weight_current: Optional[float] = None
     weight_goal: Optional[float] = None
     health_conditions: Optional[str] = None
     dietary_preferences: Optional[str] = None
+
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)
 
 class ClientResponse(BaseModel):
     id: str
