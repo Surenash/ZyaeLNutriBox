@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import HeroBanner from "@/components/HeroBanner";
 import DietPlanCard from "@/components/DietPlanCard";
@@ -31,116 +32,49 @@ import customer2 from "@assets/generated_images/Business_professional_customer_t
 export default function ClientPortal() {
   const [activeTab, setActiveTab] = useState("home");
 
-  //todo: remove mock functionality
-  const dietPlans = [
-    {
-      title: "Weight Loss",
-      description: "Balanced meals to help shed fat effectively",
-      originalPrice: 17000,
-      currentPrice: 15000,
-      rating: 4.8,
-      reviewCount: 3200,
-      badge: "Bestseller",
-      image: weightLoss,
-    },
-    {
-      title: "Muscle Gain",
-      description: "Protein-rich meals for lean muscle development",
-      originalPrice: 18000,
-      currentPrice: 15000,
-      rating: 4.7,
-      reviewCount: 2800,
-      badge: "Popular",
-      image: proteinMeal,
-    },
-    {
-      title: "PCOS Friendly",
-      description: "Low glycemic meals for health management",
-      originalPrice: 16500,
-      currentPrice: 15000,
-      rating: 4.6,
-      reviewCount: 2300,
-      badge: "Recommended",
-      image: pcosMeal,
-    },
-    {
-      title: "Vegan / Vegetarian",
-      description: "Plant-based nourishment for every lifestyle",
-      originalPrice: 16000,
-      currentPrice: 15000,
-      rating: 4.5,
-      reviewCount: 2100,
-      badge: "Healthy Choice",
-      image: veganMeal,
-    },
-    {
-      title: "Postpartum Moms",
-      description: "Meals crafted for new mothers' recovery",
-      originalPrice: 17000,
-      currentPrice: 15000,
-      rating: 4.8,
-      reviewCount: 1800,
-      badge: "Mom's Magic",
-      image: weightLoss,
-    },
-    {
-      title: "Senior Citizens",
-      description: "Gentle, nutritious meals for healthy aging",
-      originalPrice: 16500,
-      currentPrice: 15000,
-      rating: 4.9,
-      reviewCount: 1500,
-      badge: "Trusted by Families",
-      image: proteinMeal,
-    },
-    {
-      title: "Diabetic Friendly Meals",
-      description: "Gentle, nutritious meals for health management",
-      originalPrice: 16500,
-      currentPrice: 15000,
-      rating: 4.9,
-      reviewCount: 1500,
-      badge: "Trusted by Families",
-      image: pcosMeal,
-    },
-    {
-      title: "Kids Nutrition",
-      description: "Tasty & healthy meals for growing kids",
-      originalPrice: 16000,
-      currentPrice: 15000,
-      rating: 4.6,
-      reviewCount: 1200,
-      badge: "Coming Soon",
-      image: veganMeal,
-    },
-    {
-      title: "Recovery Meals",
-      description: "Special diet meals for patients during recovery",
-      originalPrice: 16500,
-      currentPrice: 15000,
-      rating: 4.7,
-      reviewCount: 1100,
-      badge: "Doctor Approved",
-      image: weightLoss,
-    },
-  ];
+  // Fetch meal plans from API
+  const { data: mealPlansData, isLoading: mealPlansLoading } = useQuery({
+    queryKey: ["/api/meal-plans"],
+  });
 
-  const nutritionists = [
-    {
-      name: "Dr. Priya Sharma",
-      specialization: "Clinical Nutritionist & Dietitian",
-      experience: "12 years experience",
-      rating: 4.9,
-      image: nutritionist1,
-    },
-    {
-      name: "Dr. Amit Patel",
-      specialization: "Sports Nutrition Specialist",
-      experience: "10 years experience",
-      rating: 4.8,
-      image: nutritionist2,
-    },
-  ];
+  // Fetch nutritionists from API
+  const { data: nutritionistsData, isLoading: nutritionistsLoading } = useQuery({
+    queryKey: ["/api/nutritionists"],
+  });
+
+  // Map plan images (use existing images as placeholders)
+  const planImageMap: { [key: string]: string } = {
+    "Weight Loss": weightLoss,
+    "Muscle Gain": proteinMeal,
+    "PCOS Friendly": pcosMeal,
+    "Vegan / Vegetarian": veganMeal,
+    "Postpartum Moms": weightLoss,
+    "Senior Citizens": proteinMeal,
+    "Diabetic Friendly Meals": pcosMeal,
+    "Kids Nutrition": veganMeal,
+    "Recovery Meals": weightLoss,
+  };
+
+  // Map nutritionist images (use existing images as placeholders)
+  const nutritionistImageMap: { [key: string]: string } = {
+    "Dr. Priya Sharma": nutritionist1,
+    "Rahul Menon": nutritionist2,
+    "Ananya Patel": nutritionist1,
+    "Vikram Singh": nutritionist2,
+  };
+
+  // Prepare diet plans with images
+  const dietPlans = (Array.isArray(mealPlansData) ? mealPlansData : []).map((plan: any) => ({
+    ...plan,
+    image: planImageMap[plan.title] || weightLoss,
+  }));
+
+  // Prepare nutritionists with images and experience format
+  const nutritionists = (Array.isArray(nutritionistsData) ? nutritionistsData : []).map((nutritionist: any) => ({
+    ...nutritionist,
+    image: nutritionistImageMap[nutritionist.name] || nutritionist1,
+    experience: `${nutritionist.experienceYears} years experience`,
+  }));
 
   const testimonials = [
     {
@@ -278,15 +212,27 @@ export default function ClientPortal() {
                 Expertly crafted meal plans designed to help you achieve your wellness goals
               </motion.p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {dietPlans.map((plan) => (
-                <DietPlanCard
-                  key={plan.title}
-                  {...plan}
-                  onSubscribe={() => console.log(`Subscribe to ${plan.title}`)}
-                />
-              ))}
-            </div>
+            {mealPlansLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <div key={i} className="bg-card rounded-2xl p-4 animate-pulse">
+                    <div className="aspect-video bg-muted rounded-xl mb-4"></div>
+                    <div className="h-4 bg-muted rounded mb-2 w-3/4"></div>
+                    <div className="h-3 bg-muted rounded w-full"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                {dietPlans.map((plan: any) => (
+                  <DietPlanCard
+                    key={plan.id}
+                    {...plan}
+                    onSubscribe={() => console.log(`Subscribe to ${plan.title}`)}
+                  />
+                ))}
+              </div>
+            )}
           </motion.section>
 
           <motion.section
@@ -356,15 +302,27 @@ export default function ClientPortal() {
                 Meet Our Team of Nutritionist in ZyaelNutriBox
               </motion.h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {nutritionists.map((nutritionist) => (
-                <NutritionistCard
-                  key={nutritionist.name}
-                  {...nutritionist}
-                  onConsult={() => console.log(`Consult ${nutritionist.name}`)}
-                />
-              ))}
-            </div>
+            {nutritionistsLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="bg-card rounded-2xl p-6 animate-pulse">
+                    <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4"></div>
+                    <div className="h-4 bg-muted rounded mb-2 w-3/4 mx-auto"></div>
+                    <div className="h-3 bg-muted rounded w-1/2 mx-auto"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {nutritionists.map((nutritionist: any) => (
+                  <NutritionistCard
+                    key={nutritionist.id}
+                    {...nutritionist}
+                    onConsult={() => console.log(`Consult ${nutritionist.name}`)}
+                  />
+                ))}
+              </div>
+            )}
           </motion.section>
 
           <motion.section
