@@ -188,15 +188,27 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
+            className="relative"
           >
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={viewportConfig}
-              className="text-3xl font-bold text-foreground mb-8"
-            >
-              Choose Your Health Goal
-            </motion.h2>
+            <div className="text-center mb-12">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+              >
+                Choose Your Health Goal
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                transition={{ delay: 0.1 }}
+                className="text-lg text-muted-foreground max-w-2xl mx-auto"
+              >
+                Expertly crafted meal plans designed to help you achieve your wellness goals
+              </motion.p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {dietPlans.map((plan) => (
                 <DietPlanCard
@@ -213,15 +225,27 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
+            className="relative"
           >
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={viewportConfig}
-              className="text-3xl font-bold text-foreground mb-8"
-            >
-              Meet Our Team of Nutritionists
-            </motion.h2>
+            <div className="text-center mb-12">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+              >
+                Meet Our Expert Nutritionists
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                transition={{ delay: 0.1 }}
+                className="text-lg text-muted-foreground max-w-2xl mx-auto"
+              >
+                Certified professionals dedicated to your health journey
+              </motion.p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {nutritionists.map((nutritionist) => (
                 <NutritionistCard
@@ -238,15 +262,27 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
+            className="relative"
           >
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={viewportConfig}
-              className="text-3xl font-bold text-foreground mb-8"
-            >
-              Here's What Our Customers Say
-            </motion.h2>
+            <div className="text-center mb-12">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+              >
+                Success Stories
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={viewportConfig}
+                transition={{ delay: 0.1 }}
+                className="text-lg text-muted-foreground max-w-2xl mx-auto"
+              >
+                Real transformations from real people
+              </motion.p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {testimonials.map((testimonial) => (
                 <TestimonialCard key={testimonial.name} {...testimonial} />
@@ -259,21 +295,57 @@ export default function ClientPortal() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={viewportConfig}
             transition={{ duration: 0.6 }}
-            className="bg-primary/5 rounded-2xl p-8 text-center"
+            className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-3xl p-12 md:p-16 text-center border border-primary/10"
           >
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Ready to Start Your Journey?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who have transformed their health with ZyaeL NutriBox
-            </p>
-            <Button
-              size="lg"
-              className="bg-primary text-primary-foreground rounded-full px-8 hover-elevate active-elevate-2"
-              data-testid="button-subscribe-now"
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewportConfig}
+              className="text-4xl md:text-5xl font-bold text-foreground mb-6"
             >
-              Subscribe Now
-            </Button>
+              Ready to Start Your Journey?
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewportConfig}
+              transition={{ delay: 0.1 }}
+              className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto"
+            >
+              Join thousands of satisfied customers who have transformed their health with ZyaeL NutriBox. Start your personalized nutrition journey today!
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={viewportConfig}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              <Button
+                size="lg"
+                className="bg-primary text-primary-foreground rounded-full px-10 py-6 text-lg hover-elevate active-elevate-2"
+                data-testid="button-subscribe-now"
+              >
+                Get Started Now →
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-full px-10 py-6 text-lg border-2"
+                data-testid="button-learn-more"
+              >
+                Learn More
+              </Button>
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={viewportConfig}
+              transition={{ delay: 0.3 }}
+              className="text-sm text-muted-foreground mt-6"
+            >
+              💚 No commitment required • Cancel anytime
+            </motion.p>
           </motion.section>
         </motion.div>
         )}
