@@ -110,6 +110,59 @@ export default function ClientPortal() {
     { label: "Fats", current: 25, target: 50, unit: "g", color: "hsl(var(--chart-4))" },
   ];
 
+  //todo: remove mock functionality
+  const cartItems = [
+    {
+      id: 1,
+      title: "Weight Loss Plan",
+      duration: "30 Days Subscription",
+      image: weightLoss,
+      originalPrice: 17000,
+      price: 15000,
+      quantity: 1,
+    },
+    {
+      id: 2,
+      title: "Muscle Gain Plan",
+      duration: "30 Days Subscription",
+      image: proteinMeal,
+      originalPrice: 18000,
+      price: 15000,
+      quantity: 1,
+    },
+  ];
+
+  //todo: remove mock functionality
+  const orderHistory = [
+    {
+      id: "ORD1234",
+      date: "November 28, 2025",
+      plan: "Weight Loss Plan",
+      duration: "30 Days",
+      status: "delivered",
+      amount: 15000,
+      image: weightLoss,
+    },
+    {
+      id: "ORD1233",
+      date: "October 30, 2025",
+      plan: "PCOS Friendly Plan",
+      duration: "30 Days",
+      status: "delivered",
+      amount: 15000,
+      image: pcosMeal,
+    },
+    {
+      id: "ORD1232",
+      date: "September 28, 2025",
+      plan: "Vegan / Vegetarian Plan",
+      duration: "30 Days",
+      status: "delivered",
+      amount: 15000,
+      image: veganMeal,
+    },
+  ];
+
   return (
     <motion.div
       {...pageTransitionVariants}
@@ -223,6 +276,310 @@ export default function ClientPortal() {
             </Button>
           </motion.section>
         </motion.div>
+        )}
+
+        {activeTab === "cart" && (
+          <motion.div
+            key="cart"
+            {...pageTransitionVariants}
+            className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+          >
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-3xl font-bold text-foreground mb-8"
+            >
+              Your Cart
+            </motion.h1>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-4">
+                {/* Cart Items */}
+                {cartItems.map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white rounded-xl shadow-md p-6 hover-elevate"
+                  >
+                    <div className="flex gap-4">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-24 h-24 rounded-lg object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                            <p className="text-sm text-muted-foreground">{item.duration}</p>
+                          </div>
+                          <button
+                            className="text-muted-foreground hover:text-destructive transition-colors"
+                            data-testid={`button-remove-${item.id}`}
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="flex justify-between items-center mt-4">
+                          <div className="flex items-center gap-3 border rounded-lg p-1">
+                            <button className="px-3 py-1 hover:bg-muted rounded" data-testid={`button-decrease-${item.id}`}>−</button>
+                            <span className="px-3 font-semibold" data-testid={`text-quantity-${item.id}`}>{item.quantity}</span>
+                            <button className="px-3 py-1 hover:bg-muted rounded" data-testid={`button-increase-${item.id}`}>+</button>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-muted-foreground line-through">₹{item.originalPrice}</p>
+                            <p className="text-xl font-bold text-primary">₹{item.price}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Price Summary */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="lg:col-span-1"
+              >
+                <div className="bg-white rounded-xl shadow-md p-6 sticky top-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Price Summary</h3>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Subtotal</span>
+                      <span className="font-semibold">₹{cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Delivery Charges</span>
+                      <span className="font-semibold text-success">FREE</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Discount</span>
+                      <span className="font-semibold text-success">−₹{cartItems.reduce((sum, item) => sum + ((item.originalPrice - item.price) * item.quantity), 0)}</span>
+                    </div>
+                    <div className="border-t pt-3 flex justify-between">
+                      <span className="font-semibold text-foreground">Total</span>
+                      <span className="text-2xl font-bold text-primary">₹{cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)}</span>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full bg-primary text-primary-foreground rounded-full hover-elevate active-elevate-2"
+                    size="lg"
+                    data-testid="button-checkout"
+                  >
+                    Proceed to Checkout
+                  </Button>
+                  <p className="text-xs text-muted-foreground text-center mt-4">
+                    🔒 100% Secure Payment
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === "orders" && (
+          <motion.div
+            key="orders"
+            {...pageTransitionVariants}
+            className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+          >
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-3xl font-bold text-foreground mb-8"
+            >
+              My Orders
+            </motion.h1>
+
+            <div className="space-y-4">
+              {orderHistory.map((order, index) => (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white rounded-xl shadow-md p-6 hover-elevate"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground">Order #{order.id}</h3>
+                      <p className="text-sm text-muted-foreground">{order.date}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      order.status === 'delivered' ? 'bg-success/10 text-success' :
+                      order.status === 'in-transit' ? 'bg-warning/10 text-warning' :
+                      'bg-muted text-muted-foreground'
+                    }`} data-testid={`badge-status-${order.id}`}>
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1).replace('-', ' ')}
+                    </span>
+                  </div>
+                  
+                  <div className="border-t pt-4">
+                    <div className="flex items-center gap-4 mb-3">
+                      <img src={order.image} alt={order.plan} className="w-16 h-16 rounded-lg object-cover" />
+                      <div className="flex-1">
+                        <p className="font-semibold text-foreground">{order.plan}</p>
+                        <p className="text-sm text-muted-foreground">{order.duration}</p>
+                      </div>
+                      <p className="text-xl font-bold text-primary">₹{order.amount}</p>
+                    </div>
+                    
+                    <div className="flex gap-3 mt-4">
+                      <Button variant="outline" size="sm" className="rounded-full" data-testid={`button-track-${order.id}`}>
+                        Track Order
+                      </Button>
+                      <Button variant="outline" size="sm" className="rounded-full" data-testid={`button-details-${order.id}`}>
+                        View Details
+                      </Button>
+                      {order.status === 'delivered' && (
+                        <Button variant="outline" size="sm" className="rounded-full ml-auto" data-testid={`button-reorder-${order.id}`}>
+                          Reorder
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === "profile" && (
+          <motion.div
+            key="profile"
+            {...pageTransitionVariants}
+            className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+          >
+            <motion.h1
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-3xl font-bold text-foreground mb-8"
+            >
+              My Profile
+            </motion.h1>
+
+            <div className="space-y-6">
+              {/* Profile Info Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-white rounded-xl shadow-md p-6"
+              >
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span className="text-3xl font-bold text-primary">JD</span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-foreground">John Doe</h3>
+                    <p className="text-sm text-muted-foreground">john.doe@example.com</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="rounded-full" data-testid="button-edit-profile">
+                    Edit Profile
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Phone</p>
+                    <p className="font-medium">+91 98765 43210</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Location</p>
+                    <p className="font-medium">Mumbai, Maharashtra</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Dietary Preferences */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-white rounded-xl shadow-md p-6"
+              >
+                <h3 className="text-lg font-semibold text-foreground mb-4">Dietary Preferences</h3>
+                <div className="flex flex-wrap gap-2">
+                  {['Vegetarian', 'Gluten-free', 'Low Carb', 'High Protein'].map((pref) => (
+                    <span key={pref} className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium" data-testid={`badge-preference-${pref.toLowerCase().replace(' ', '-')}`}>
+                      {pref}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Subscription Details */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-white rounded-xl shadow-md p-6"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">Active Subscription</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Weight Loss Plan - Monthly</p>
+                  </div>
+                  <span className="px-3 py-1 bg-success/10 text-success rounded-full text-xs font-medium">Active</span>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Next Renewal</p>
+                    <p className="font-semibold">December 15, 2025</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="rounded-full" data-testid="button-manage-subscription">
+                    Manage Plan
+                  </Button>
+                </div>
+              </motion.div>
+
+              {/* Settings Options */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="bg-white rounded-xl shadow-md p-6"
+              >
+                <h3 className="text-lg font-semibold text-foreground mb-4">Settings</h3>
+                <div className="space-y-3">
+                  <button className="w-full flex items-center justify-between p-3 hover:bg-muted rounded-lg transition-colors" data-testid="button-payment-methods">
+                    <span className="font-medium">Payment Methods</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  <button className="w-full flex items-center justify-between p-3 hover:bg-muted rounded-lg transition-colors" data-testid="button-delivery-address">
+                    <span className="font-medium">Delivery Address</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  <button className="w-full flex items-center justify-between p-3 hover:bg-muted rounded-lg transition-colors" data-testid="button-notifications">
+                    <span className="font-medium">Notifications</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  <button className="w-full flex items-center justify-between p-3 hover:bg-muted rounded-lg transition-colors text-destructive" data-testid="button-logout">
+                    <span className="font-medium">Logout</span>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
         )}
 
         {activeTab === "track" && (
