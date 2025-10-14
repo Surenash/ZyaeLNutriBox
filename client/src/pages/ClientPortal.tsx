@@ -485,11 +485,11 @@ export default function ClientPortal() {
                 ))}
               </CarouselContent>
               <CarouselPrevious 
-                className="rounded-full -left-4 md:-left-6 shadow-lg hidden md:flex" 
+                className="rounded-full -left-4 md:-left-6 shadow-lg !hidden md:!inline-flex" 
                 data-testid="button-news-prev"
               />
               <CarouselNext 
-                className="rounded-full -right-4 md:-right-6 shadow-lg hidden md:flex" 
+                className="rounded-full -right-4 md:-right-6 shadow-lg !hidden md:!inline-flex" 
                 data-testid="button-news-next"
               />
             </Carousel>
