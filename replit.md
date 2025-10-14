@@ -23,8 +23,9 @@ Preferred communication style: Simple, everyday language.
 **Primary API Server**: FastAPI (Python 3.11) with SQLAlchemy ORM and Pydantic validation.
 **Proxy Server**: Express.js with TypeScript proxies frontend requests to FastAPI backend.
 **API Architecture**: FastAPI runs on port 3001, Express proxies `/api/*` and `/ws` to FastAPI, serves frontend on port 5000.
-**Startup**: Express server automatically spawns FastAPI as a child process during development.
+**Startup**: Express server automatically spawns FastAPI as a child process during development via `run_api.py` wrapper script.
 **Data Layer**: SQLAlchemy models with Pydantic schemas for validation, direct PostgreSQL integration.
+**Response Format**: All API endpoints return camelCase JSON via Pydantic's `to_camel` alias generator and `response_model_by_alias=True` configuration for seamless frontend integration.
 
 ### Database & ORM
 
