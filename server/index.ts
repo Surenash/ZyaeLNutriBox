@@ -12,7 +12,6 @@ app.use('/api', createProxyMiddleware({
   target: 'http://localhost:3001',
   changeOrigin: true,
   ws: false,
-  logLevel: 'silent',
   pathRewrite: { '^/api': '' }, // Remove /api prefix before forwarding
 }));
 
@@ -20,13 +19,15 @@ app.use('/api', createProxyMiddleware({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Proxy WebSocket connection to FastAPI
-app.use('/ws', createProxyMiddleware({
-  target: 'ws://localhost:3001',
+// WebSocket proxy configuration
+const wsProxy = createProxyMiddleware({
+  target: 'http://localhost:3001',
   changeOrigin: true,
   ws: true,
-  logLevel: 'silent',
-}));
+});
+
+// Apply WebSocket proxy middleware  
+app.use('/ws', wsProxy);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -100,6 +101,15 @@ if (process.env.NODE_ENV === "development") {
 (async () => {
   // Removed registerRoutes - using FastAPI backend instead
   const server = http.createServer(app);
+
+  // Handle WebSocket upgrade requests
+  server.on('upgrade', (req, socket, head) => {
+    if (req.url?.startsWith('/ws')) {
+      wsProxy.upgrade!(req, socket as any, head);
+    } else {
+      socket.destroy();
+    }
+  });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

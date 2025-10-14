@@ -23,6 +23,7 @@ Preferred communication style: Simple, everyday language.
 **Primary API Server**: FastAPI (Python 3.11) with SQLAlchemy ORM and Pydantic validation.
 **Proxy Server**: Express.js with TypeScript proxies frontend requests to FastAPI backend.
 **API Architecture**: FastAPI runs on port 3001, Express proxies `/api/*` and `/ws` to FastAPI, serves frontend on port 5000.
+**WebSocket Proxy**: http-proxy-middleware forwards WebSocket upgrade requests from `/ws` to FastAPI backend, with server-level upgrade handler for proper connection establishment.
 **Startup**: Express server automatically spawns FastAPI as a child process during development via `run_api.py` wrapper script.
 **Data Layer**: SQLAlchemy models with Pydantic schemas for validation, direct PostgreSQL integration.
 **Response Format**: All API endpoints return camelCase JSON via Pydantic's `to_camel` alias generator and `response_model_by_alias=True` configuration for seamless frontend integration.
@@ -37,6 +38,7 @@ Preferred communication style: Simple, everyday language.
 **Legacy**: Drizzle ORM schema exists in `shared/schema.ts` but not currently used.
 **Seeded Data**: Database contains 9 meal plans, 4 nutritionists, 4 clients, 3 sessions, and 12 progress logs for development and testing.
 **Auto-Seeding**: Production database automatically seeds on first startup via FastAPI `@app.on_event("startup")` - checks if `meal_plans` table is empty and runs `seed_database()` if true. Ensures published app always has data without manual intervention.
+**Production Safety**: 8-retry initialization with 5-second delays for Neon cold starts, masked database credentials in logs (postgresql://*****:*****@host/db), health check endpoint at `/api/` shows connection status and record counts.
 
 ### Authentication & Security
 
@@ -72,7 +74,7 @@ Preferred communication style: Simple, everyday language.
 **Cloud Kitchen Portal**: 4-tab order queue (Pending, Preparing, Ready, Completed), meal prep workflow, delivery agent assignment, real-time updates via React Query.
 **Delivery Agent Portal**: Live GPS tracking (Browser Geolocation API), WebSocket location broadcasting, interactive map navigation (MapPlaceholder), 3-tab interface (Available, Active, Completed deliveries), status management (Pick up → Mark delivered).
 **Database Schema Additions**: `orders`, `kitchenQueue`, `deliveryAgents`, `deliveryTracking` for comprehensive tracking.
-**WebSocket Infrastructure**: Server-side WebSocket on `/ws`, client-side reusable class with reconnection logic, real-time location and status updates with dual update strategy (WebSocket + API).
+**WebSocket Infrastructure**: Server-side WebSocket on `/ws` (FastAPI endpoint), Express proxy with http-proxy-middleware forwards upgrade requests, client-side reusable class with reconnection logic, real-time location and status updates with dual update strategy (WebSocket + API). WebSocket connections automatically established on delivery portal load.
 
 ### Design System & Assets
 
