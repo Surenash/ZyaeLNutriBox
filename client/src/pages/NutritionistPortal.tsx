@@ -1,5 +1,6 @@
 import { Calendar, Users, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import ClientProgressCard from "@/components/ClientProgressCard";
 import StatsCard from "@/components/StatsCard";
@@ -9,29 +10,75 @@ import clientImage1 from "@assets/generated_images/Business_professional_custome
 import clientImage2 from "@assets/generated_images/Happy_customer_testimonial_photo_4e688e5c.png";
 
 export default function NutritionistPortal() {
-  //todo: remove mock functionality
-  const clients = [
-    {
-      clientName: "Rohan Sharma",
-      clientImage: clientImage1,
-      nextSession: "Dec 15, 3:00 PM",
-      mealCompletion: 92,
-      avgCalories: { current: 1480, target: 1500 },
-      proteinIntake: 85,
+  // Fetch clients from API
+  const { data: clientsData, isLoading: clientsLoading } = useQuery({
+    queryKey: ["/api/clients"],
+  });
+
+  // Fetch sessions from API
+  const { data: sessionsData, isLoading: sessionsLoading } = useQuery({
+    queryKey: ["/api/sessions"],
+  });
+
+  // Image mapping for clients
+  const clientImages = [clientImage1, clientImage2, clientImage1, clientImage2];
+
+  // Prepare clients with formatted data
+  const clients = (Array.isArray(clientsData) ? clientsData : []).map((client: any, index: number) => {
+    // Find upcoming session for this client
+    const upcomingSession = Array.isArray(sessionsData) 
+      ? sessionsData.find((s: any) => s.clientId === client.id && s.status === "scheduled")
+      : null;
+
+    return {
+      id: client.id,
+      clientName: `Client ${index + 1}`,
+      clientImage: clientImages[index % clientImages.length],
+      nextSession: upcomingSession 
+        ? new Date(upcomingSession.sessionDate).toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: '2-digit' 
+          })
+        : "Not scheduled",
+      mealCompletion: 90,
+      avgCalories: { current: 1450, target: 1500 },
+      proteinIntake: 80,
       waterIntake: { current: 2.5, target: 3 },
-      weightProgress: { start: 85, current: 82 },
-    },
-    {
-      clientName: "Priya Menon",
-      clientImage: clientImage2,
-      nextSession: "Dec 16, 10:00 AM",
-      mealCompletion: 88,
-      avgCalories: { current: 1350, target: 1400 },
-      proteinIntake: 78,
-      waterIntake: { current: 2.2, target: 3 },
-      weightProgress: { start: 72, current: 68 },
-    },
-  ];
+      weightProgress: { start: client.weightStart, current: client.weightCurrent },
+    };
+  });
+
+  // Prepare upcoming sessions from API data
+  const upcomingSessions = (Array.isArray(sessionsData) ? sessionsData : [])
+    .filter((session: any) => session.status === "scheduled")
+    .sort((a: any, b: any) => new Date(a.sessionDate).getTime() - new Date(b.sessionDate).getTime())
+    .slice(0, 5)
+    .map((session: any) => {
+      const sessionDate = new Date(session.sessionDate);
+      const today = new Date();
+      const isToday = sessionDate.toDateString() === today.toDateString();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const isTomorrow = sessionDate.toDateString() === tomorrow.toDateString();
+      
+      return {
+        clientName: `Client Session`,
+        description: "Progress Review",
+        day: isToday ? "Today" : isTomorrow ? "Tomorrow" : sessionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        time: sessionDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      };
+    });
+
+  // Stats
+  const activeClientsCount = (Array.isArray(clientsData) ? clientsData : []).length;
+  const sessionsToday = (Array.isArray(sessionsData) ? sessionsData : [])
+    .filter((session: any) => {
+      const sessionDate = new Date(session.sessionDate);
+      const today = new Date();
+      return sessionDate.toDateString() === today.toDateString();
+    }).length;
 
   return (
     <motion.div
@@ -61,15 +108,14 @@ export default function NutritionistPortal() {
         >
           <StatsCard
             title="Active Clients"
-            value="24"
-            subtitle="This month"
+            value={clientsLoading ? "..." : String(activeClientsCount)}
+            subtitle="Total clients"
             icon={Users}
-            trend={{ value: "+3", isPositive: true }}
           />
           <StatsCard
             title="Sessions Today"
-            value="6"
-            subtitle="2 pending"
+            value={sessionsLoading ? "..." : String(sessionsToday)}
+            subtitle="Scheduled sessions"
             icon={Calendar}
           />
           <StatsCard
@@ -116,32 +162,37 @@ export default function NutritionistPortal() {
           <h3 className="text-xl font-semibold text-foreground mb-4">
             Upcoming Sessions
           </h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-              <div>
-                <p className="font-semibold text-foreground">Rohan Sharma</p>
-                <p className="text-sm text-muted-foreground">
-                  Progress Review & Diet Adjustment
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-semibold text-primary">Today</p>
-                <p className="text-sm text-muted-foreground">3:00 PM</p>
-              </div>
+          {sessionsLoading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-4 bg-muted/30 rounded-lg animate-pulse">
+                  <div className="h-4 bg-muted rounded mb-2 w-1/2"></div>
+                  <div className="h-3 bg-muted rounded w-3/4"></div>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-              <div>
-                <p className="font-semibold text-foreground">Priya Menon</p>
-                <p className="text-sm text-muted-foreground">
-                  Weekly Check-in
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-semibold text-foreground">Tomorrow</p>
-                <p className="text-sm text-muted-foreground">10:00 AM</p>
-              </div>
+          ) : upcomingSessions.length === 0 ? (
+            <p className="text-muted-foreground text-center py-4">
+              No upcoming sessions scheduled
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {upcomingSessions.map((session: any, index: number) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                  <div>
+                    <p className="font-semibold text-foreground">{session.clientName}</p>
+                    <p className="text-sm text-muted-foreground">{session.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className={`text-sm font-semibold ${session.day === 'Today' ? 'text-primary' : 'text-foreground'}`}>
+                      {session.day}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{session.time}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
         </motion.section>
       </div>
     </motion.div>
