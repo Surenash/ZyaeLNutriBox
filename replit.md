@@ -245,6 +245,80 @@ Comprehensive mobile-first responsive design implemented across all client porta
 - Using mock data for demonstration
 - Ready for backend integration
 
+### Multi-Portal Delivery Tracking System (October 2025)
+
+**New Cloud Kitchen Portal:**
+Comprehensive kitchen operations management with real-time order tracking and delivery coordination.
+
+**Features:**
+- Order Queue Management: 4-tab interface (Pending, Preparing, Ready, Completed)
+- Meal Preparation Workflow: Track status from pending → preparing → ready
+- Delivery Agent Assignment: Assign available agents to ready orders
+- Real-time Updates: React Query mutations with automatic cache invalidation
+- Stats Dashboard: Live counts for each queue status
+
+**Enhanced Delivery Agent Portal:**
+GPS-powered navigation and real-time location broadcasting for delivery tracking.
+
+**Features:**
+- Live GPS Tracking: Browser Geolocation API for continuous position updates
+- WebSocket Location Broadcasting: Real-time location updates to all connected clients
+- Interactive Map Navigation: MapPlaceholder component with route visualization
+- 3-Tab Interface: Available, Active, Completed deliveries
+- Status Management: Pick up → Mark delivered workflow
+- Location Persistence: API updates alongside WebSocket for data durability
+
+**Database Schema (shared/schema.ts):**
+- **orders**: Client info, diet plan, meal type, pricing, delivery tracking, timestamps
+- **kitchenQueue**: Order ref, meal details, prep status, chef assignment, timing
+- **deliveryAgents**: Agent details, vehicle info, GPS coordinates, availability, stats
+- **deliveryTracking**: Order ref, agent ref, current/destination GPS, ETA, distance
+
+**WebSocket Infrastructure:**
+- Server: WebSocket server on /ws path with client connection management
+- Client: Reusable DeliveryWebSocket class with reconnection logic
+- Real-time Updates: Location broadcasts, tracking updates, status changes
+- Persistence: Dual update strategy (WebSocket + API) for reliability
+
+**Map Integration Ready:**
+- MapPlaceholder component with animated visualizations
+- Support for center coordinates, markers, and routes
+- Ready for Mapbox API key integration
+- Fallback UI with "Map Ready" indicator
+
+**Sample Data:**
+- 2 Delivery Agents: Raj Kumar (Bike), Priya Singh (Scooter)
+- 2 Sample Orders: Weight Loss breakfast, Muscle Gain lunch
+- Realistic Bengaluru addresses and phone numbers
+- Kitchen queue items linked to orders
+
+**Role Selector Update:**
+- Added Cloud Kitchen role with ChefHat icon
+- Red gradient branding (DC2626 → EF4444)
+- 5 total portals: Client, Kitchen, Nutritionist, Delivery, Admin
+
+**Technical Implementation:**
+- WebSocket client utility with event system and auto-reconnect
+- GPS location tracking with configurable accuracy
+- React Query for server state management
+- In-memory storage with comprehensive CRUD operations
+- Type-safe API with Drizzle ORM schemas
+- Bi-directional WebSocket communication (send + receive)
+- Tracking ID persistence in delivery workflow
+- Real-time cache invalidation on location updates
+
+**Critical Fixes (October 14, 2025):**
+1. **Tracking ID Persistence**: Added `onSuccess` handler to `createTracking` mutation to save returned tracking ID, enabling GPS updates
+2. **WebSocket Listeners**: Added event listeners in both Delivery and Kitchen portals to receive real-time tracking updates
+3. **Query Invalidation**: Location updates now trigger cache refresh for seamless UI updates
+
+**Future Enhancements:**
+- Mapbox API integration for real navigation
+- Request validation using Zod schemas on all API routes
+- WebSocket authentication/authorization
+- Client portal delivery tracking UI
+- Admin portal fleet monitoring dashboard
+
 ## External Dependencies
 
 ### Core Framework Dependencies

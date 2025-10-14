@@ -1,4 +1,4 @@
-import { Users, Stethoscope, Truck, Shield } from "lucide-react";
+import { Users, Stethoscope, Truck, Shield, ChefHat } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface RoleSelectorProps {
@@ -13,6 +13,13 @@ export default function RoleSelector({ onRoleSelect }: RoleSelectorProps) {
       description: 'Track meals, nutrition & connect with nutritionists',
       icon: Users,
       color: 'from-[#006442] to-[#00845A]',
+    },
+    {
+      id: 'kitchen',
+      title: 'Cloud Kitchen',
+      description: 'Manage orders, meal prep & delivery coordination',
+      icon: ChefHat,
+      color: 'from-[#DC2626] to-[#EF4444]',
     },
     {
       id: 'nutritionist',

@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import RoleSelector from "@/components/RoleSelector";
 import ClientPortal from "@/pages/ClientPortal";
+import KitchenPortal from "@/pages/KitchenPortal";
 import NutritionistPortal from "@/pages/NutritionistPortal";
 import DeliveryPortal from "@/pages/DeliveryPortal";
 import AdminPortal from "@/pages/AdminPortal";
@@ -31,6 +32,7 @@ function Router() {
       <Switch>
         <Route path="/">
           {selectedRole === "client" && <ClientPortal />}
+          {selectedRole === "kitchen" && <KitchenPortal />}
           {selectedRole === "nutritionist" && <NutritionistPortal />}
           {selectedRole === "delivery" && <DeliveryPortal />}
           {selectedRole === "admin" && <AdminPortal />}
