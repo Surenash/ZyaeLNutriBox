@@ -20,17 +20,20 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend
 
-**Server**: Express.js with TypeScript.
-**API**: RESTful endpoints, custom error handling, request/response logging.
-**Data Layer**: Storage interface pattern (IStorage) with in-memory storage for development, designed for database swapping.
+**Primary API Server**: FastAPI (Python 3.11) with SQLAlchemy ORM and Pydantic validation.
+**Proxy Server**: Express.js with TypeScript proxies frontend requests to FastAPI backend.
+**API Architecture**: FastAPI runs on port 3001, Express proxies `/api/*` and `/ws` to FastAPI, serves frontend on port 5000.
+**Startup**: Express server automatically spawns FastAPI as a child process during development.
+**Data Layer**: SQLAlchemy models with Pydantic schemas for validation, direct PostgreSQL integration.
 
 ### Database & ORM
 
-**ORM**: Drizzle ORM with PostgreSQL dialect.
-**Database**: Neon Serverless PostgreSQL.
-**Schema**: Defined in `shared/schema.ts` with Zod validation, managed with Drizzle Kit migrations.
-**Current Schema**: `Users` table (UUID primary keys, auth fields), extensible for nutrition, meal, and delivery data.
-**Connection**: Environment-based `DATABASE_URL`, connection pooling.
+**Database**: Neon Serverless PostgreSQL (production-ready persistence).
+**Primary ORM**: SQLAlchemy for Python FastAPI backend with declarative models.
+**Schema**: Defined in `api/models.py` with SQLAlchemy models, validated with Pydantic schemas in `api/schemas.py`.
+**Current Schema**: Production tables - `orders`, `kitchen_queue`, `delivery_agents`, `delivery_tracking`, `users` (all with VARCHAR UUID primary keys).
+**Connection**: Environment-based `DATABASE_URL` via SQLAlchemy engine, automatic table creation on startup.
+**Legacy**: Drizzle ORM schema exists in `shared/schema.ts` but not currently used.
 
 ### Authentication & Security
 

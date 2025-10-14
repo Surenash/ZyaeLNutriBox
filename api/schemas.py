@@ -1,6 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
+
+def to_camel(string: str) -> str:
+    components = string.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
 
 class OrderCreate(BaseModel):
     client_name: str
@@ -36,8 +40,7 @@ class OrderResponse(BaseModel):
     picked_up_at: Optional[datetime] = None
     delivered_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
 
 class KitchenQueueCreate(BaseModel):
     order_id: str
@@ -67,8 +70,7 @@ class KitchenQueueResponse(BaseModel):
     started_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
 
 class DeliveryAgentCreate(BaseModel):
     name: str
@@ -96,8 +98,7 @@ class DeliveryAgentResponse(BaseModel):
     rating: float
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
 
 class DeliveryTrackingCreate(BaseModel):
     order_id: str
@@ -131,5 +132,4 @@ class DeliveryTrackingResponse(BaseModel):
     created_at: datetime
     updated_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)

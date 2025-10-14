@@ -11,7 +11,10 @@ from api import models, schemas
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="ZyaeL NutriBox API")
+app = FastAPI(
+    title="ZyaeL NutriBox API",
+    json_encoders={}, 
+)
 
 # CORS middleware
 app.add_middleware(
@@ -52,9 +55,18 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     db.refresh(db_order)
     return db_order
 
-@app.get("/orders", response_model=List[schemas.OrderResponse])
-def get_orders(db: Session = Depends(get_db)):
-    return db.query(models.Order).all()
+@app.get("/orders", response_model=List[schemas.OrderResponse], response_model_by_alias=True)
+def get_orders(
+    status: Optional[str] = None, 
+    kitchen_status: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Order)
+    if status:
+        query = query.filter(models.Order.status == status)
+    if kitchen_status:
+        query = query.filter(models.Order.kitchen_status == kitchen_status)
+    return query.all()
 
 @app.get("/orders/{order_id}", response_model=schemas.OrderResponse)
 def get_order(order_id: str, db: Session = Depends(get_db)):
@@ -86,7 +98,7 @@ def create_kitchen_queue(item: schemas.KitchenQueueCreate, db: Session = Depends
     db.refresh(db_item)
     return db_item
 
-@app.get("/kitchen/queue", response_model=List[schemas.KitchenQueueResponse])
+@app.get("/kitchen/queue", response_model=List[schemas.KitchenQueueResponse], response_model_by_alias=True)
 def get_kitchen_queue(db: Session = Depends(get_db)):
     return db.query(models.KitchenQueue).all()
 
@@ -113,11 +125,11 @@ def create_delivery_agent(agent: schemas.DeliveryAgentCreate, db: Session = Depe
     db.refresh(db_agent)
     return db_agent
 
-@app.get("/delivery-agents", response_model=List[schemas.DeliveryAgentResponse])
+@app.get("/delivery-agents", response_model=List[schemas.DeliveryAgentResponse], response_model_by_alias=True)
 def get_delivery_agents(db: Session = Depends(get_db)):
     return db.query(models.DeliveryAgent).all()
 
-@app.get("/delivery-agents/available", response_model=List[schemas.DeliveryAgentResponse])
+@app.get("/delivery-agents/available", response_model=List[schemas.DeliveryAgentResponse], response_model_by_alias=True)
 def get_available_agents(db: Session = Depends(get_db)):
     return db.query(models.DeliveryAgent).filter(models.DeliveryAgent.is_available == True).all()
 
@@ -144,7 +156,7 @@ def create_delivery_tracking(tracking: schemas.DeliveryTrackingCreate, db: Sessi
     db.refresh(db_tracking)
     return db_tracking
 
-@app.get("/delivery-tracking", response_model=List[schemas.DeliveryTrackingResponse])
+@app.get("/delivery-tracking", response_model=List[schemas.DeliveryTrackingResponse], response_model_by_alias=True)
 def get_delivery_tracking(order_id: Optional[str] = None, db: Session = Depends(get_db)):
     query = db.query(models.DeliveryTracking)
     if order_id:
