@@ -76,6 +76,14 @@ Preferred communication style: Simple, everyday language.
 **Database Schema Additions**: `orders`, `kitchenQueue`, `deliveryAgents`, `deliveryTracking` for comprehensive tracking.
 **WebSocket Infrastructure**: Server-side WebSocket on `/ws` (FastAPI endpoint), Express proxy with http-proxy-middleware forwards upgrade requests, client-side reusable class with reconnection logic, real-time location and status updates with dual update strategy (WebSocket + API). WebSocket connections automatically established on delivery portal load.
 
+### Universal Real-Time System
+
+**Backend WebSocket Broadcasts**: All CRUD operations broadcast events - `meal_plan_created/updated/deleted`, `client_created/updated`, `session_created/updated`, `progress_log_created`, `order_created/updated`, `kitchen_queue_updated`, `nutritionist_created/updated`, `location_update`. ConnectionManager handles broadcast distribution and auto-removes dead connections.
+**JSON Serialization**: All broadcasts use `.model_dump(mode='json', by_alias=True)` to properly serialize datetime objects to ISO strings for WebSocket transmission.
+**Frontend Hook**: `useRealtime` hook provides portal-specific event subscriptions, automatic React Query cache invalidation, and toast notifications for all data changes.
+**Portal Integration**: Client Portal listens for meal plan and nutritionist updates, Nutritionist Portal for client/session/progress changes, Admin Portal for all entity updates. UI updates instantly without page refresh.
+**Connection Management**: WebSocket auto-reconnects on disconnect, removes failed connections during broadcast to prevent backlog, logs connection events for debugging.
+
 ### Design System & Assets
 
 **Component Organization**: Base UI components, composite components, page-level components.
