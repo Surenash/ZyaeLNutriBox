@@ -7,9 +7,7 @@ from datetime import datetime
 
 from api.database import engine, get_db, Base
 from api import models, schemas
-
-# Create database tables
-Base.metadata.create_all(bind=engine)
+import time
 
 app = FastAPI(
     title="ZyaeL NutriBox API",
@@ -25,26 +23,47 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Auto-seed production database on startup
+# Database initialization and auto-seed on startup
 @app.on_event("startup")
 async def startup_event():
-    """Automatically seed the database if it's empty (production initialization)"""
-    db = next(get_db())
-    try:
-        # Check if database has any meal plans
-        meal_plan_count = db.query(models.MealPlan).count()
-        
-        if meal_plan_count == 0:
-            print("📦 Database is empty. Auto-seeding with sample data...")
-            from api.seed_data import seed_database
-            seed_database()
-            print("✅ Database seeded successfully!")
-        else:
-            print(f"✓ Database already initialized with {meal_plan_count} meal plans")
-    except Exception as e:
-        print(f"⚠️  Auto-seed check failed: {e}")
-    finally:
-        db.close()
+    """Initialize database tables and seed if empty (with retry logic)"""
+    max_retries = 5
+    retry_delay = 3
+    
+    for attempt in range(max_retries):
+        try:
+            # Create tables if they don't exist
+            print(f"🔄 Attempting database initialization (attempt {attempt + 1}/{max_retries})...")
+            Base.metadata.create_all(bind=engine)
+            print("✅ Database tables created/verified")
+            
+            # Auto-seed if empty
+            db = next(get_db())
+            try:
+                meal_plan_count = db.query(models.MealPlan).count()
+                
+                if meal_plan_count == 0:
+                    print("📦 Database is empty. Auto-seeding with sample data...")
+                    from api.seed_data import seed_database
+                    seed_database()
+                    print("✅ Database seeded successfully!")
+                else:
+                    print(f"✓ Database already initialized with {meal_plan_count} meal plans")
+            finally:
+                db.close()
+            
+            # Success - break out of retry loop
+            break
+            
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"⚠️  Database initialization attempt {attempt + 1} failed: {e}")
+                print(f"   Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+            else:
+                print(f"❌ Failed to initialize database after {max_retries} attempts: {e}")
+                print("   API will start but database operations may fail")
+                # Don't raise - let the app start anyway
 
 # WebSocket connection manager
 class ConnectionManager:
