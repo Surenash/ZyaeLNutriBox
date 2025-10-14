@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
 from datetime import datetime
+import os
+import sys
+import traceback
 
 from api.database import engine, get_db, Base
 from api import models, schemas
@@ -23,47 +26,87 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Global variable to track database initialization status
+db_initialized = False
+db_init_error = None
+
 # Database initialization and auto-seed on startup
 @app.on_event("startup")
 async def startup_event():
-    """Initialize database tables and seed if empty (with retry logic)"""
-    max_retries = 5
-    retry_delay = 3
+    """Initialize database tables and seed if empty (with robust retry logic for production)"""
+    global db_initialized, db_init_error
+    
+    # Production-safe settings (longer timeouts for Neon cold starts)
+    max_retries = 8  # More retries for production
+    retry_delay = 5  # Longer delay between retries
+    is_production = os.getenv("NODE_ENV") == "production" or os.getenv("REPL_DEPLOYMENT") == "1"
+    
+    print("\n" + "="*60)
+    print("🚀 ZyaeL NutriBox API Starting Up")
+    print(f"   Environment: {'PRODUCTION' if is_production else 'DEVELOPMENT'}")
+    print(f"   Database URL: {os.getenv('DATABASE_URL', 'Not Set')[:50]}...")
+    print("="*60 + "\n")
     
     for attempt in range(max_retries):
         try:
-            # Create tables if they don't exist
-            print(f"🔄 Attempting database initialization (attempt {attempt + 1}/{max_retries})...")
-            Base.metadata.create_all(bind=engine)
-            print("✅ Database tables created/verified")
+            print(f"🔄 Database initialization attempt {attempt + 1}/{max_retries}...")
             
-            # Auto-seed if empty
+            # Step 1: Create tables if they don't exist
+            print("   📋 Creating/verifying database tables...")
+            Base.metadata.create_all(bind=engine)
+            print("   ✅ Database tables created/verified successfully")
+            
+            # Step 2: Check and seed if empty
+            print("   🔍 Checking if database needs seeding...")
             db = next(get_db())
             try:
                 meal_plan_count = db.query(models.MealPlan).count()
+                print(f"   📊 Found {meal_plan_count} meal plans in database")
                 
                 if meal_plan_count == 0:
-                    print("📦 Database is empty. Auto-seeding with sample data...")
+                    print("\n   📦 Database is EMPTY - Starting auto-seed process...")
+                    print("   " + "-"*50)
                     from api.seed_data import seed_database
                     seed_database()
-                    print("✅ Database seeded successfully!")
+                    print("   " + "-"*50)
+                    print("   ✅ AUTO-SEED COMPLETED SUCCESSFULLY!\n")
+                    
+                    # Verify seeding worked
+                    final_count = db.query(models.MealPlan).count()
+                    print(f"   ✓ Verification: Database now has {final_count} meal plans")
                 else:
-                    print(f"✓ Database already initialized with {meal_plan_count} meal plans")
+                    print(f"   ✓ Database already initialized with {meal_plan_count} meal plans")
             finally:
                 db.close()
             
-            # Success - break out of retry loop
+            # Success!
+            db_initialized = True
+            print("\n" + "="*60)
+            print("✅ DATABASE INITIALIZATION COMPLETE")
+            print("="*60 + "\n")
             break
             
         except Exception as e:
+            error_msg = str(e)
+            error_trace = traceback.format_exc()
+            
             if attempt < max_retries - 1:
-                print(f"⚠️  Database initialization attempt {attempt + 1} failed: {e}")
-                print(f"   Retrying in {retry_delay} seconds...")
+                print(f"\n⚠️  Attempt {attempt + 1} failed: {error_msg}")
+                print(f"   Retrying in {retry_delay} seconds...\n")
                 time.sleep(retry_delay)
             else:
-                print(f"❌ Failed to initialize database after {max_retries} attempts: {e}")
-                print("   API will start but database operations may fail")
-                # Don't raise - let the app start anyway
+                db_init_error = error_msg
+                print("\n" + "="*60)
+                print(f"❌ DATABASE INITIALIZATION FAILED AFTER {max_retries} ATTEMPTS")
+                print("="*60)
+                print(f"Error: {error_msg}")
+                print("\nFull traceback:")
+                print(error_trace)
+                print("="*60)
+                print("⚠️  API will start but database operations WILL FAIL")
+                print("   Please check database connection and try manual seeding")
+                print("="*60 + "\n")
+                sys.stdout.flush()
 
 # WebSocket connection manager
 class ConnectionManager:
@@ -476,8 +519,40 @@ def seed_database_endpoint(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Seeding failed: {str(e)}")
 
 @app.get("/")
-def root():
-    return {"message": "ZyaeL NutriBox API", "status": "running"}
+def root(db: Session = Depends(get_db)):
+    """
+    API Health Check with Database Status
+    """
+    try:
+        # Check database connection and count records
+        meal_plan_count = db.query(models.MealPlan).count()
+        nutritionist_count = db.query(models.Nutritionist).count()
+        
+        return {
+            "message": "ZyaeL NutriBox API",
+            "status": "running",
+            "database": {
+                "initialized": db_initialized,
+                "connected": True,
+                "error": db_init_error,
+                "meal_plans": meal_plan_count,
+                "nutritionists": nutritionist_count
+            },
+            "environment": os.getenv("NODE_ENV", "development")
+        }
+    except Exception as e:
+        return {
+            "message": "ZyaeL NutriBox API",
+            "status": "running",
+            "database": {
+                "initialized": db_initialized,
+                "connected": False,
+                "error": str(e),
+                "meal_plans": 0,
+                "nutritionists": 0
+            },
+            "environment": os.getenv("NODE_ENV", "development")
+        }
 
 if __name__ == "__main__":
     import uvicorn
