@@ -412,6 +412,29 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
 
+@app.post("/admin/seed-database")
+def seed_database_endpoint(db: Session = Depends(get_db)):
+    """
+    Seed the database with sample data. 
+    Warning: This will clear all existing data first!
+    """
+    try:
+        from api.seed_data import seed_database
+        seed_database()
+        return {
+            "message": "Database seeded successfully", 
+            "status": "success",
+            "data": {
+                "meal_plans": 9,
+                "nutritionists": 4,
+                "clients": 4,
+                "sessions": 3,
+                "progress_logs": 12
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Seeding failed: {str(e)}")
+
 @app.get("/")
 def root():
     return {"message": "ZyaeL NutriBox API", "status": "running"}
