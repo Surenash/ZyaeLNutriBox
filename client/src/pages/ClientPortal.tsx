@@ -658,53 +658,108 @@ export default function ClientPortal() {
           <motion.div
             key="track"
             {...pageTransitionVariants}
-            className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6"
+            className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
           >
-            <motion.h1
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl font-bold text-foreground mb-6"
-            >
-              Today's Food Journey
-            </motion.h1>
-
-            <div className="space-y-3">
-              <MealStatusCard
-              mealType="Breakfast"
-              status="delivered"
-              time="8:00 AM"
-              onViewDetails={() => console.log("View breakfast details")}
-            />
-            <MealStatusCard
-              mealType="Lunch"
-              status="delivered"
-              time="1:00 PM"
-              onViewDetails={() => console.log("View lunch details")}
-            />
-              <MealStatusCard
-                mealType="Dinner"
-                status="in-transit"
-                time="Expected 7:00 PM"
-                onViewDetails={() => console.log("View dinner details")}
-              />
+            <div className="mb-8">
+              <motion.h1
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-4xl md:text-5xl font-bold text-foreground mb-3"
+              >
+                Today's Food Journey
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-lg text-muted-foreground"
+              >
+                Track your daily meals and nutrition progress
+              </motion.p>
             </div>
 
-            <NutritionProgress items={nutritionData} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <h2 className="text-2xl font-semibold text-foreground mb-4">Today's Meals</h2>
+                  <div className="space-y-3">
+                    <MealStatusCard
+                      mealType="Breakfast"
+                      status="delivered"
+                      time="8:00 AM"
+                      onViewDetails={() => console.log("View breakfast details")}
+                    />
+                    <MealStatusCard
+                      mealType="Lunch"
+                      status="delivered"
+                      time="1:00 PM"
+                      onViewDetails={() => console.log("View lunch details")}
+                    />
+                    <MealStatusCard
+                      mealType="Dinner"
+                      status="in-transit"
+                      time="Expected 7:00 PM"
+                      onViewDetails={() => console.log("View dinner details")}
+                    />
+                  </div>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-white rounded-xl shadow-md p-6"
-            >
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Meal Insights
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                You're making great progress! Keep up the consistent meal completion to reach your goals faster.
-              </p>
-            </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="bg-gradient-to-br from-success/10 to-transparent rounded-xl p-6 border border-success/20"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
+                        Great Progress! 🎉
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        You're making excellent progress! Keep up the consistent meal completion to reach your goals faster. You've consumed 67% of your daily nutrition target.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+                className="lg:col-span-1"
+              >
+                <div className="sticky top-4 space-y-4">
+                  <div className="bg-white rounded-xl shadow-md p-6">
+                    <h2 className="text-xl font-semibold text-foreground mb-4">Daily Nutrition</h2>
+                    <NutritionProgress items={nutritionData} />
+                  </div>
+
+                  <div className="bg-white rounded-xl shadow-md p-6">
+                    <h3 className="text-lg font-semibold text-foreground mb-3">Weekly Streak</h3>
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-4xl font-bold text-primary">7</span>
+                      <span className="text-sm text-muted-foreground">days<br/>in a row!</span>
+                    </div>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+                        <div key={day} className="flex-1 h-2 bg-primary rounded-full" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
