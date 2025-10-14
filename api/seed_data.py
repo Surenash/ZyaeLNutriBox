@@ -127,8 +127,8 @@ def seed_database():
                 original_price=16500,
                 current_price=15000,
                 rating=4.7,
-                review_count=1000,
-                badge="Healing Power",
+                review_count=1100,
+                badge="Doctor Approved",
                 features="Nutrient-dense, Immune boosting, Easy digestion",
                 is_active=True
             )
