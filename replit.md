@@ -24,7 +24,7 @@ Preferred communication style: Simple, everyday language.
 **Proxy Server**: Express.js with TypeScript proxies frontend requests to FastAPI backend.
 **API Architecture**: FastAPI runs on port 3001, Express proxies `/api/*` and `/ws` to FastAPI, serves frontend on port 5000.
 **WebSocket Proxy**: http-proxy-middleware forwards WebSocket upgrade requests from `/ws` to FastAPI backend, with server-level upgrade handler for proper connection establishment.
-**Startup**: Express server automatically spawns FastAPI as a child process during development via `run_api.py` wrapper script.
+**Startup**: Express server automatically spawns FastAPI as a child process in ALL environments (development and production) via `run_api.py` wrapper script. Production uses 5-second startup delay vs 2 seconds in development to accommodate database initialization.
 **Data Layer**: SQLAlchemy models with Pydantic schemas for validation, direct PostgreSQL integration.
 **Response Format**: All API endpoints return camelCase JSON via Pydantic's `to_camel` alias generator and `response_model_by_alias=True` configuration for seamless frontend integration.
 
