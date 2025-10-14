@@ -63,42 +63,42 @@ app.use((req, res, next) => {
 let fastapiProcess: any = null;
 
 (async () => {
-  if (process.env.NODE_ENV === "development") {
-    log("🚀 Starting FastAPI backend server on port 3001...");
-    fastapiProcess = spawn('python', ['run_api.py'], {
-      cwd: process.cwd(),
-      env: { ...process.env, PYTHONUNBUFFERED: '1' },
-      stdio: ['ignore', 'pipe', 'pipe']
-    });
+  // Start FastAPI backend in all environments (development and production)
+  log("🚀 Starting FastAPI backend server on port 3001...");
+  fastapiProcess = spawn('python', ['run_api.py'], {
+    cwd: process.cwd(),
+    env: { ...process.env, PYTHONUNBUFFERED: '1' },
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
 
-    fastapiProcess.stdout.on('data', (data: Buffer) => {
-      const message = data.toString().trim();
-      if (message && !message.includes('INFO:')) {
-        log(`[FastAPI] ${message}`);
-      }
-    });
+  fastapiProcess.stdout.on('data', (data: Buffer) => {
+    const message = data.toString().trim();
+    if (message && !message.includes('INFO:')) {
+      log(`[FastAPI] ${message}`);
+    }
+  });
 
-    fastapiProcess.stderr.on('data', (data: Buffer) => {
-      const message = data.toString().trim();
-      if (message && !message.includes('INFO:')) {
-        log(`[FastAPI] ${message}`);
-      }
-    });
+  fastapiProcess.stderr.on('data', (data: Buffer) => {
+    const message = data.toString().trim();
+    if (message && !message.includes('INFO:')) {
+      log(`[FastAPI] ${message}`);
+    }
+  });
 
-    fastapiProcess.on('error', (error: Error) => {
-      log(`[FastAPI Error] ${error.message}`);
-    });
+  fastapiProcess.on('error', (error: Error) => {
+    log(`[FastAPI Error] ${error.message}`);
+  });
 
-    fastapiProcess.on('exit', (code: number) => {
-      if (code !== 0 && code !== null) {
-        log(`[FastAPI] Process exited with code ${code}`);
-      }
-    });
+  fastapiProcess.on('exit', (code: number) => {
+    if (code !== 0 && code !== null) {
+      log(`[FastAPI] Process exited with code ${code}`);
+    }
+  });
 
-    // Give FastAPI a moment to start
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    log("✅ FastAPI backend ready");
-  }
+  // Give FastAPI more time to start in production (database initialization can be slow)
+  const startupDelay = process.env.NODE_ENV === "production" ? 5000 : 2000;
+  await new Promise(resolve => setTimeout(resolve, startupDelay));
+  log("✅ FastAPI backend ready");
   
 
   // Removed registerRoutes - using FastAPI backend instead
