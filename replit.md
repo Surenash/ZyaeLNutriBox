@@ -32,9 +32,10 @@ Preferred communication style: Simple, everyday language.
 **Database**: Neon Serverless PostgreSQL (production-ready persistence).
 **Primary ORM**: SQLAlchemy for Python FastAPI backend with declarative models.
 **Schema**: Defined in `api/models.py` with SQLAlchemy models, validated with Pydantic schemas in `api/schemas.py`.
-**Current Schema**: Production tables - `orders`, `kitchen_queue`, `delivery_agents`, `delivery_tracking`, `users` (all with VARCHAR UUID primary keys).
-**Connection**: Environment-based `DATABASE_URL` via SQLAlchemy engine, automatic table creation on startup.
+**Current Schema**: Production tables - `orders`, `kitchen_queue`, `delivery_agents`, `delivery_tracking`, `users`, `meal_plans`, `subscriptions`, `nutritionists`, `clients`, `sessions`, `progress_logs` (all with VARCHAR UUID primary keys).
+**Connection**: Environment-based `DATABASE_URL` via SQLAlchemy engine with connection pooling (pool_pre_ping, pool_size=5, max_overflow=10, pool_recycle=3600) for stability, automatic table creation on startup.
 **Legacy**: Drizzle ORM schema exists in `shared/schema.ts` but not currently used.
+**Seeded Data**: Database contains 9 meal plans, 4 nutritionists, 4 clients, 3 sessions, and 12 progress logs for development and testing.
 
 ### Authentication & Security
 
@@ -44,8 +45,26 @@ Preferred communication style: Simple, everyday language.
 ### Multi-Portal Architecture
 
 **Roles**: Client, Nutritionist, Delivery Agent, Administrator, and Cloud Kitchen.
-**Access**: Role-based access with a central role selector.
+**Access**: Role-based access with a central role selector at `/` that navigates to dedicated routes (`/client`, `/nutritionist`, `/admin`, `/kitchen`, `/delivery`).
 **Shared Components**: Consistent UI elements (StatsCard, Progress indicators, BottomNavigation).
+
+### API Endpoints
+
+**Meal Plans**: GET, POST, GET by ID, PUT, DELETE - Manage meal plans with macros, prices, and descriptions.
+**Subscriptions**: GET, POST, GET by ID, GET by client, PUT, DELETE - Track client meal plan subscriptions.
+**Nutritionists**: GET, POST, GET by ID, PUT, DELETE - Manage nutritionist profiles with specializations.
+**Clients**: GET, POST, GET by ID, PUT, DELETE - Track client health data and diet preferences.
+**Sessions**: GET, POST, GET by ID, PUT, DELETE - Schedule and manage nutritionist-client sessions.
+**Progress Logs**: GET, POST, GET by client - Track client weight and measurement progress over time.
+**Orders**: GET - Retrieve meal delivery orders with status and client details.
+
+### Frontend-Backend Integration
+
+**Client Portal**: Fetches meal plans and nutritionists from API with loading states, displays dynamic content from database.
+**Nutritionist Portal**: Fetches clients, sessions, and progress logs from API, calculates real-time stats (active clients, sessions today, average response time).
+**Admin Portal**: Fetches meal plans, clients, and orders from API, displays statistics and recent activity with loading states.
+**Data Mapping**: All API responses use camelCase for seamless TypeScript integration, arrays cloned before sorting to prevent cache mutation.
+**Error Handling**: Loading skeletons during data fetch, empty state messages for zero results.
 
 ### Multi-Portal Delivery Tracking System
 
