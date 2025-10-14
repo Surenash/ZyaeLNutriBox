@@ -1,10 +1,27 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import http from 'http';
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Proxy all /api requests to FastAPI server on port 3001
+app.use('/api', createProxyMiddleware({
+  target: 'http://localhost:3001',
+  changeOrigin: true,
+  ws: false,
+  logLevel: 'silent',
+}));
+
+// Proxy WebSocket connection to FastAPI
+app.use('/ws', createProxyMiddleware({
+  target: 'ws://localhost:3001',
+  changeOrigin: true,
+  ws: true,
+  logLevel: 'silent',
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -37,7 +54,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  // Removed registerRoutes - using FastAPI backend instead
+  const server = http.createServer(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
