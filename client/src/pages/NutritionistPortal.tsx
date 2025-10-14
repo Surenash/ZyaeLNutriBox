@@ -2,6 +2,7 @@ import { Calendar, Users, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
+import { useRealtime } from "@/hooks/use-realtime";
 import ClientProgressCard from "@/components/ClientProgressCard";
 import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,13 @@ import clientImage1 from "@assets/generated_images/Business_professional_custome
 import clientImage2 from "@assets/generated_images/Happy_customer_testimonial_photo_4e688e5c.png";
 
 export default function NutritionistPortal() {
+  // Real-time updates for clients, sessions, and progress logs
+  useRealtime({
+    events: ["client_created", "client_updated", "session_created", "session_updated", "progress_log_created"],
+    invalidateQueries: [["/api/clients"], ["/api/sessions"], ["/api/progress-logs"]],
+    showToast: true,
+  });
+
   // Fetch clients from API
   const { data: clientsData, isLoading: clientsLoading } = useQuery({
     queryKey: ["/api/clients"],

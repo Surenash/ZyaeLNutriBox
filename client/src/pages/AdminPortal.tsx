@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
+import { useRealtime } from "@/hooks/use-realtime";
 import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,25 @@ export default function AdminPortal() {
   const [mealDialogOpen, setMealDialogOpen] = useState(false);
   const [nutritionistDialogOpen, setNutritionistDialogOpen] = useState(false);
   const [clientDialogOpen, setClientDialogOpen] = useState(false);
+
+  // Real-time updates for all entities
+  useRealtime({
+    events: [
+      "meal_plan_created", "meal_plan_updated", "meal_plan_deleted",
+      "client_created", "client_updated",
+      "session_created", "session_updated",
+      "order_created", "order_updated",
+      "progress_log_created"
+    ],
+    invalidateQueries: [
+      ["/api/meal-plans"],
+      ["/api/clients"],
+      ["/api/sessions"],
+      ["/api/orders"],
+      ["/api/progress-logs"]
+    ],
+    showToast: true,
+  });
 
   // Form states
   const [mealForm, setMealForm] = useState({

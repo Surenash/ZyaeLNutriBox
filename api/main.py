@@ -126,26 +126,42 @@ class ConnectionManager:
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
+        print(f"[WebSocket] Client connected. Total connections: {len(self.active_connections)}")
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
+        print(f"[WebSocket] Client disconnected. Total connections: {len(self.active_connections)}")
 
     async def broadcast(self, message: dict):
+        dead_connections = []
         for connection in self.active_connections:
             try:
                 await connection.send_json(message)
-            except:
-                pass
+            except Exception as e:
+                print(f"[WebSocket] Failed to send to client, marking for removal: {e}")
+                dead_connections.append(connection)
+        
+        # Remove dead connections
+        for connection in dead_connections:
+            self.active_connections.remove(connection)
+            print(f"[WebSocket] Removed dead connection. Total connections: {len(self.active_connections)}")
 
 manager = ConnectionManager()
 
 # Orders endpoints
 @app.post("/orders", response_model=schemas.OrderResponse, response_model_by_alias=True)
-def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
+async def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     db_order = models.Order(**order.model_dump())
     db.add(db_order)
     db.commit()
     db.refresh(db_order)
+    
+    # Broadcast order created event
+    await manager.broadcast({
+        "type": "order_created",
+        "data": schemas.OrderResponse.model_validate(db_order).model_dump(mode='json', by_alias=True)
+    })
+    
     return db_order
 
 @app.get("/orders", response_model=List[schemas.OrderResponse], response_model_by_alias=True)
@@ -169,7 +185,7 @@ def get_order(order_id: str, db: Session = Depends(get_db)):
     return order
 
 @app.patch("/orders/{order_id}", response_model=schemas.OrderResponse, response_model_by_alias=True)
-def update_order(order_id: str, updates: schemas.OrderUpdate, db: Session = Depends(get_db)):
+async def update_order(order_id: str, updates: schemas.OrderUpdate, db: Session = Depends(get_db)):
     order = db.query(models.Order).filter(models.Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
@@ -180,6 +196,13 @@ def update_order(order_id: str, updates: schemas.OrderUpdate, db: Session = Depe
     
     db.commit()
     db.refresh(order)
+    
+    # Broadcast order updated event
+    await manager.broadcast({
+        "type": "order_updated",
+        "data": schemas.OrderResponse.model_validate(order).model_dump(mode='json', by_alias=True)
+    })
+    
     return order
 
 # Kitchen queue endpoints
@@ -196,7 +219,7 @@ def get_kitchen_queue(db: Session = Depends(get_db)):
     return db.query(models.KitchenQueue).all()
 
 @app.patch("/kitchen/queue/{queue_id}", response_model=schemas.KitchenQueueResponse, response_model_by_alias=True)
-def update_kitchen_queue(queue_id: str, updates: schemas.KitchenQueueUpdate, db: Session = Depends(get_db)):
+async def update_kitchen_queue(queue_id: str, updates: schemas.KitchenQueueUpdate, db: Session = Depends(get_db)):
     item = db.query(models.KitchenQueue).filter(models.KitchenQueue.id == queue_id).first()
     if not item:
         raise HTTPException(status_code=404, detail="Queue item not found")
@@ -207,6 +230,13 @@ def update_kitchen_queue(queue_id: str, updates: schemas.KitchenQueueUpdate, db:
     
     db.commit()
     db.refresh(item)
+    
+    # Broadcast kitchen queue updated event
+    await manager.broadcast({
+        "type": "kitchen_queue_updated",
+        "data": schemas.KitchenQueueResponse.model_validate(item).model_dump(mode='json', by_alias=True)
+    })
+    
     return item
 
 # Delivery agents endpoints
@@ -283,11 +313,20 @@ async def update_delivery_tracking(tracking_id: str, updates: schemas.DeliveryTr
 
 # Meal Plan endpoints
 @app.post("/meal-plans", response_model=schemas.MealPlanResponse, response_model_by_alias=True)
-def create_meal_plan(meal_plan: schemas.MealPlanCreate, db: Session = Depends(get_db)):
+async def create_meal_plan(meal_plan: schemas.MealPlanCreate, db: Session = Depends(get_db)):
     db_meal_plan = models.MealPlan(**meal_plan.model_dump())
     db.add(db_meal_plan)
     db.commit()
     db.refresh(db_meal_plan)
+    
+    # Broadcast meal plan created event
+    event_data = {
+        "type": "meal_plan_created",
+        "data": schemas.MealPlanResponse.model_validate(db_meal_plan).model_dump(mode='json', by_alias=True)
+    }
+    print(f"[WebSocket] Broadcasting meal_plan_created event to {len(manager.active_connections)} clients")
+    await manager.broadcast(event_data)
+    
     return db_meal_plan
 
 @app.get("/meal-plans", response_model=List[schemas.MealPlanResponse], response_model_by_alias=True)
@@ -305,7 +344,7 @@ def get_meal_plan(meal_plan_id: str, db: Session = Depends(get_db)):
     return meal_plan
 
 @app.patch("/meal-plans/{meal_plan_id}", response_model=schemas.MealPlanResponse, response_model_by_alias=True)
-def update_meal_plan(meal_plan_id: str, updates: schemas.MealPlanUpdate, db: Session = Depends(get_db)):
+async def update_meal_plan(meal_plan_id: str, updates: schemas.MealPlanUpdate, db: Session = Depends(get_db)):
     meal_plan = db.query(models.MealPlan).filter(models.MealPlan.id == meal_plan_id).first()
     if not meal_plan:
         raise HTTPException(status_code=404, detail="Meal plan not found")
@@ -316,15 +355,29 @@ def update_meal_plan(meal_plan_id: str, updates: schemas.MealPlanUpdate, db: Ses
     
     db.commit()
     db.refresh(meal_plan)
+    
+    # Broadcast meal plan updated event
+    await manager.broadcast({
+        "type": "meal_plan_updated",
+        "data": schemas.MealPlanResponse.model_validate(meal_plan).model_dump(mode='json', by_alias=True)
+    })
+    
     return meal_plan
 
 @app.delete("/meal-plans/{meal_plan_id}")
-def delete_meal_plan(meal_plan_id: str, db: Session = Depends(get_db)):
+async def delete_meal_plan(meal_plan_id: str, db: Session = Depends(get_db)):
     meal_plan = db.query(models.MealPlan).filter(models.MealPlan.id == meal_plan_id).first()
     if not meal_plan:
         raise HTTPException(status_code=404, detail="Meal plan not found")
     db.delete(meal_plan)
     db.commit()
+    
+    # Broadcast meal plan deleted event
+    await manager.broadcast({
+        "type": "meal_plan_deleted",
+        "mealPlanId": meal_plan_id
+    })
+    
     return {"message": "Meal plan deleted successfully"}
 
 # Subscription endpoints
@@ -361,11 +414,18 @@ def update_subscription(subscription_id: str, updates: schemas.SubscriptionUpdat
 
 # Nutritionist endpoints
 @app.post("/nutritionists", response_model=schemas.NutritionistResponse, response_model_by_alias=True)
-def create_nutritionist(nutritionist: schemas.NutritionistCreate, db: Session = Depends(get_db)):
+async def create_nutritionist(nutritionist: schemas.NutritionistCreate, db: Session = Depends(get_db)):
     db_nutritionist = models.Nutritionist(**nutritionist.model_dump())
     db.add(db_nutritionist)
     db.commit()
     db.refresh(db_nutritionist)
+    
+    # Broadcast nutritionist created event
+    await manager.broadcast({
+        "type": "nutritionist_created",
+        "data": schemas.NutritionistResponse.model_validate(db_nutritionist).model_dump(mode='json', by_alias=True)
+    })
+    
     return db_nutritionist
 
 @app.get("/nutritionists", response_model=List[schemas.NutritionistResponse], response_model_by_alias=True)
@@ -383,7 +443,7 @@ def get_nutritionist(nutritionist_id: str, db: Session = Depends(get_db)):
     return nutritionist
 
 @app.patch("/nutritionists/{nutritionist_id}", response_model=schemas.NutritionistResponse, response_model_by_alias=True)
-def update_nutritionist(nutritionist_id: str, updates: schemas.NutritionistUpdate, db: Session = Depends(get_db)):
+async def update_nutritionist(nutritionist_id: str, updates: schemas.NutritionistUpdate, db: Session = Depends(get_db)):
     nutritionist = db.query(models.Nutritionist).filter(models.Nutritionist.id == nutritionist_id).first()
     if not nutritionist:
         raise HTTPException(status_code=404, detail="Nutritionist not found")
@@ -394,15 +454,29 @@ def update_nutritionist(nutritionist_id: str, updates: schemas.NutritionistUpdat
     
     db.commit()
     db.refresh(nutritionist)
+    
+    # Broadcast nutritionist updated event
+    await manager.broadcast({
+        "type": "nutritionist_updated",
+        "data": schemas.NutritionistResponse.model_validate(nutritionist).model_dump(mode='json', by_alias=True)
+    })
+    
     return nutritionist
 
 # Client endpoints
 @app.post("/clients", response_model=schemas.ClientResponse, response_model_by_alias=True)
-def create_client(client: schemas.ClientCreate, db: Session = Depends(get_db)):
+async def create_client(client: schemas.ClientCreate, db: Session = Depends(get_db)):
     db_client = models.Client(**client.model_dump())
     db.add(db_client)
     db.commit()
     db.refresh(db_client)
+    
+    # Broadcast client created event
+    await manager.broadcast({
+        "type": "client_created",
+        "data": schemas.ClientResponse.model_validate(db_client).model_dump(mode='json', by_alias=True)
+    })
+    
     return db_client
 
 @app.get("/clients", response_model=List[schemas.ClientResponse], response_model_by_alias=True)
@@ -422,7 +496,7 @@ def get_client(client_id: str, db: Session = Depends(get_db)):
     return client
 
 @app.patch("/clients/{client_id}", response_model=schemas.ClientResponse, response_model_by_alias=True)
-def update_client(client_id: str, updates: schemas.ClientUpdate, db: Session = Depends(get_db)):
+async def update_client(client_id: str, updates: schemas.ClientUpdate, db: Session = Depends(get_db)):
     client = db.query(models.Client).filter(models.Client.id == client_id).first()
     if not client:
         raise HTTPException(status_code=404, detail="Client not found")
@@ -433,15 +507,29 @@ def update_client(client_id: str, updates: schemas.ClientUpdate, db: Session = D
     
     db.commit()
     db.refresh(client)
+    
+    # Broadcast client updated event
+    await manager.broadcast({
+        "type": "client_updated",
+        "data": schemas.ClientResponse.model_validate(client).model_dump(mode='json', by_alias=True)
+    })
+    
     return client
 
 # Session endpoints
 @app.post("/sessions", response_model=schemas.SessionResponse, response_model_by_alias=True)
-def create_session(session: schemas.SessionCreate, db: Session = Depends(get_db)):
+async def create_session(session: schemas.SessionCreate, db: Session = Depends(get_db)):
     db_session = models.Session(**session.model_dump())
     db.add(db_session)
     db.commit()
     db.refresh(db_session)
+    
+    # Broadcast session created event
+    await manager.broadcast({
+        "type": "session_created",
+        "data": schemas.SessionResponse.model_validate(db_session).model_dump(mode='json', by_alias=True)
+    })
+    
     return db_session
 
 @app.get("/sessions", response_model=List[schemas.SessionResponse], response_model_by_alias=True)
@@ -461,7 +549,7 @@ def get_sessions(
     return query.all()
 
 @app.patch("/sessions/{session_id}", response_model=schemas.SessionResponse, response_model_by_alias=True)
-def update_session(session_id: str, updates: schemas.SessionUpdate, db: Session = Depends(get_db)):
+async def update_session(session_id: str, updates: schemas.SessionUpdate, db: Session = Depends(get_db)):
     session = db.query(models.Session).filter(models.Session.id == session_id).first()
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -472,15 +560,29 @@ def update_session(session_id: str, updates: schemas.SessionUpdate, db: Session 
     
     db.commit()
     db.refresh(session)
+    
+    # Broadcast session updated event
+    await manager.broadcast({
+        "type": "session_updated",
+        "data": schemas.SessionResponse.model_validate(session).model_dump(mode='json', by_alias=True)
+    })
+    
     return session
 
 # Progress Log endpoints
 @app.post("/progress-logs", response_model=schemas.ProgressLogResponse, response_model_by_alias=True)
-def create_progress_log(log: schemas.ProgressLogCreate, db: Session = Depends(get_db)):
+async def create_progress_log(log: schemas.ProgressLogCreate, db: Session = Depends(get_db)):
     db_log = models.ProgressLog(**log.model_dump())
     db.add(db_log)
     db.commit()
     db.refresh(db_log)
+    
+    # Broadcast progress log created event
+    await manager.broadcast({
+        "type": "progress_log_created",
+        "data": schemas.ProgressLogResponse.model_validate(db_log).model_dump(mode='json', by_alias=True)
+    })
+    
     return db_log
 
 @app.get("/progress-logs", response_model=List[schemas.ProgressLogResponse], response_model_by_alias=True)

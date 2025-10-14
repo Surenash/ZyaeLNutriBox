@@ -75,6 +75,13 @@ export class DeliveryWebSocket {
   }
 }
 
-// Singleton instance
-const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
-export const deliveryWS = new DeliveryWebSocket(wsUrl);
+// Singleton instance - construct URL dynamically
+function getWebSocketUrl() {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const host = window.location.host;
+  const url = `${protocol}//${host}/ws`;
+  console.log('[WebSocket] Connecting to:', url);
+  return url;
+}
+
+export const deliveryWS = new DeliveryWebSocket(getWebSocketUrl());

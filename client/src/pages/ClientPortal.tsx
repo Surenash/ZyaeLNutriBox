@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
+import { useRealtime } from "@/hooks/use-realtime";
 import HeroBanner from "@/components/HeroBanner";
 import DietPlanCard from "@/components/DietPlanCard";
 import NutritionistCard from "@/components/NutritionistCard";
@@ -33,6 +34,13 @@ import newsSuperfoods from "@assets/stock_images/superfoods_healthy_i_2052ee3c.j
 
 export default function ClientPortal() {
   const [activeTab, setActiveTab] = useState("home");
+
+  // Real-time updates for meal plans and nutritionists
+  useRealtime({
+    events: ["meal_plan_created", "meal_plan_updated", "meal_plan_deleted", "nutritionist_created", "nutritionist_updated"],
+    invalidateQueries: [["/api/meal-plans"], ["/api/nutritionists"]],
+    showToast: true,
+  });
 
   // Fetch meal plans from API
   const { data: mealPlansData, isLoading: mealPlansLoading } = useQuery({
