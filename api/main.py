@@ -7,10 +7,11 @@ from datetime import datetime
 import os
 import sys
 import traceback
+import asyncio
+from urllib.parse import urlparse
 
 from api.database import engine, get_db, Base
 from api import models, schemas
-import time
 
 app = FastAPI(
     title="ZyaeL NutriBox API",
@@ -41,10 +42,19 @@ async def startup_event():
     retry_delay = 5  # Longer delay between retries
     is_production = os.getenv("NODE_ENV") == "production" or os.getenv("REPL_DEPLOYMENT") == "1"
     
+    # Mask database credentials for security
+    db_url = os.getenv('DATABASE_URL', 'Not Set')
+    if db_url != 'Not Set':
+        parsed = urlparse(db_url)
+        port_str = f":{parsed.port}" if parsed.port else ""
+        masked_url = f"{parsed.scheme}://*****:*****@{parsed.hostname}{port_str}{parsed.path}"
+    else:
+        masked_url = "Not Set"
+    
     print("\n" + "="*60)
     print("🚀 ZyaeL NutriBox API Starting Up")
     print(f"   Environment: {'PRODUCTION' if is_production else 'DEVELOPMENT'}")
-    print(f"   Database URL: {os.getenv('DATABASE_URL', 'Not Set')[:50]}...")
+    print(f"   Database: {masked_url}")
     print("="*60 + "\n")
     
     for attempt in range(max_retries):
@@ -93,7 +103,7 @@ async def startup_event():
             if attempt < max_retries - 1:
                 print(f"\n⚠️  Attempt {attempt + 1} failed: {error_msg}")
                 print(f"   Retrying in {retry_delay} seconds...\n")
-                time.sleep(retry_delay)
+                await asyncio.sleep(retry_delay)
             else:
                 db_init_error = error_msg
                 print("\n" + "="*60)
