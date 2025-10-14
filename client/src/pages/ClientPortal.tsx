@@ -507,7 +507,7 @@ export default function ClientPortal() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-3xl font-bold text-foreground mb-8"
+              className="text-2xl md:text-3xl font-bold text-foreground mb-6 md:mb-8"
             >
               Your Cart
             </motion.h1>
@@ -521,22 +521,22 @@ export default function ClientPortal() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-xl shadow-md p-6 hover-elevate"
+                    className="bg-white rounded-xl shadow-md p-4 md:p-6 hover-elevate"
                   >
-                    <div className="flex gap-4">
+                    <div className="flex gap-3 md:gap-4">
                       <img
                         src={item.image}
                         alt={item.title}
-                        className="w-24 h-24 rounded-lg object-cover"
+                        className="w-20 h-20 md:w-24 md:h-24 rounded-lg object-cover flex-shrink-0"
                       />
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
-                            <p className="text-sm text-muted-foreground">{item.duration}</p>
+                          <div className="flex-1 min-w-0 pr-2">
+                            <h3 className="text-base md:text-lg font-semibold text-foreground truncate">{item.title}</h3>
+                            <p className="text-xs md:text-sm text-muted-foreground">{item.duration}</p>
                           </div>
                           <button
-                            className="text-muted-foreground hover:text-destructive transition-colors"
+                            className="text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
                             data-testid={`button-remove-${item.id}`}
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -544,15 +544,15 @@ export default function ClientPortal() {
                             </svg>
                           </button>
                         </div>
-                        <div className="flex justify-between items-center mt-4">
-                          <div className="flex items-center gap-3 border rounded-lg p-1">
-                            <button className="px-3 py-1 hover:bg-muted rounded" data-testid={`button-decrease-${item.id}`}>−</button>
-                            <span className="px-3 font-semibold" data-testid={`text-quantity-${item.id}`}>{item.quantity}</span>
-                            <button className="px-3 py-1 hover:bg-muted rounded" data-testid={`button-increase-${item.id}`}>+</button>
+                        <div className="flex justify-between items-center mt-3 md:mt-4 gap-2">
+                          <div className="flex items-center gap-2 md:gap-3 border rounded-lg p-1">
+                            <button className="px-2 md:px-3 py-1 hover:bg-muted rounded" data-testid={`button-decrease-${item.id}`}>−</button>
+                            <span className="px-2 md:px-3 font-semibold text-sm md:text-base" data-testid={`text-quantity-${item.id}`}>{item.quantity}</span>
+                            <button className="px-2 md:px-3 py-1 hover:bg-muted rounded" data-testid={`button-increase-${item.id}`}>+</button>
                           </div>
-                          <div className="text-right">
-                            <p className="text-xs text-muted-foreground line-through">₹{item.originalPrice}</p>
-                            <p className="text-xl font-bold text-primary">₹{item.price}</p>
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-xs text-muted-foreground line-through">₹{item.originalPrice.toLocaleString()}</p>
+                            <p className="text-lg md:text-xl font-bold text-primary">₹{item.price.toLocaleString()}</p>
                           </div>
                         </div>
                       </div>
@@ -614,7 +614,7 @@ export default function ClientPortal() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-3xl font-bold text-foreground mb-8"
+              className="text-2xl md:text-3xl font-bold text-foreground mb-6 md:mb-8"
             >
               My Orders
             </motion.h1>
@@ -626,14 +626,14 @@ export default function ClientPortal() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl shadow-md p-6 hover-elevate"
+                  className="bg-white rounded-xl shadow-md p-4 md:p-6 hover-elevate"
                 >
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="flex justify-between items-start mb-3 md:mb-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-foreground">Order #{order.id}</h3>
-                      <p className="text-sm text-muted-foreground">{order.date}</p>
+                      <h3 className="text-base md:text-lg font-semibold text-foreground">Order #{order.id}</h3>
+                      <p className="text-xs md:text-sm text-muted-foreground">{order.date}</p>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium ${
                       order.status === 'delivered' ? 'bg-success/10 text-success' :
                       order.status === 'in-transit' ? 'bg-warning/10 text-warning' :
                       'bg-muted text-muted-foreground'
@@ -642,25 +642,25 @@ export default function ClientPortal() {
                     </span>
                   </div>
                   
-                  <div className="border-t pt-4">
-                    <div className="flex items-center gap-4 mb-3">
-                      <img src={order.image} alt={order.plan} className="w-16 h-16 rounded-lg object-cover" />
-                      <div className="flex-1">
-                        <p className="font-semibold text-foreground">{order.plan}</p>
-                        <p className="text-sm text-muted-foreground">{order.duration}</p>
+                  <div className="border-t pt-3 md:pt-4">
+                    <div className="flex items-center gap-3 md:gap-4 mb-3">
+                      <img src={order.image} alt={order.plan} className="w-14 h-14 md:w-16 md:h-16 rounded-lg object-cover flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground text-sm md:text-base truncate">{order.plan}</p>
+                        <p className="text-xs md:text-sm text-muted-foreground">{order.duration}</p>
                       </div>
-                      <p className="text-xl font-bold text-primary">₹{order.amount}</p>
+                      <p className="text-lg md:text-xl font-bold text-primary flex-shrink-0">₹{order.amount.toLocaleString()}</p>
                     </div>
                     
-                    <div className="flex gap-3 mt-4">
-                      <Button variant="outline" size="sm" className="rounded-full" data-testid={`button-track-${order.id}`}>
+                    <div className="flex flex-wrap gap-2 md:gap-3 mt-3 md:mt-4">
+                      <Button variant="outline" size="sm" className="rounded-full flex-1 sm:flex-none" data-testid={`button-track-${order.id}`}>
                         Track Order
                       </Button>
-                      <Button variant="outline" size="sm" className="rounded-full" data-testid={`button-details-${order.id}`}>
+                      <Button variant="outline" size="sm" className="rounded-full flex-1 sm:flex-none" data-testid={`button-details-${order.id}`}>
                         View Details
                       </Button>
                       {order.status === 'delivered' && (
-                        <Button variant="outline" size="sm" className="rounded-full ml-auto" data-testid={`button-reorder-${order.id}`}>
+                        <Button variant="outline" size="sm" className="rounded-full flex-1 sm:flex-none sm:ml-auto" data-testid={`button-reorder-${order.id}`}>
                           Reorder
                         </Button>
                       )}
@@ -682,7 +682,7 @@ export default function ClientPortal() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-3xl font-bold text-foreground mb-8"
+              className="text-2xl md:text-3xl font-bold text-foreground mb-6 md:mb-8"
             >
               My Profile
             </motion.h1>
@@ -807,12 +807,12 @@ export default function ClientPortal() {
             {...pageTransitionVariants}
             className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
           >
-            <div className="mb-8">
+            <div className="mb-6 md:mb-8">
               <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-4xl md:text-5xl font-bold text-foreground mb-3"
+                className="text-3xl md:text-5xl font-bold text-foreground mb-2 md:mb-3"
               >
                 Today's Food Journey
               </motion.h1>
@@ -820,7 +820,7 @@ export default function ClientPortal() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                className="text-lg text-muted-foreground"
+                className="text-base md:text-lg text-muted-foreground"
               >
                 Track your daily meals and nutrition progress
               </motion.p>
