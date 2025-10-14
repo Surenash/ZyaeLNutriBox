@@ -323,7 +323,7 @@ export default function ClientPortal() {
             >
               <Button
                 size="lg"
-                className="bg-primary text-primary-foreground rounded-full px-10 py-6 text-lg hover-elevate active-elevate-2"
+                className="bg-primary text-primary-foreground rounded-full hover-elevate active-elevate-2"
                 data-testid="button-subscribe-now"
               >
                 Get Started Now →
@@ -331,7 +331,7 @@ export default function ClientPortal() {
               <Button
                 size="lg"
                 variant="outline"
-                className="rounded-full px-10 py-6 text-lg border-2"
+                className="rounded-full border-2"
                 data-testid="button-learn-more"
               >
                 Learn More
@@ -344,7 +344,7 @@ export default function ClientPortal() {
               transition={{ delay: 0.3 }}
               className="text-sm text-muted-foreground mt-6"
             >
-              💚 No commitment required • Cancel anytime
+              No commitment required • Cancel anytime
             </motion.p>
           </motion.section>
         </motion.div>
@@ -449,7 +449,7 @@ export default function ClientPortal() {
                     Proceed to Checkout
                   </Button>
                   <p className="text-xs text-muted-foreground text-center mt-4">
-                    🔒 100% Secure Payment
+                    100% Secure Payment
                   </p>
                 </div>
               </motion.div>
@@ -723,7 +723,7 @@ export default function ClientPortal() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-foreground mb-2">
-                        Great Progress! 🎉
+                        Great Progress!
                       </h3>
                       <p className="text-sm text-muted-foreground">
                         You're making excellent progress! Keep up the consistent meal completion to reach your goals faster. You've consumed 67% of your daily nutrition target.
