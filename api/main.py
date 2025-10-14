@@ -47,7 +47,7 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 # Orders endpoints
-@app.post("/orders", response_model=schemas.OrderResponse)
+@app.post("/orders", response_model=schemas.OrderResponse, response_model_by_alias=True)
 def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
     db_order = models.Order(**order.model_dump())
     db.add(db_order)
@@ -68,14 +68,14 @@ def get_orders(
         query = query.filter(models.Order.kitchen_status == kitchen_status)
     return query.all()
 
-@app.get("/orders/{order_id}", response_model=schemas.OrderResponse)
+@app.get("/orders/{order_id}", response_model=schemas.OrderResponse, response_model_by_alias=True)
 def get_order(order_id: str, db: Session = Depends(get_db)):
     order = db.query(models.Order).filter(models.Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     return order
 
-@app.patch("/orders/{order_id}", response_model=schemas.OrderResponse)
+@app.patch("/orders/{order_id}", response_model=schemas.OrderResponse, response_model_by_alias=True)
 def update_order(order_id: str, updates: schemas.OrderUpdate, db: Session = Depends(get_db)):
     order = db.query(models.Order).filter(models.Order.id == order_id).first()
     if not order:
@@ -90,7 +90,7 @@ def update_order(order_id: str, updates: schemas.OrderUpdate, db: Session = Depe
     return order
 
 # Kitchen queue endpoints
-@app.post("/kitchen/queue", response_model=schemas.KitchenQueueResponse)
+@app.post("/kitchen/queue", response_model=schemas.KitchenQueueResponse, response_model_by_alias=True)
 def create_kitchen_queue(item: schemas.KitchenQueueCreate, db: Session = Depends(get_db)):
     db_item = models.KitchenQueue(**item.model_dump())
     db.add(db_item)
@@ -102,7 +102,7 @@ def create_kitchen_queue(item: schemas.KitchenQueueCreate, db: Session = Depends
 def get_kitchen_queue(db: Session = Depends(get_db)):
     return db.query(models.KitchenQueue).all()
 
-@app.patch("/kitchen/queue/{queue_id}", response_model=schemas.KitchenQueueResponse)
+@app.patch("/kitchen/queue/{queue_id}", response_model=schemas.KitchenQueueResponse, response_model_by_alias=True)
 def update_kitchen_queue(queue_id: str, updates: schemas.KitchenQueueUpdate, db: Session = Depends(get_db)):
     item = db.query(models.KitchenQueue).filter(models.KitchenQueue.id == queue_id).first()
     if not item:
@@ -117,7 +117,7 @@ def update_kitchen_queue(queue_id: str, updates: schemas.KitchenQueueUpdate, db:
     return item
 
 # Delivery agents endpoints
-@app.post("/delivery-agents", response_model=schemas.DeliveryAgentResponse)
+@app.post("/delivery-agents", response_model=schemas.DeliveryAgentResponse, response_model_by_alias=True)
 def create_delivery_agent(agent: schemas.DeliveryAgentCreate, db: Session = Depends(get_db)):
     db_agent = models.DeliveryAgent(**agent.model_dump())
     db.add(db_agent)
@@ -133,7 +133,7 @@ def get_delivery_agents(db: Session = Depends(get_db)):
 def get_available_agents(db: Session = Depends(get_db)):
     return db.query(models.DeliveryAgent).filter(models.DeliveryAgent.is_available == True).all()
 
-@app.patch("/delivery-agents/{agent_id}", response_model=schemas.DeliveryAgentResponse)
+@app.patch("/delivery-agents/{agent_id}", response_model=schemas.DeliveryAgentResponse, response_model_by_alias=True)
 def update_delivery_agent(agent_id: str, updates: schemas.DeliveryAgentUpdate, db: Session = Depends(get_db)):
     agent = db.query(models.DeliveryAgent).filter(models.DeliveryAgent.id == agent_id).first()
     if not agent:
@@ -148,7 +148,7 @@ def update_delivery_agent(agent_id: str, updates: schemas.DeliveryAgentUpdate, d
     return agent
 
 # Delivery tracking endpoints
-@app.post("/delivery-tracking", response_model=schemas.DeliveryTrackingResponse)
+@app.post("/delivery-tracking", response_model=schemas.DeliveryTrackingResponse, response_model_by_alias=True)
 def create_delivery_tracking(tracking: schemas.DeliveryTrackingCreate, db: Session = Depends(get_db)):
     db_tracking = models.DeliveryTracking(**tracking.model_dump())
     db.add(db_tracking)
@@ -163,7 +163,7 @@ def get_delivery_tracking(order_id: Optional[str] = None, db: Session = Depends(
         query = query.filter(models.DeliveryTracking.order_id == order_id)
     return query.all()
 
-@app.patch("/delivery-tracking/{tracking_id}", response_model=schemas.DeliveryTrackingResponse)
+@app.patch("/delivery-tracking/{tracking_id}", response_model=schemas.DeliveryTrackingResponse, response_model_by_alias=True)
 async def update_delivery_tracking(tracking_id: str, updates: schemas.DeliveryTrackingUpdate, db: Session = Depends(get_db)):
     tracking = db.query(models.DeliveryTracking).filter(models.DeliveryTracking.id == tracking_id).first()
     if not tracking:
