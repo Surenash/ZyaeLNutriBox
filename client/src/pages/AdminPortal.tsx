@@ -1,5 +1,6 @@
 import { Users, Utensils, TrendingUp, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,33 @@ import {
 } from "@/components/ui/dialog";
 
 export default function AdminPortal() {
+  // Fetch meal plans from API
+  const { data: mealPlansData, isLoading: mealPlansLoading } = useQuery({
+    queryKey: ["/api/meal-plans"],
+  });
+
+  // Fetch clients from API (for total users)
+  const { data: clientsData, isLoading: clientsLoading } = useQuery({
+    queryKey: ["/api/clients"],
+  });
+
+  // Fetch orders from API (for recent orders)
+  const { data: ordersData, isLoading: ordersLoading } = useQuery({
+    queryKey: ["/api/orders"],
+  });
+
+  // Calculate stats
+  const totalUsers = Array.isArray(clientsData) ? clientsData.length : 0;
+  const activeMealPlans = Array.isArray(mealPlansData) 
+    ? mealPlansData.filter((plan: any) => plan.isActive).length 
+    : 0;
+  
+  // Get recent orders (clone array to avoid mutating cache)
+  const recentOrders = Array.isArray(ordersData) 
+    ? [...ordersData]
+        .sort((a: any, b: any) => new Date(b.orderedAt).getTime() - new Date(a.orderedAt).getTime())
+        .slice(0, 5)
+    : [];
   return (
     <motion.div
       {...pageTransitionVariants}
@@ -48,14 +76,13 @@ export default function AdminPortal() {
         >
           <StatsCard
             title="Total Users"
-            value="3,247"
-            subtitle="Active subscriptions"
+            value={clientsLoading ? "..." : String(totalUsers)}
+            subtitle="Active clients"
             icon={Users}
-            trend={{ value: "+12.5%", isPositive: true }}
           />
           <StatsCard
             title="Meal Plans"
-            value="9"
+            value={mealPlansLoading ? "..." : String(activeMealPlans)}
             subtitle="Active plans"
             icon={Utensils}
           />
@@ -146,26 +173,30 @@ export default function AdminPortal() {
               </Dialog>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 border border-border rounded-lg">
-                <div>
-                  <p className="font-semibold text-foreground">Weight Loss Plan</p>
-                  <p className="text-sm text-muted-foreground">₹15,000/month</p>
-                </div>
-                <Button variant="outline" size="sm" className="rounded-full" data-testid="button-edit-meal">
-                  Edit
-                </Button>
+            {mealPlansLoading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="p-4 border border-border rounded-lg animate-pulse">
+                    <div className="h-4 bg-muted rounded mb-2 w-1/2"></div>
+                    <div className="h-3 bg-muted rounded w-1/3"></div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center justify-between p-4 border border-border rounded-lg">
-                <div>
-                  <p className="font-semibold text-foreground">Muscle Gain Plan</p>
-                  <p className="text-sm text-muted-foreground">₹15,000/month</p>
-                </div>
-                <Button variant="outline" size="sm" className="rounded-full" data-testid="button-edit-meal">
-                  Edit
-                </Button>
+            ) : (
+              <div className="space-y-3">
+                {(Array.isArray(mealPlansData) ? mealPlansData : []).slice(0, 5).map((plan: any) => (
+                  <div key={plan.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                    <div>
+                      <p className="font-semibold text-foreground">{plan.title}</p>
+                      <p className="text-sm text-muted-foreground">₹{plan.currentPrice.toLocaleString()}/month</p>
+                    </div>
+                    <Button variant="outline" size="sm" className="rounded-full" data-testid={`button-edit-meal-${plan.id}`}>
+                      Edit
+                    </Button>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </motion.section>
 
           <motion.section
@@ -178,32 +209,39 @@ export default function AdminPortal() {
             <h2 className="text-xl font-bold text-foreground mb-6">
               Recent Orders
             </h2>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 border border-border rounded-lg">
-                <div>
-                  <p className="font-semibold text-foreground">Priya Menon</p>
-                  <p className="text-sm text-muted-foreground">
-                    Weight Loss - 30 days
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-primary">₹15,000</p>
-                  <span className="text-xs text-[#22C55E]">Paid</span>
-                </div>
+            {ordersLoading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="p-4 border border-border rounded-lg animate-pulse">
+                    <div className="h-4 bg-muted rounded mb-2 w-1/2"></div>
+                    <div className="h-3 bg-muted rounded w-3/4"></div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center justify-between p-4 border border-border rounded-lg">
-                <div>
-                  <p className="font-semibold text-foreground">Rohan Sharma</p>
-                  <p className="text-sm text-muted-foreground">
-                    Muscle Gain - 30 days
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-primary">₹15,000</p>
-                  <span className="text-xs text-[#22C55E]">Paid</span>
-                </div>
+            ) : recentOrders.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">
+                No recent orders
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {recentOrders.map((order: any) => (
+                  <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                    <div>
+                      <p className="font-semibold text-foreground">{order.clientName}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {order.dietPlan} - {order.mealType}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-primary">₹{order.price.toLocaleString()}</p>
+                      <span className={`text-xs ${order.status === 'delivered' ? 'text-success' : 'text-warning'}`}>
+                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </motion.section>
         </motion.div>
 
