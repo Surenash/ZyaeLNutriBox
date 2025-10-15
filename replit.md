@@ -63,7 +63,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend-Backend Integration
 
-**Client Portal**: Fetches meal plans and nutritionists from API with loading states, displays dynamic content from database.
+**Client Portal**: Fetches meal plans and nutritionists from API with loading states, displays dynamic content from database. Features comprehensive redesign with hero banner slider, health goals categories, nutritionist consultation slider, promotional banners, enhanced tracking with graphs, smart notification system, and professional footer. All UI elements follow no-emoji policy with comprehensive data-testid attributes for testing.
 **Nutritionist Portal**: Fetches clients, sessions, and progress logs from API, calculates real-time stats (active clients, sessions today, average response time).
 **Admin Portal**: Fetches meal plans, clients, and orders from API, displays statistics and recent activity with loading states.
 **Data Mapping**: All API responses use camelCase for seamless TypeScript integration, arrays cloned before sorting to prevent cache mutation.
@@ -83,6 +83,21 @@ Preferred communication style: Simple, everyday language.
 **Frontend Hook**: `useRealtime` hook provides portal-specific event subscriptions, automatic React Query cache invalidation, and toast notifications for all data changes.
 **Portal Integration**: Client Portal listens for meal plan and nutritionist updates, Nutritionist Portal for client/session/progress changes, Admin Portal for all entity updates. UI updates instantly without page refresh.
 **Connection Management**: WebSocket auto-reconnects on disconnect, removes failed connections during broadcast to prevent backlog, logs connection events for debugging.
+
+### Client Portal Redesign (Comprehensive Feature-Rich Layout)
+
+**Hero Banner Slider**: Auto-rotating carousel with 3 slides (5-second intervals), navigation arrows, dot indicators, smooth transitions via Framer Motion. Displays personalized nutrition messaging and CTAs.
+**Health Goals Categories**: 6 interactive icon cards (Weight Loss, Muscle Gain, Balanced Nutrition, Diabetic-Friendly, Detox & Wellness, PCOS Friendly) with hover effects and Lucide icons. View All Categories button for expansion.
+**Nutritionist Consultation Slider**: Horizontal Embla carousel with nutritionist profile cards, "Consult Now" buttons, specializations, experience display. Carousel navigation with prev/next arrows. "Book Your Free Consultation" CTA.
+**Nutrition Products Grid**: Enhanced meal plan cards with images, pricing, discount tags, macros display, "View More" buttons. Real-time data from API with loading skeletons.
+**Promotional Banner**: Auto-rotating promotional slider (5-second intervals) with 3 marketing messages, dot indicators, gradient backgrounds. Highlights offers and testimonials.
+**Enhanced Tracking Section**: Multi-tab interface (Daily/Weekly/Monthly) with calorie progress bars, macros breakdown (Protein/Carbs/Fats), water intake tracker with "Add Glass" functionality, weight logging dialog with input validation. Progress visualization with circular indicators.
+**Smart Notification System**: Timed pop-up appearing after 2 minutes of browsing, prompts nutritionist chat with "Chat Now" and "Later" options. Auto-dismisses on interaction.
+**Location Search Bar**: Sticky header with location selector showing current delivery area (e.g., "Delivering to Bangalore"), integrated search input for meal plans and content discovery.
+**Professional Footer**: Quick navigation links (Meal Plans, Nutritionists, Blog, Contact Us), contact information display (email, phone), app version indicator, branding tagline. Responsive grid layout.
+**Blog & News Carousel**: Existing article carousel maintained with thumbnails, titles, descriptions, "Read More" links. Integrated into comprehensive layout.
+**Design Compliance**: NO emojis anywhere in UI (replaced with Lucide icons), comprehensive data-testid attributes on all interactive elements following naming convention (e.g., `button-hero-indicator-{index}`, `tab-trigger-daily`, `button-consult-nutritionist-{id}`). Smooth animations via Framer Motion, responsive design for mobile/tablet/desktop.
+**Component Architecture**: Modular components (HeroSlider.tsx, HealthGoalsCategory.tsx, NutritionistSlider.tsx, PromotionalBanner.tsx, EnhancedTracking.tsx, SmartNotification.tsx, LocationSearch.tsx, ClientFooter.tsx) integrated into ClientPortal.tsx with proper state management and real-time updates.
 
 ### Design System & Assets
 

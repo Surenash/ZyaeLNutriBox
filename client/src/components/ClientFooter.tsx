@@ -33,13 +33,12 @@ export default function ClientFooter() {
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href}>
-                    <a 
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                      data-testid={`link-footer-${link.label.toLowerCase().replace(' ', '-')}`}
-                    >
-                      {link.label}
-                    </a>
+                  <Link 
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    data-testid={`link-footer-${link.label.toLowerCase().replace(' ', '-')}`}
+                  >
+                    {link.label}
                   </Link>
                 </li>
               ))}
