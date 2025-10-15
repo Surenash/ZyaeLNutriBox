@@ -3,10 +3,10 @@ import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { viewportConfig } from "@/lib/animations";
-import weightLoss from "@assets/weight-loss.jpg";
-import muscleFuel from "@assets/muscle-fuel.jpg";
-import proteinMeal from "@assets/protein-meal.jpg";
-import healthyBowl from "@assets/healthy-bowl.jpg";
+import weightLoss from "@assets/generated_images/Healthy_balanced_meal_food_36201b9b.png";
+import muscleFuel from "@assets/generated_images/Protein-rich_fitness_meal_28329687.png";
+import proteinMeal from "@assets/stock_images/healthy_nutrition_me_799f8107.jpg";
+import healthyBowl from "@assets/generated_images/PCOS-friendly_healthy_meal_1a327607.png";
 
 interface HealthGoalPlan {
   id: string;
