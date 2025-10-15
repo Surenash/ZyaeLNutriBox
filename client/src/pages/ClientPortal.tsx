@@ -245,57 +245,7 @@ export default function ClientPortal() {
               onCategorySelect={(categoryId) => console.log("Category selected:", categoryId)}
             />
 
-          {/* Nutrition Products Grid */}
-          <motion.section
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={viewportConfig}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
-            <div className="text-center mb-8 md:mb-12">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportConfig}
-                className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4"
-              >
-                Our Nutrition Products
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportConfig}
-                transition={{ delay: 0.1 }}
-                className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4"
-              >
-                Expertly crafted meal plans designed to help you achieve your wellness goals
-              </motion.p>
-            </div>
-            {mealPlansLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                  <div key={i} className="bg-card rounded-2xl p-4 animate-pulse">
-                    <div className="aspect-video bg-muted rounded-xl mb-4"></div>
-                    <div className="h-4 bg-muted rounded mb-2 w-3/4"></div>
-                    <div className="h-3 bg-muted rounded w-full"></div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {dietPlans.map((plan: any) => (
-                  <DietPlanCard
-                    key={plan.id}
-                    {...plan}
-                    onSubscribe={() => console.log(`Subscribe to ${plan.title}`)}
-                  />
-                ))}
-              </div>
-            )}
-          </motion.section>
-
-          {/* Nutritionist Consultation Slider */}
+            {/* Nutritionist Consultation Slider */}
           {nutritionistsLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {[1, 2, 3, 4].map((i) => (

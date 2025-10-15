@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,20 @@ import weightLoss from "@assets/generated_images/Healthy_balanced_meal_food_3620
 import muscleFuel from "@assets/generated_images/Protein-rich_fitness_meal_28329687.png";
 import proteinMeal from "@assets/stock_images/healthy_nutrition_me_799f8107.jpg";
 import healthyBowl from "@assets/generated_images/PCOS-friendly_healthy_meal_1a327607.png";
+
+interface MealPlanAPI {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  originalPrice: number;
+  currentPrice: number;
+  rating: number;
+  reviewCount: number;
+  badge?: string;
+  imageUrl?: string;
+  features?: string;
+}
 
 interface HealthGoalPlan {
   id: string;
@@ -31,7 +46,76 @@ interface HealthGoalPlan {
   includes: string[];
 }
 
-const healthGoalPlans: HealthGoalPlan[] = [
+// Function to extend API meal plan data with modal details
+const extendMealPlan = (plan: MealPlanAPI): HealthGoalPlan => {
+  const defaultImage = proteinMeal;
+  const images: Record<string, string> = {
+    "weight loss": weightLoss,
+    "muscle gain": muscleFuel,
+    "balanced nutrition": proteinMeal,
+    "diabetic friendly": healthyBowl,
+    "pcos friendly": healthyBowl,
+    "vegan": proteinMeal,
+  };
+
+  const categoryKey = plan.category?.toLowerCase() || plan.title.toLowerCase();
+  const image = images[categoryKey] || defaultImage;
+
+  // Default benefits based on category
+  const defaultBenefits = [
+    "Nutritionist-designed meal plans",
+    "Fresh ingredients delivered daily",
+    "Customizable to your preferences",
+    "Track your progress with ease",
+    "24/7 customer support",
+    "Flexible subscription options"
+  ];
+
+  // Default sample meals
+  const defaultMeals = [
+    "Breakfast: Healthy morning meal (350 kcal)",
+    "Mid-Morning: Nutritious snack (150 kcal)",
+    "Lunch: Balanced main course (500 kcal)",
+    "Evening Snack: Light refreshment (180 kcal)",
+    "Dinner: Wholesome dinner (450 kcal)"
+  ];
+
+  // Default macros
+  const defaultMacros = {
+    calories: "1800",
+    protein: "120g",
+    carbs: "200g",
+    fats: "60g"
+  };
+
+  // Default includes
+  const defaultIncludes = [
+    "6 meals per day delivered fresh",
+    "Nutritionist consultation",
+    "Personalized meal planning",
+    "Progress tracking dashboard",
+    "WhatsApp support",
+    "Free diet customization"
+  ];
+
+  return {
+    id: plan.id,
+    title: plan.title,
+    description: plan.description,
+    originalPrice: plan.originalPrice,
+    currentPrice: plan.currentPrice,
+    rating: plan.rating,
+    reviewCount: plan.reviewCount,
+    badge: plan.badge,
+    image: image,
+    benefits: defaultBenefits,
+    sampleMeals: defaultMeals,
+    macros: defaultMacros,
+    includes: defaultIncludes,
+  };
+};
+
+const staticHealthGoalPlans: HealthGoalPlan[] = [
   {
     id: "weight-loss",
     title: "Weight Loss",
@@ -202,6 +286,16 @@ export default function HealthGoalsCategory({ onCategorySelect }: HealthGoalsCat
   const [selectedPlan, setSelectedPlan] = useState<HealthGoalPlan | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch meal plans from API
+  const { data: mealPlansData, isLoading } = useQuery<MealPlanAPI[]>({
+    queryKey: ["/api/meal-plans"],
+  });
+
+  // Extend API data with modal details or use static fallback
+  const healthGoalPlans = mealPlansData 
+    ? mealPlansData.map(extendMealPlan)
+    : staticHealthGoalPlans;
+
   const handleCardClick = (plan: HealthGoalPlan) => {
     setSelectedPlan(plan);
     setIsModalOpen(true);
@@ -243,8 +337,24 @@ export default function HealthGoalsCategory({ onCategorySelect }: HealthGoalsCat
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {healthGoalPlans.map((plan, index) => (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-card rounded-xl p-4 animate-pulse">
+                <div className="flex items-center gap-4">
+                  <div className="w-24 h-24 bg-muted rounded-lg"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
+                    <div className="h-3 bg-muted rounded w-full"></div>
+                    <div className="h-3 bg-muted rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            {healthGoalPlans.map((plan, index) => (
             <motion.div
               key={plan.id}
               initial={{ opacity: 0, x: -20 }}
@@ -318,7 +428,8 @@ export default function HealthGoalsCategory({ onCategorySelect }: HealthGoalsCat
               </div>
             </motion.div>
           ))}
-        </div>
+          </div>
+        )}
       </motion.section>
 
       <HealthGoalDetailModal
