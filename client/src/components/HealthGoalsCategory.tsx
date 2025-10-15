@@ -99,72 +99,78 @@ export default function HealthGoalsCategory({ onCategorySelect }: HealthGoalsCat
         </motion.p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {healthGoalPlans.map((plan, index) => (
           <motion.div
             key={plan.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            whileHover={{ y: -8 }}
-            className="bg-white dark:bg-card rounded-2xl shadow-md hover:shadow-2xl transition-shadow duration-300 overflow-hidden group"
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+            className="bg-white dark:bg-card rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group hover-elevate active-elevate-2 cursor-pointer"
+            onClick={() => onCategorySelect?.(plan.id)}
             data-testid={`card-health-goal-${plan.id}`}
           >
-            <div className="relative aspect-square overflow-hidden">
-              <motion.img
-                src={plan.image}
-                alt={plan.title}
-                className="w-full h-full object-cover"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.4 }}
-              />
-              {plan.badge && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-                >
+            <div className="flex items-center gap-4 p-4">
+              {/* Small Image Thumbnail */}
+              <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                <img
+                  src={plan.image}
+                  alt={plan.title}
+                  className="w-full h-full object-cover"
+                />
+                {plan.badge && (
                   <Badge
-                    className="absolute top-3 right-3 bg-[#FF8C00] text-white border-0 rounded-full px-3 py-1 text-xs font-semibold shadow-lg"
+                    className="absolute top-1 right-1 bg-[#FF8C00] text-white border-0 rounded-full px-2 py-0.5 text-[10px] font-semibold shadow-md"
                     data-testid={`badge-${plan.badge.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     {plan.badge}
                   </Badge>
-                </motion.div>
-              )}
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold text-foreground mb-2" data-testid={`text-plan-${plan.title.toLowerCase().replace(/\s+/g, '-')}`}>
-                {plan.title}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                {plan.description}
-              </p>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-sm text-[#FF6B6B] line-through" data-testid={`text-original-price-${plan.id}`}>
-                  ₹{plan.originalPrice.toLocaleString()}
-                </span>
-                <span className="text-xl font-bold text-primary" data-testid={`text-current-price-${plan.id}`}>
-                  ₹{plan.currentPrice.toLocaleString()}/month
-                </span>
+                )}
               </div>
-              <div className="flex items-center gap-1 mb-4">
-                <Star className="w-4 h-4 fill-[#FFD700] text-[#FFD700]" />
-                <span className="text-sm font-semibold" data-testid={`text-rating-${plan.id}`}>
-                  {plan.rating}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  ({plan.reviewCount.toLocaleString()}+)
-                </span>
+
+              {/* Content on Right */}
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-semibold text-foreground mb-1 truncate" data-testid={`text-plan-${plan.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                  {plan.title}
+                </h3>
+                <p className="text-xs text-muted-foreground mb-2 line-clamp-1">
+                  {plan.description}
+                </p>
+                
+                {/* Price and Rating Row */}
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[#FF6B6B] line-through" data-testid={`text-original-price-${plan.id}`}>
+                      ₹{plan.originalPrice.toLocaleString()}
+                    </span>
+                    <span className="text-base font-bold text-primary" data-testid={`text-current-price-${plan.id}`}>
+                      ₹{plan.currentPrice.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 fill-[#FFD700] text-[#FFD700]" />
+                    <span className="text-xs font-semibold" data-testid={`text-rating-${plan.id}`}>
+                      {plan.rating}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      ({plan.reviewCount.toLocaleString()}+)
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  size="sm"
+                  className="w-full bg-primary text-primary-foreground rounded-full text-xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCategorySelect?.(plan.id);
+                  }}
+                  data-testid={`button-subscribe-${plan.id}`}
+                >
+                  Subscribe Now
+                </Button>
               </div>
-              <Button
-                className="w-full bg-primary text-primary-foreground rounded-full hover-elevate active-elevate-2"
-                onClick={() => onCategorySelect?.(plan.id)}
-                data-testid={`button-subscribe-${plan.id}`}
-              >
-                Subscribe Now
-              </Button>
             </div>
           </motion.div>
         ))}
