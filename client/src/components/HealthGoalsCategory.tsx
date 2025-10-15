@@ -11,43 +11,7 @@ interface HealthGoal {
   color: string;
 }
 
-const healthGoals: HealthGoal[] = [
-  {
-    id: "weight-loss",
-    title: "Weight Loss",
-    icon: <Target className="w-8 h-8" />,
-    description: "Scientifically designed meals for sustainable weight management",
-    color: "from-orange-500/10 to-orange-500/5",
-  },
-  {
-    id: "muscle-gain",
-    title: "Muscle Gain",
-    icon: <Dumbbell className="w-8 h-8" />,
-    description: "High-protein nutrition for strength and muscle building",
-    color: "from-primary/10 to-primary/5",
-  },
-  {
-    id: "balanced-nutrition",
-    title: "Balanced Nutrition",
-    icon: <Heart className="w-8 h-8" />,
-    description: "Complete nutrition for overall health and wellness",
-    color: "from-pink-500/10 to-pink-500/5",
-  },
-  {
-    id: "diabetic-friendly",
-    title: "Diabetic Friendly",
-    icon: <Activity className="w-8 h-8" />,
-    description: "Low GI meals for better blood sugar control",
-    color: "from-blue-500/10 to-blue-500/5",
-  },
-  {
-    id: "detox-wellness",
-    title: "Detox & Wellness",
-    icon: <Sparkles className="w-8 h-8" />,
-    description: "Cleansing meals for natural detoxification",
-    color: "from-green-500/10 to-green-500/5",
-  },
-];
+const healthGoals: HealthGoal[] = [];
 
 interface HealthGoalsCategoryProps {
   onCategorySelect?: (categoryId: string) => void;

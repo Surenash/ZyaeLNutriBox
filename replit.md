@@ -87,7 +87,7 @@ Preferred communication style: Simple, everyday language.
 ### Client Portal Redesign (Comprehensive Feature-Rich Layout)
 
 **Hero Banner Slider**: Auto-rotating carousel with 3 slides (5-second intervals), navigation arrows, dot indicators, smooth transitions via Framer Motion. Displays personalized nutrition messaging and CTAs.
-**Health Goals Categories**: 5 interactive icon cards (Weight Loss, Muscle Gain, Balanced Nutrition, Diabetic-Friendly, Detox & Wellness) with hover effects and Lucide icons. View All Categories button for expansion.
+**Health Goals Categories**: Section with "Choose Your Health Goal" heading and View All Categories button (cards removed).
 **Nutritionist Consultation Slider**: Horizontal Embla carousel with nutritionist profile cards, "Consult Now" buttons, specializations, experience display. Carousel navigation with prev/next arrows. "Book Your Free Consultation" CTA.
 **Nutrition Products Grid**: Enhanced meal plan cards with images, pricing, discount tags, macros display, "View More" buttons. Real-time data from API with loading skeletons.
 **Promotional Banner**: Auto-rotating promotional slider (5-second intervals) with 3 marketing messages, dot indicators, gradient backgrounds. Highlights offers and testimonials.
