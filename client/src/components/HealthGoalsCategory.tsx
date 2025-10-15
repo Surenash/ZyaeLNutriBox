@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { viewportConfig } from "@/lib/animations";
 import HealthGoalDetailModal from "./HealthGoalDetailModal";
-import weightLoss from "@assets/generated_images/Healthy_balanced_meal_food_36201b9b.png";
-import muscleFuel from "@assets/generated_images/Protein-rich_fitness_meal_28329687.png";
-import proteinMeal from "@assets/stock_images/healthy_nutrition_me_799f8107.jpg";
-import healthyBowl from "@assets/generated_images/PCOS-friendly_healthy_meal_1a327607.png";
+import weightLossImage from "@assets/stock_images/fresh_healthy_meal_s_70d24509.jpg";
+import muscleGainImage from "@assets/stock_images/high_protein_fitness_d93fdb7f.jpg";
+import balancedNutritionImage from "@assets/stock_images/balanced_meal_plate__497af778.jpg";
+import diabeticFriendlyImage from "@assets/stock_images/low_glycemic_healthy_fe9287c8.jpg";
 
 interface MealPlanAPI {
   id: string;
@@ -48,18 +48,30 @@ interface HealthGoalPlan {
 
 // Function to extend API meal plan data with modal details
 const extendMealPlan = (plan: MealPlanAPI): HealthGoalPlan => {
-  const defaultImage = proteinMeal;
-  const images: Record<string, string> = {
-    "weight loss": weightLoss,
-    "muscle gain": muscleFuel,
-    "balanced nutrition": proteinMeal,
-    "diabetic friendly": healthyBowl,
-    "pcos friendly": healthyBowl,
-    "vegan": proteinMeal,
-  };
-
-  const categoryKey = plan.category?.toLowerCase() || plan.title.toLowerCase();
-  const image = images[categoryKey] || defaultImage;
+  const defaultImage = balancedNutritionImage;
+  
+  // Map API categories and titles to images
+  const titleLower = plan.title.toLowerCase();
+  const categoryLower = plan.category?.toLowerCase() || "";
+  
+  let image = defaultImage;
+  
+  // Check title first for more specific matching (title takes precedence over category)
+  if (titleLower.includes("weight loss") || categoryLower === "weight_management") {
+    image = weightLossImage;
+  } else if (titleLower.includes("muscle") || titleLower.includes("protein") || categoryLower === "fitness") {
+    image = muscleGainImage;
+  } else if (titleLower.includes("diabetic") || titleLower.includes("diabetes")) {
+    image = diabeticFriendlyImage;
+  } else if (titleLower.includes("pcos")) {
+    // PCOS-specific plans use diabetic-friendly image (low glycemic)
+    image = diabeticFriendlyImage;
+  } else if (titleLower.includes("vegan") || titleLower.includes("vegetarian") || categoryLower === "dietary_preference") {
+    image = balancedNutritionImage;
+  } else if (titleLower.includes("balanced") || titleLower.includes("general") || categoryLower === "health") {
+    // Generic health category uses balanced nutrition image
+    image = balancedNutritionImage;
+  }
 
   // Default benefits based on category
   const defaultBenefits = [
@@ -125,7 +137,7 @@ const staticHealthGoalPlans: HealthGoalPlan[] = [
     rating: 4.9,
     reviewCount: 5200,
     badge: "Most Popular",
-    image: weightLoss,
+    image: weightLossImage,
     benefits: [
       "Reduces body fat by 15-20% in 3 months",
       "Boosts metabolism naturally",
@@ -165,7 +177,7 @@ const staticHealthGoalPlans: HealthGoalPlan[] = [
     rating: 4.8,
     reviewCount: 3800,
     badge: "High Protein",
-    image: muscleFuel,
+    image: muscleGainImage,
     benefits: [
       "Gain 3-5 kg lean muscle mass in 3 months",
       "Enhanced workout performance",
@@ -205,7 +217,7 @@ const staticHealthGoalPlans: HealthGoalPlan[] = [
     currentPrice: 13500,
     rating: 4.7,
     reviewCount: 4100,
-    image: proteinMeal,
+    image: balancedNutritionImage,
     benefits: [
       "Maintains optimal body weight",
       "Boosts immune system",
@@ -245,7 +257,7 @@ const staticHealthGoalPlans: HealthGoalPlan[] = [
     rating: 4.9,
     reviewCount: 2900,
     badge: "Doctor Approved",
-    image: healthyBowl,
+    image: diabeticFriendlyImage,
     benefits: [
       "Stabilizes blood sugar levels",
       "Reduces HbA1c by 1-2%",
