@@ -81,24 +81,6 @@ export default function HealthGoalsCategory({ onCategorySelect }: HealthGoalsCat
           </motion.div>
         ))}
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={viewportConfig}
-        transition={{ delay: 0.4 }}
-        className="text-center mt-6 md:mt-8"
-      >
-        <Button
-          variant="outline"
-          size="lg"
-          className="rounded-full"
-          onClick={() => console.log("View all categories")}
-          data-testid="button-view-all-health-categories"
-        >
-          View All Categories
-        </Button>
-      </motion.div>
     </motion.section>
   );
 }
