@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Target, Dumbbell, Heart, Activity, Sparkles, Apple } from "lucide-react";
+import { Target, Dumbbell, Heart, Activity, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { viewportConfig } from "@/lib/animations";
 
@@ -47,13 +47,6 @@ const healthGoals: HealthGoal[] = [
     description: "Cleansing meals for natural detoxification",
     color: "from-green-500/10 to-green-500/5",
   },
-  {
-    id: "pcos-friendly",
-    title: "PCOS Friendly",
-    icon: <Apple className="w-8 h-8" />,
-    description: "Hormone-balancing nutrition for PCOS management",
-    color: "from-purple-500/10 to-purple-500/5",
-  },
 ];
 
 interface HealthGoalsCategoryProps {
@@ -89,7 +82,7 @@ export default function HealthGoalsCategory({ onCategorySelect }: HealthGoalsCat
         </motion.p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
         {healthGoals.map((goal, index) => (
           <motion.div
             key={goal.id}
