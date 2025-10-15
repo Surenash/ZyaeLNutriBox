@@ -3,15 +3,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import { useRealtime } from "@/hooks/use-realtime";
-import HeroBanner from "@/components/HeroBanner";
+import HeroSlider from "@/components/HeroSlider";
+import HealthGoalsCategory from "@/components/HealthGoalsCategory";
+import NutritionistSlider from "@/components/NutritionistSlider";
+import PromotionalBanner from "@/components/PromotionalBanner";
+import SmartNotification from "@/components/SmartNotification";
+import EnhancedTracking from "@/components/EnhancedTracking";
+import ClientFooter from "@/components/ClientFooter";
+import LocationSearch from "@/components/LocationSearch";
 import DietPlanCard from "@/components/DietPlanCard";
-import NutritionistCard from "@/components/NutritionistCard";
 import TestimonialCard from "@/components/TestimonialCard";
 import MealStatusCard from "@/components/MealStatusCard";
 import NutritionProgress from "@/components/NutritionProgress";
 import BottomNavigation from "@/components/BottomNavigation";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -112,6 +117,30 @@ export default function ClientPortal() {
     { label: "Fats", current: 25, target: 50, unit: "g", color: "hsl(var(--chart-4))" },
   ];
 
+  const heroSlides = [
+    {
+      id: 1,
+      title: "Personalized Nutrition for Every Goal",
+      subtitle: "Every meal is thoughtfully crafted by expert nutritionists, inspired by the warmth of a mother's kitchen",
+      ctaText: "Start Today",
+      backgroundImage: heroBanner,
+    },
+    {
+      id: 2,
+      title: "Track. Eat. Transform. Your Health Journey Starts Here.",
+      subtitle: "Join 10,000+ happy customers who achieved their health goals with us",
+      ctaText: "Get Started",
+      backgroundImage: weightLoss,
+    },
+    {
+      id: 3,
+      title: "Expert Nutrition Support - 4 Consults per Month",
+      subtitle: "Get personalized guidance from certified nutritionists throughout your journey",
+      ctaText: "Book Now",
+      backgroundImage: proteinMeal,
+    },
+  ];
+
   const newsArticles = [
     {
       title: "How to Identify Your Daily Calorie Needs Based on Your Goals",
@@ -183,6 +212,20 @@ export default function ClientPortal() {
       {...pageTransitionVariants}
       className="min-h-screen bg-background pb-20"
     >
+      {/* Location and Search Bar */}
+      <LocationSearch
+        location="Mumbai, Maharashtra"
+        onLocationClick={() => console.log("Location clicked")}
+        onSearch={(query) => console.log("Search:", query)}
+      />
+
+      {/* Smart Notification */}
+      <SmartNotification
+        delayMs={120000}
+        onChatNow={() => console.log("Chat now clicked")}
+        onLater={() => console.log("Later clicked")}
+      />
+
       <AnimatePresence mode="wait">
         {activeTab === "home" && (
           <motion.div
@@ -190,14 +233,19 @@ export default function ClientPortal() {
             {...pageTransitionVariants}
             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16"
           >
-            <HeroBanner
-            title="Home-Cooked Goodness, Inspired by Mom"
-            subtitle="Every meal is thoughtfully crafted by expert nutritionists, inspired by the warmth of a mother's kitchen"
-            ctaText="Start Today →"
-            backgroundImage={heroBanner}
-            onCtaClick={() => console.log("Start today clicked")}
-          />
+            {/* Hero Slider */}
+            <HeroSlider
+              slides={heroSlides}
+              autoRotateInterval={5000}
+              onCtaClick={(id) => console.log("Hero CTA clicked:", id)}
+            />
 
+            {/* Health Goals Categories */}
+            <HealthGoalsCategory
+              onCategorySelect={(categoryId) => console.log("Category selected:", categoryId)}
+            />
+
+          {/* Nutrition Products Grid */}
           <motion.section
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -212,7 +260,7 @@ export default function ClientPortal() {
                 viewport={viewportConfig}
                 className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4"
               >
-                Choose Your Health Goal
+                Our Nutrition Products
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -246,6 +294,27 @@ export default function ClientPortal() {
               </div>
             )}
           </motion.section>
+
+          {/* Nutritionist Consultation Slider */}
+          {nutritionistsLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-card rounded-2xl p-6 animate-pulse">
+                  <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4"></div>
+                  <div className="h-4 bg-muted rounded mb-2 w-3/4 mx-auto"></div>
+                  <div className="h-3 bg-muted rounded w-1/2 mx-auto"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <NutritionistSlider
+              nutritionists={nutritionists}
+              onConsult={(id) => console.log(`Consult nutritionist:`, id)}
+            />
+          )}
+
+          {/* Promotional Banner */}
+          <PromotionalBanner autoRotateInterval={4000} />
 
           <motion.section
             initial={{ opacity: 0 }}
@@ -297,45 +366,6 @@ export default function ClientPortal() {
             </div>
           </motion.section>
 
-          <motion.section
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={viewportConfig}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
-            <div className="text-center mb-8 md:mb-12">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportConfig}
-                className="text-3xl md:text-5xl font-bold text-foreground mb-3 md:mb-4 px-4"
-              >
-                Meet Our Team of Nutritionist in ZyaelNutriBox
-              </motion.h2>
-            </div>
-            {nutritionistsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="bg-card rounded-2xl p-6 animate-pulse">
-                    <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-4"></div>
-                    <div className="h-4 bg-muted rounded mb-2 w-3/4 mx-auto"></div>
-                    <div className="h-3 bg-muted rounded w-1/2 mx-auto"></div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {nutritionists.map((nutritionist: any) => (
-                  <NutritionistCard
-                    key={nutritionist.id}
-                    {...nutritionist}
-                    onConsult={() => console.log(`Consult ${nutritionist.name}`)}
-                  />
-                ))}
-              </div>
-            )}
-          </motion.section>
 
           <motion.section
             initial={{ opacity: 0 }}
@@ -470,6 +500,9 @@ export default function ClientPortal() {
               />
             </Carousel>
           </motion.section>
+
+          {/* Footer */}
+          <ClientFooter />
         </motion.div>
         )}
 
@@ -783,106 +816,11 @@ export default function ClientPortal() {
             {...pageTransitionVariants}
             className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
           >
-            <div className="mb-6 md:mb-8">
-              <motion.h1
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-3xl md:text-5xl font-bold text-foreground mb-2 md:mb-3"
-              >
-                Today's Food Journey
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-base md:text-lg text-muted-foreground"
-              >
-                Track your daily meals and nutrition progress
-              </motion.p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-4">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <h2 className="text-2xl font-semibold text-foreground mb-4">Today's Meals</h2>
-                  <div className="space-y-3">
-                    <MealStatusCard
-                      mealType="Breakfast"
-                      status="delivered"
-                      time="8:00 AM"
-                      onViewDetails={() => console.log("View breakfast details")}
-                    />
-                    <MealStatusCard
-                      mealType="Lunch"
-                      status="delivered"
-                      time="1:00 PM"
-                      onViewDetails={() => console.log("View lunch details")}
-                    />
-                    <MealStatusCard
-                      mealType="Dinner"
-                      status="in-transit"
-                      time="Expected 7:00 PM"
-                      onViewDetails={() => console.log("View dinner details")}
-                    />
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="bg-gradient-to-br from-success/10 to-transparent rounded-xl p-6 border border-success/20"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-foreground mb-2">
-                        Great Progress!
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        You're making excellent progress! Keep up the consistent meal completion to reach your goals faster. You've consumed 67% of your daily nutrition target.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="lg:col-span-1"
-              >
-                <div className="sticky top-4 space-y-4">
-                  <div className="bg-white rounded-xl shadow-md p-6">
-                    <h2 className="text-xl font-semibold text-foreground mb-4">Daily Nutrition</h2>
-                    <NutritionProgress items={nutritionData} />
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-md p-6">
-                    <h3 className="text-lg font-semibold text-foreground mb-3">Weekly Streak</h3>
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="text-4xl font-bold text-primary">7</span>
-                      <span className="text-sm text-muted-foreground">days<br/>in a row!</span>
-                    </div>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5, 6, 7].map((day) => (
-                        <div key={day} className="flex-1 h-2 bg-primary rounded-full" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+            <EnhancedTracking
+              nutritionData={nutritionData}
+              onDownloadReport={() => console.log("Download report")}
+              onAddWeight={(weight) => console.log("Add weight:", weight)}
+            />
           </motion.div>
         )}
       </AnimatePresence>
