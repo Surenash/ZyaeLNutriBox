@@ -1,0 +1,15 @@
+{
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "npm.packageManager": "npm",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.expo": true,
+    "**/dist": true
+  }
+}

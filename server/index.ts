@@ -65,7 +65,8 @@ let fastapiProcess: any = null;
 (async () => {
   // Start FastAPI backend in all environments (development and production)
   log("🚀 Starting FastAPI backend server on port 3001...");
-  fastapiProcess = spawn('python', ['run_api.py'], {
+  const pythonCmd = process.platform === 'win32' ? '.venv\\Scripts\\python.exe' : '.venv/bin/python';
+  fastapiProcess = spawn(pythonCmd, ['run_api.py'], {
     cwd: process.cwd(),
     env: { ...process.env, PYTHONUNBUFFERED: '1' },
     stdio: ['ignore', 'pipe', 'pipe']
@@ -138,7 +139,7 @@ let fastapiProcess: any = null;
   server.listen({
     port,
     host: "0.0.0.0",
-    reusePort: true,
+    ...(process.platform !== 'darwin' ? { reusePort: true } : {}),
   }, () => {
     log(`serving on port ${port}`);
   });

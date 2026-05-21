@@ -1,7 +1,13 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+# Get project root (parent of api/ directory)
+_project_root = Path(__file__).parent.parent
+load_dotenv(_project_root / ".env")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -10,16 +16,23 @@ if not DATABASE_URL:
 
 # Create engine without immediate connection test
 # Connection will be tested when first used
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,  # Verify connections before using them
-    pool_size=5,  # Maximum number of connections to keep in pool
-    max_overflow=10,  # Maximum number of connections to create beyond pool_size
-    pool_recycle=3600,  # Recycle connections after 1 hour
-    connect_args={
-        "connect_timeout": 30,  # Longer timeout for Neon
-    }
-)
+is_sqlite = DATABASE_URL.startswith("sqlite")
+
+engine_kwargs = {
+    "pool_pre_ping": True,
+}
+
+if is_sqlite:
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+else:
+    engine_kwargs.update({
+        "pool_size": 5,
+        "max_overflow": 10,
+        "pool_recycle": 3600,
+        "connect_args": {"connect_timeout": 30}
+    })
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

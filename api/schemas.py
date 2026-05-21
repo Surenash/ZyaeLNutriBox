@@ -349,3 +349,149 @@ class ProgressLogResponse(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
+
+# User and Registration Schemas
+class UserResponse(BaseModel):
+    id: str
+    username: str
+    email: str
+    name: str
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    role: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
+
+class RegisterResponse(BaseModel):
+    access_token: str
+    refresh_token: Optional[str] = None
+    token_type: str = "bearer"
+    expires_in: Optional[int] = None
+    user: UserResponse
+
+# Missing Schemas
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    role: Optional[str] = None
+
+class OrderStatusUpdate(BaseModel):
+    status: str
+    notes: Optional[str] = None
+
+class AreaCreate(BaseModel):
+    name: str
+    code: Optional[str] = None
+    description: Optional[str] = None
+    delivery_radius_km: Optional[float] = None
+    is_active: Optional[bool] = True
+
+class AreaUpdate(BaseModel):
+    name: Optional[str] = None
+    code: Optional[str] = None
+    description: Optional[str] = None
+    delivery_radius_km: Optional[float] = None
+    is_active: Optional[bool] = None
+
+class AreaResponse(BaseModel):
+    id: str
+    name: str
+    code: Optional[str] = None
+    description: Optional[str] = None
+    delivery_radius_km: Optional[float] = None
+    is_active: bool
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
+
+class BatchCreate(BaseModel):
+    area_id: str
+    meal_type: str
+    timeslot_start: Optional[datetime] = None
+    timeslot_end: Optional[datetime] = None
+    delivery_agent_id: Optional[str] = None
+
+class BatchUpdate(BaseModel):
+    status: Optional[str] = None
+    delivery_agent_id: Optional[str] = None
+    timeslot_start: Optional[datetime] = None
+    timeslot_end: Optional[datetime] = None
+
+class BatchResponse(BaseModel):
+    id: str
+    area_id: str
+    meal_type: str
+    timeslot_start: Optional[datetime] = None
+    timeslot_end: Optional[datetime] = None
+    status: str
+    delivery_agent_id: Optional[str] = None
+    total_orders: int
+    packed_count: int
+    ready_count: int
+    picked_count: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
+
+class ConsultationCreate(BaseModel):
+    client_id: str
+    nutritionist_id: str
+    date: datetime
+    time_slot: str
+    duration_minutes: Optional[int] = 30
+    notes: Optional[str] = None
+
+class ConsultationResponse(BaseModel):
+    id: str
+    nutritionist_id: str
+    client_id: str
+    date: datetime
+    time_slot: str
+    duration_minutes: int
+    status: Optional[str] = None
+    notes: Optional[str] = None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
+
+class LocationCoordinates(BaseModel):
+    latitude: Optional[str] = None
+    longitude: Optional[str] = None
+
+class DeliveryOrderResponse(BaseModel):
+    order_id: str
+    order_number: Optional[str] = None
+    client_id: str
+    client_name: str
+    client_phone: str
+    client_address: str
+    client_email: str
+    meal_type: str
+    diet_plan: str
+    quantity: int
+    status: str
+    priority: str
+    special_instructions: Optional[str] = None
+    assigned_at: Optional[datetime] = None
+    current_location: Optional[LocationCoordinates] = None
+    estimated_delivery_time: Optional[datetime] = None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True, alias_generator=to_camel)
+
+class MealPlanRatingUpdate(BaseModel):
+    rating: float
+
+class DeliveryConfirmation(BaseModel):
+    notes: Optional[str] = None
+
+class DeliveryAssignment(BaseModel):
+    delivery_person: str
+    estimated_delivery_time: Optional[datetime] = None
+
