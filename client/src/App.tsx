@@ -27,17 +27,17 @@ function Router() {
 
   return (
     <div className="relative">
-      {user && isManagementRoute && (
+      {user && isManagementRoute && location !== '/management' && (
         <div className="fixed top-4 right-4 z-50 flex gap-2">
           <button
             onClick={() => setLocation('/management')}
-            className="px-4 py-2 bg-white text-foreground rounded-full shadow-md hover-elevate active-elevate-2 text-sm font-medium border border-border"
+            className="px-4 py-2 bg-white/90 backdrop-blur-sm text-[#006442] rounded-full shadow-lg hover:bg-white transition-all text-sm font-bold border border-green-100"
           >
             ← Switch Role
           </button>
           <button
             onClick={() => logoutMutation.mutate()}
-            className="px-4 py-2 bg-red-50 text-red-600 rounded-full shadow-md hover:bg-red-100 text-sm font-medium border border-red-200"
+            className="px-4 py-2 bg-red-50/90 backdrop-blur-sm text-red-600 rounded-full shadow-lg hover:bg-red-100 transition-all text-sm font-bold border border-red-100"
           >
             Logout
           </button>
@@ -46,7 +46,9 @@ function Router() {
 
       <Switch>
         <Route path="/" component={LandingPage} />
-        <Route path="/login" component={Login} />
+        
+        {/* Management Routes - Hidden & Protected */}
+        <Route path="/management/login" component={Login} />
         
         <ProtectedRoute path="/management">
           <RoleSelector onRoleSelect={handleRoleSelect} />
