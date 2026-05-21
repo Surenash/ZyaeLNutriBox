@@ -277,7 +277,7 @@ export default function LandingPage() {
                 Access Portal Now
               </Button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
