@@ -74,10 +74,10 @@ export default function Login() {
         <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-sm">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-3xl font-bold tracking-tight text-[#006442]">
-              Management Portal
+              Welcome Back
             </CardTitle>
-            <CardDescription className="text-muted-foreground text-lg">
-              Sign in to access your dashboard
+            <CardDescription className="text-muted-foreground text-lg font-medium">
+              Sign in to your ZyaeL NutriBox account
             </CardDescription>
           </CardHeader>
           <CardContent>
