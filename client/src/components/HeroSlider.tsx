@@ -45,7 +45,7 @@ export default function HeroSlider({
   };
 
   return (
-    <div className="relative w-full h-[400px] md:h-[500px] rounded-2xl md:rounded-3xl overflow-hidden group">
+    <div className="relative w-full h-full overflow-hidden group">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
