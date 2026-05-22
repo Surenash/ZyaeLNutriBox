@@ -35,6 +35,7 @@ import { pageTransitionVariants, viewportConfig } from "@/lib/animations";
 import { useAuth } from "@/hooks/use-auth";
 
 import heroBanner from "@assets/generated_images/Home-cooked_comfort_food_banner_9590a8d1.png";
+import heritageImage from "@assets/generated_images/Healthy_meal_variety_banner_8fc80c10.png";
 import weightLoss from "@assets/generated_images/Healthy_balanced_meal_food_36201b9b.png";
 import veganMeal from "@assets/generated_images/Vegan_plant-based_salad_bowl_552c75a9.png";
 import proteinMeal from "@assets/generated_images/Protein-rich_fitness_meal_28329687.png";
@@ -249,9 +250,24 @@ export default function LandingPage() {
                       </Button>
                     </motion.div>
                     <div className="relative">
-                      <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={viewportConfig} className="aspect-square rounded-[64px] bg-gradient-to-br from-green-800 to-green-950 p-12 flex flex-col justify-between shadow-inner">
-                        <Heart className="h-24 w-24 text-green-400/20" />
-                        <p className="text-3xl font-black leading-tight italic text-green-100">"Every box we deliver is a promise of health and a hug from home."</p>
+                      <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={viewportConfig} className="aspect-square rounded-[64px] overflow-hidden shadow-2xl relative group">
+                        <img src={heritageImage} alt="Our Heritage" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-green-900/80 via-transparent to-transparent opacity-60" />
+                        <div className="absolute bottom-8 left-8 right-8 p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20">
+                          <Heart className="h-8 w-8 text-green-400 mb-4" />
+                          <p className="text-xl font-bold leading-tight italic text-white">"Every box we deliver is a promise of health and a hug from home."</p>
+                        </div>
+                      </motion.div>
+                      {/* Stats Overlay */}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={viewportConfig}
+                        transition={{ delay: 0.5 }}
+                        className="absolute -bottom-10 -right-10 bg-white p-8 rounded-[32px] shadow-2xl text-slate-900 hidden md:block"
+                      >
+                        <p className="text-4xl font-black text-green-600 mb-1">4.9/5</p>
+                        <p className="text-xs font-black uppercase tracking-widest text-slate-400">Customer Rating</p>
                       </motion.div>
                     </div>
                   </div>
