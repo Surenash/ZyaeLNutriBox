@@ -9,11 +9,13 @@ export class DeliveryWebSocket {
   }
 
   private connect() {
+    if (this.ws?.readyState === WebSocket.OPEN || this.ws?.readyState === WebSocket.CONNECTING) return;
+
     try {
       this.ws = new WebSocket(this.url);
       
       this.ws.onopen = () => {
-        console.log('[WebSocket] Connected');
+        if (import.meta.env.DEV) console.log('[WebSocket] Connected');
         if (this.reconnectTimeout) {
           clearTimeout(this.reconnectTimeout);
           this.reconnectTimeout = null;
@@ -25,21 +27,24 @@ export class DeliveryWebSocket {
           const data = JSON.parse(event.data);
           this.emit(data.type, data);
         } catch (error) {
-          console.error('[WebSocket] Parse error:', error);
+          if (import.meta.env.DEV) console.error('[WebSocket] Parse error:', error);
         }
       };
 
       this.ws.onerror = (error) => {
-        console.error('[WebSocket] Error:', error);
+        // Silently handle errors in production to avoid console flood
+        if (import.meta.env.DEV) console.error('[WebSocket] Error:', error);
       };
 
       this.ws.onclose = () => {
-        console.log('[WebSocket] Disconnected');
-        // Reconnect after 3 seconds
-        this.reconnectTimeout = setTimeout(() => this.connect(), 3000);
+        if (import.meta.env.DEV) console.log('[WebSocket] Disconnected');
+        // Reconnect after 5 seconds instead of 3, and only if not already connecting
+        if (!this.reconnectTimeout) {
+          this.reconnectTimeout = setTimeout(() => this.connect(), 5000);
+        }
       };
     } catch (error) {
-      console.error('[WebSocket] Connection error:', error);
+      if (import.meta.env.DEV) console.error('[WebSocket] Connection error:', error);
     }
   }
 
