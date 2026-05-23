@@ -82,10 +82,18 @@ export class DeliveryWebSocket {
 
 // Singleton instance - construct URL dynamically
 function getWebSocketUrl() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  if (apiUrl && apiUrl.startsWith('http')) {
+    // If VITE_API_URL is set, derive WS URL from it
+    const wsProtocol = apiUrl.startsWith('https') ? 'wss:' : 'ws:';
+    const host = apiUrl.replace(/^https?:\/\//, '');
+    return `${wsProtocol}//${host}/ws`;
+  }
+  
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const host = window.location.host;
   const url = `${protocol}//${host}/ws`;
-  console.log('[WebSocket] Connecting to:', url);
+  if (import.meta.env.DEV) console.log('[WebSocket] Connecting to:', url);
   return url;
 }
 

@@ -21,6 +21,7 @@ import NutritionistSlider from "@/components/NutritionistSlider";
 import PromotionalBanner from "@/components/PromotionalBanner";
 import TestimonialCard from "@/components/TestimonialCard";
 import SmartNotification from "@/components/SmartNotification";
+import EnhancedTracking from "@/components/EnhancedTracking";
 import LocationSearch from "@/components/LocationSearch";
 import ClientFooter from "@/components/ClientFooter";
 import BottomNavigation from "@/components/BottomNavigation";
