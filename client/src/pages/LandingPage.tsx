@@ -67,9 +67,51 @@ export default function LandingPage() {
     "Rahul Menon": nutritionist2,
     "Ananya Patel": nutritionist1,
     "Vikram Singh": nutritionist2,
+    "Sneha Reddy": nutritionist1,
   };
 
-  const nutritionists = (Array.isArray(nutritionistsData) ? nutritionistsData : []).map((nutritionist: any) => ({
+  const sampleNutritionists = [
+    {
+      id: "sample-1",
+      name: "Dr. Priya Sharma",
+      specialization: "Clinical Nutritionist",
+      experienceYears: 15,
+      isAvailable: true,
+    },
+    {
+      id: "sample-2",
+      name: "Rahul Menon",
+      specialization: "Sports Nutrition",
+      experienceYears: 12,
+      isAvailable: true,
+    },
+    {
+      id: "sample-3",
+      name: "Ananya Patel",
+      specialization: "PCOS & Women's Health",
+      experienceYears: 10,
+      isAvailable: true,
+    },
+    {
+      id: "sample-4",
+      name: "Vikram Singh",
+      specialization: "Pediatric Nutrition",
+      experienceYears: 8,
+      isAvailable: true,
+    },
+    {
+      id: "sample-5",
+      name: "Sneha Reddy",
+      specialization: "Weight Management",
+      experienceYears: 11,
+      isAvailable: true,
+    },
+  ];
+
+  const nutritionists = (Array.isArray(nutritionistsData) && nutritionistsData.length > 0 
+    ? nutritionistsData 
+    : sampleNutritionists
+  ).map((nutritionist: any) => ({
     ...nutritionist,
     image: nutritionistImageMap[nutritionist.name] || nutritionist1,
     experience: `${nutritionist.experienceYears} years experience`,
@@ -216,10 +258,6 @@ export default function LandingPage() {
 
                 {/* Nutritionist Slider */}
                 <section id="experts">
-                  <div className="text-center mb-8 md:mb-16">
-                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-2 md:mb-4 tracking-tight">Meet Your Experts</h2>
-                    <p className="text-lg md:text-xl text-slate-500 font-medium italic">Clinical guidance for every bite.</p>
-                  </div>
                   <NutritionistSlider
                     nutritionists={nutritionists}
                     onConsult={() => setLocation("/management/login")}
