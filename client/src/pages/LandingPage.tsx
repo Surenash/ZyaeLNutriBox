@@ -50,6 +50,7 @@ import newsSuperfoods from "@assets/stock_images/superfoods_healthy_i_2052ee3c.j
 
 export default function LandingPage() {
   const [activeTab, setActiveTab] = useState("home");
+  const [currentLocation, setCurrentLocation] = useState("Mumbai, Maharashtra");
   const [, setLocation] = useLocation();
   const { user } = useAuth();
 
@@ -204,10 +205,10 @@ export default function LandingPage() {
               Sign In
             </Button>
             <Button 
-              onClick={() => setLocation("/management/login")}
+              onClick={() => setLocation("/signup")}
               className="bg-[#006442] hover:bg-[#004d33] text-white rounded-full px-4 md:px-8 h-9 md:h-12 font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-green-900/20 transition-all hover:scale-105 active:scale-95"
             >
-              Start
+              Sign Up
             </Button>
           </div>
         </div>
@@ -222,8 +223,8 @@ export default function LandingPage() {
         {/* Location & Notification Overlay */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 md:pt-4">
            <LocationSearch
-             location="Mumbai, Maharashtra"
-             onLocationClick={() => {}}
+             location={currentLocation}
+             onLocationUpdate={setCurrentLocation}
              onSearch={(q) => console.log(q)}
            />
         </div>
@@ -244,7 +245,7 @@ export default function LandingPage() {
                    <HeroSlider
                      slides={heroSlides}
                      autoRotateInterval={5000}
-                     onCtaClick={() => setLocation("/management/login")}
+                     onCtaClick={() => setLocation("/signup")}
                    />
                  </div>
               </section>
@@ -253,14 +254,14 @@ export default function LandingPage() {
                 
                 {/* Health Goals Category */}
                 <section id="plans">
-                  <HealthGoalsCategory onCategorySelect={(id) => console.log(id)} />
+                  <HealthGoalsCategory onCategorySelect={(id) => setLocation("/signup")} />
                 </section>
 
                 {/* Nutritionist Slider */}
                 <section id="experts">
                   <NutritionistSlider
                     nutritionists={nutritionists}
-                    onConsult={() => setLocation("/management/login")}
+                    onConsult={() => setLocation("/signup")}
                   />
                 </section>
 
@@ -284,7 +285,7 @@ export default function LandingPage() {
                         <p>There was a time when every morning began with a familiar voice— "Beta, did you eat your breakfast?" That voice was our first nutritionist—our mothers.</p>
                         <p>Their love nourished our hearts. ZyaeL NutriBox brings that home-cooked goodness back with modern clinical precision.</p>
                       </div>
-                      <Button onClick={() => setLocation("/management/login")} className="mt-8 md:mt-12 bg-white text-green-900 hover:bg-green-50 h-12 md:h-16 px-6 md:px-10 rounded-2xl font-black uppercase tracking-widest text-xs md:text-sm shadow-2xl">
+                      <Button onClick={() => setLocation("/signup")} className="mt-8 md:mt-12 bg-white text-green-900 hover:bg-green-50 h-12 md:h-16 px-6 md:px-10 rounded-2xl font-black uppercase tracking-widest text-xs md:text-sm shadow-2xl">
                         Join the Family
                       </Button>
                     </motion.div>
@@ -334,7 +335,7 @@ export default function LandingPage() {
                   <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={viewportConfig} className="bg-gradient-to-br from-[#006442]/10 to-transparent rounded-[32px] md:rounded-[48px] p-8 md:p-24 text-center border border-green-100">
                     <h2 className="text-2xl md:text-5xl font-black text-slate-900 mb-4 md:mb-8 tracking-tight">Home-Cooked Goodness, Inspired by Mom <br />& Perfected by Nutritionists</h2>
                     <p className="text-lg md:text-xl text-slate-500 max-w-3xl mx-auto mb-8 md:mb-12 font-medium">Every meal is thoughtfully crafted by expert nutritionists, inspired by the warmth of a mother's kitchen. It's not just food, it's comfort with a promise of health.</p>
-                    <Button onClick={() => setLocation("/management/login")} className="bg-[#006442] text-white rounded-full h-12 md:h-16 px-8 md:px-12 font-black uppercase tracking-widest text-xs md:text-sm hover:scale-105 transition-all">Subscribe Now</Button>
+                    <Button onClick={() => setLocation("/signup")} className="bg-[#006442] text-white rounded-full h-12 md:h-16 px-8 md:px-12 font-black uppercase tracking-widest text-xs md:text-sm hover:scale-105 transition-all">Subscribe Now</Button>
                   </motion.div>
                 </div>
               </section>

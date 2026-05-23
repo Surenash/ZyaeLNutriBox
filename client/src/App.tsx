@@ -13,6 +13,7 @@ import DeliveryPortal from "@/pages/DeliveryPortal";
 import AdminPortal from "@/pages/AdminPortal";
 import LandingPage from "@/pages/LandingPage";
 import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -46,6 +47,7 @@ function Router() {
 
       <Switch>
         <Route path="/" component={LandingPage} />
+        <Route path="/signup" component={Signup} />
         
         {/* Management Routes - Hidden & Protected */}
         <Route path="/management/login" component={Login} />
