@@ -1,0 +1,12 @@
+node_modules
+.venv
+dist
+.git
+.expo
+.pytest_cache
+*.db
+api.log
+attached_assets
+*.png
+*.jpg
+*.jpeg
