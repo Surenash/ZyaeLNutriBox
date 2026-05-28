@@ -1,0 +1,6 @@
+{
+  "name": "ZyaeL NutriBox Infrastructure",
+  "description": "Unified front-end system containing the Customer, Nutritionist, Delivery, Kitchen, and Admin portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
