@@ -1,4 +1,4 @@
-import { Truck, MapPin, Navigation, Phone, Check } from 'lucide-react';
+import { Truck, MapPin, Navigation, Phone, Check, MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 
 export function DeliveryPortal() {

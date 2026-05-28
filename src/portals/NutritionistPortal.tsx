@@ -1,4 +1,4 @@
-import { Users, FileText, Video, Calendar, Search, X, Plus, Trash2, Edit2, Download, Activity, Clock } from 'lucide-react';
+import { Users, FileText, Video, Calendar, Search, X, Plus, Trash2, Edit2, Download, Activity, Clock, TrendingUp, Target } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'motion/react';
 

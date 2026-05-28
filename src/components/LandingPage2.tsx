@@ -17,7 +17,8 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  CheckCircle
 } from 'lucide-react';
 
 export function LandingPage2() {
