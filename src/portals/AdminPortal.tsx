@@ -173,21 +173,49 @@ function MealPlanManager() {
         <div className="fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center p-4">
            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
               <h3 className="text-xl font-bold mb-4">{editingPlan?.id ? 'Edit Plan' : 'Create Plan'}</h3>
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[60vh] overflow-y-auto px-1">
                  <div>
                     <label className="block text-sm font-bold text-neutral-700 mb-1">Plan Name</label>
                     <input type="text" defaultValue={editingPlan?.name} className="w-full p-2 border border-neutral-200 rounded" />
                  </div>
                  <div>
                     <label className="block text-sm font-bold text-neutral-700 mb-1">Description</label>
-                    <textarea defaultValue={editingPlan?.desc} className="w-full p-2 border border-neutral-200 rounded"></textarea>
+                    <textarea defaultValue={editingPlan?.desc} className="w-full p-2 border border-neutral-200 rounded h-20"></textarea>
+                 </div>
+                 <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <label className="block text-sm font-bold text-neutral-700 mb-1">Weekly Price ($)</label>
+                      <input type="number" defaultValue={editingPlan?.price} className="w-full p-2 border border-neutral-200 rounded" />
+                   </div>
+                   <div>
+                      <label className="block text-sm font-bold text-neutral-700 mb-1">Calories</label>
+                      <input type="text" placeholder="e.g. 1500" className="w-full p-2 border border-neutral-200 rounded" />
+                   </div>
+                 </div>
+                 <div className="grid grid-cols-3 gap-4">
+                   <div>
+                      <label className="block text-sm font-bold text-neutral-700 mb-1">Protein</label>
+                      <input type="text" placeholder="120g" className="w-full p-2 border border-neutral-200 rounded" />
+                   </div>
+                   <div>
+                      <label className="block text-sm font-bold text-neutral-700 mb-1">Carbs</label>
+                      <input type="text" placeholder="150g" className="w-full p-2 border border-neutral-200 rounded" />
+                   </div>
+                   <div>
+                      <label className="block text-sm font-bold text-neutral-700 mb-1">Fats</label>
+                      <input type="text" placeholder="45g" className="w-full p-2 border border-neutral-200 rounded" />
+                   </div>
                  </div>
                  <div>
-                    <label className="block text-sm font-bold text-neutral-700 mb-1">Weekly Price ($)</label>
-                    <input type="number" defaultValue={editingPlan?.price} className="w-full p-2 border border-neutral-200 rounded" />
+                    <label className="block text-sm font-bold text-neutral-700 mb-1">Key Benefits (comma separated)</label>
+                    <textarea placeholder="Reduces body fat, Improves energy..." className="w-full p-2 border border-neutral-200 rounded h-20"></textarea>
+                 </div>
+                 <div>
+                    <label className="block text-sm font-bold text-neutral-700 mb-1">Sample Meals (one per line)</label>
+                    <textarea placeholder="Breakfast: Oats...&#10;Lunch: Chicken..." className="w-full p-2 border border-neutral-200 rounded h-24"></textarea>
                  </div>
               </div>
-              <div className="flex justify-end gap-2 mt-6">
+              <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
                  <button onClick={() => setShowModal(false)} className="px-4 py-2 border rounded font-bold hover:bg-neutral-50">Cancel</button>
                  <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700">Save</button>
               </div>

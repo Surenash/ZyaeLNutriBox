@@ -61,39 +61,87 @@ export function LandingPage2() {
   const mealPlans = [
     {
       title: "Weight Loss",
-      description: "Calorie-deficit meals tailored for effective weight loss",
+      description: "Scientifically designed meals for sustainable weight management with balanced portions and nutrient-dense ingredients.",
       originalPrice: 15000,
       currentPrice: 12000,
       rating: 4.8,
       reviewCount: 324,
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2670&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2670&auto=format&fit=crop",
+      benefits: [
+        "Reduces body fat by 15-20% in 3 months",
+        "Boosts metabolism naturally",
+        "Improves energy levels",
+        "Personalized calorie targets"
+      ],
+      macros: { calories: "1500", protein: "120g", carbs: "150g", fats: "45g" },
+      sampleMeals: [
+        "Breakfast: Oats with berries (320 kcal)",
+        "Lunch: Grilled chicken with quinoa (450 kcal)",
+        "Dinner: Baked fish with broccoli (400 kcal)"
+      ]
     },
     {
       title: "Muscle Gain",
-      description: "High-protein nutrition plans to support muscle building",
+      description: "High-protein nutrition for strength and muscle building with optimal macro distribution for recovery.",
       originalPrice: 18000,
       currentPrice: 14500,
       rating: 4.9,
       reviewCount: 215,
-      image: "https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2670&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=2670&auto=format&fit=crop",
+      benefits: [
+        "Gain 3-5 kg lean muscle mass",
+        "Enhanced workout performance",
+        "Faster muscle recovery",
+        "Optimized protein timing"
+      ],
+      macros: { calories: "2800", protein: "200g", carbs: "320g", fats: "85g" },
+      sampleMeals: [
+        "Breakfast: Egg white omelette (450 kcal)",
+        "Lunch: Grilled chicken breast (650 kcal)",
+        "Dinner: Lean beef with quinoa (550 kcal)"
+      ]
     },
     {
       title: "Balanced Nutrition",
-      description: "Healthy daily meals for maintaining overall wellbeing",
+      description: "Complete nutrition for overall health and wellness with essential vitamins and minerals.",
       originalPrice: 14000,
       currentPrice: 11000,
       rating: 4.7,
       reviewCount: 189,
-      image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2653&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2653&auto=format&fit=crop",
+      benefits: [
+        "Maintains optimal body weight",
+        "Boosts immune system",
+        "Improves digestion",
+        "Enhances mental clarity"
+      ],
+      macros: { calories: "2000", protein: "100g", carbs: "250g", fats: "65g" },
+      sampleMeals: [
+        "Breakfast: Multigrain toast (380 kcal)",
+        "Lunch: Dal with brown rice (480 kcal)",
+        "Dinner: Grilled fish with salad (420 kcal)"
+      ]
     },
     {
       title: "PCOS Friendly",
-      description: "Low-GI meals designed specifically for hormone balance",
+      description: "Low-GI meals designed specifically for hormone balance and managing glucose levels.",
       originalPrice: 16000,
       currentPrice: 13000,
       rating: 4.9,
       reviewCount: 156,
-      image: "https://images.unsplash.com/photo-1543362906-acfc16c67564?q=80&w=2670&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1543362906-acfc16c67564?q=80&w=2670&auto=format&fit=crop",
+      benefits: [
+        "Stabilizes blood sugar levels",
+        "Reduces insulin resistance",
+        "Hormonal balance support",
+        "Weight management for PCOS"
+      ],
+      macros: { calories: "1600", protein: "110g", carbs: "140g", fats: "50g" },
+      sampleMeals: [
+        "Breakfast: Low GI berries oats (300 kcal)",
+        "Lunch: Grilled chicken cauliflower (420 kcal)",
+        "Dinner: Baked fish with greens (380 kcal)"
+      ]
     }
   ];
 
@@ -540,6 +588,59 @@ export function LandingPage2() {
                     <div className="p-8">
                       <p className="text-slate-600 text-lg mb-8 font-medium leading-relaxed">{selectedPlan.description}</p>
                       
+                      {/* Macros Section */}
+                      {selectedPlan.macros && (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                          <div className="bg-green-50 p-4 rounded-2xl text-center border border-green-100">
+                            <p className="text-xl font-black text-[#006442]">{selectedPlan.macros.calories}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Calories</p>
+                          </div>
+                          <div className="bg-blue-50 p-4 rounded-2xl text-center border border-blue-100">
+                            <p className="text-xl font-black text-blue-700">{selectedPlan.macros.protein}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Protein</p>
+                          </div>
+                          <div className="bg-orange-50 p-4 rounded-2xl text-center border border-orange-100">
+                            <p className="text-xl font-black text-orange-700">{selectedPlan.macros.carbs}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Carbs</p>
+                          </div>
+                          <div className="bg-purple-50 p-4 rounded-2xl text-center border border-purple-100">
+                            <p className="text-xl font-black text-purple-700">{selectedPlan.macros.fats}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fats</p>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        {/* Benefits Section */}
+                        {selectedPlan.benefits && (
+                          <div>
+                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">Key Benefits</h4>
+                            <ul className="space-y-3">
+                              {selectedPlan.benefits.map((benefit: string, i: number) => (
+                                <li key={i} className="flex items-start gap-3">
+                                  <div className="bg-green-100 p-1 rounded-full mt-0.5"><CheckCircle className="w-3 h-3 text-green-700" /></div>
+                                  <span className="text-slate-700 font-medium text-sm">{benefit}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Sample Meals Section */}
+                        {selectedPlan.sampleMeals && (
+                          <div>
+                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">Sample Daily Meals</h4>
+                            <ul className="space-y-3">
+                              {selectedPlan.sampleMeals.map((meal: string, i: number) => (
+                                <li key={i} className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-slate-700 font-medium text-sm">
+                                  {meal}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                      
                       <div className="mb-8">
                         <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">What's Included</h4>
                         <ul className="space-y-3">
@@ -550,10 +651,6 @@ export function LandingPage2() {
                           <li className="flex items-start gap-3">
                             <div className="bg-blue-100 p-1 rounded-full mt-0.5"><User className="w-3 h-3 text-blue-700" /></div>
                             <span className="text-slate-700 font-medium">4 Personal Consultations with a Certified Nutritionist</span>
-                          </li>
-                          <li className="flex items-start gap-3">
-                            <div className="bg-purple-100 p-1 rounded-full mt-0.5"><MessageSquare className="w-3 h-3 text-purple-700" /></div>
-                            <span className="text-slate-700 font-medium">24/7 Chat support with your wellness coach</span>
                           </li>
                         </ul>
                       </div>
