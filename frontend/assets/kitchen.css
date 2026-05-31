@@ -1,0 +1,172 @@
+/* KitchenPortal.css */
+
+.kitchen-page-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #0a0a0a; /* neutral-950 */
+  color: #ffffff;
+}
+
+.kitchen-sidebar {
+  background-color: #171717; /* neutral-900 */
+  border-right: 1px solid #262626; /* neutral-800 */
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 5rem; /* w-20 */
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .kitchen-sidebar {
+    width: 16rem; /* md:w-64 */
+  }
+}
+
+.kitchen-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0 1.5rem;
+  margin-bottom: 2.5rem;
+  color: #f97316; /* orange-500 */
+}
+
+@media (min-width: 768px) {
+  .kitchen-sidebar-header {
+    justify-content: flex-start;
+  }
+}
+
+.kitchen-nav-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  transition: all 0.2s;
+  color: #a3a3a3; /* neutral-400 */
+}
+
+.kitchen-nav-btn.active {
+  background-color: #f97316; /* orange-500 */
+  color: #ffffff;
+}
+
+.kitchen-nav-btn:hover:not(.active) {
+  background-color: #262626; /* neutral-800 */
+  color: #ffffff;
+}
+
+.kitchen-main-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* KDS Order Card */
+.kitchen-order-card {
+  min-width: 320px;
+  max-width: 350px;
+  border: 1px solid #404040; /* neutral-700 */
+  background-color: #262626; /* neutral-800 */
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  height: max-content;
+}
+
+.kitchen-order-header {
+  padding: 0.75rem;
+  border-bottom: 1px solid #404040; /* neutral-700 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #171717; /* neutral-900 */
+}
+
+.kitchen-order-header.high-priority {
+  background-color: rgba(136, 19, 55, 0.4); /* rose-900/40 */
+}
+
+/* Shared UI Elements */
+.kitchen-input {
+  width: 100%;
+  background-color: #262626; /* neutral-800 */
+  border: 1px solid #404040; /* neutral-700 */
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  color: #ffffff;
+  outline: none;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.kitchen-input:focus {
+  border-color: #f97316;
+}
+
+.kitchen-btn-primary {
+  width: 100%;
+  padding: 1rem;
+  background-color: #10b981; /* emerald-600 */
+  color: #ffffff;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0.75rem;
+  transition: background-color 0.2s;
+}
+
+.kitchen-btn-primary:hover {
+  background-color: #059669; /* emerald-500 */
+}
+
+.kitchen-btn-secondary {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #171717; /* neutral-900 */
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.kitchen-btn-secondary:hover {
+  background-color: #262626; /* neutral-800 */
+}
+
+.kitchen-modal-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(10, 10, 10, 0.8); /* neutral-950/80 */
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.kitchen-modal-content {
+  background-color: #171717; /* neutral-900 */
+  border: 1px solid #404040; /* neutral-700 */
+  padding: 2rem;
+  border-radius: 1rem;
+  max-width: 28rem;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+}

@@ -1,0 +1,87 @@
+/* CustomerPortal.css */
+
+.cust-page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #f8fafc; /* neutral-50 */
+}
+
+.cust-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  flex-shrink: 0;
+}
+
+.cust-sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+}
+
+.cust-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 2rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.cust-card-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16rem;
+  height: 16rem;
+  background-color: #ecfdf5; /* emerald-50 */
+  border-bottom-left-radius: 9.375rem; /* 150px */
+  z-index: 0;
+  transition: background-color 0.7s ease;
+}
+
+.cust-card:hover .cust-card-accent {
+  background-color: #d1fae5; /* emerald-100 */
+}
+
+.cust-btn-primary {
+  background-color: #059669; /* emerald-600 */
+  color: #ffffff;
+  border-radius: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.2);
+}
+
+.cust-btn-primary:hover {
+  background-color: #047857; /* emerald-700 */
+}
+
+.cust-btn-primary:active {
+  transform: scale(0.95);
+}
+
+.cust-btn-disabled {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
