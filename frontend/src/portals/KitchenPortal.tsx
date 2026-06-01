@@ -1,6 +1,6 @@
 import { ChefHat, CheckCircle, Clock, Calendar, Truck, RotateCcw, AlertTriangle, User, X, Activity, AlertCircle, Zap, ShieldAlert, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import '../../assets/Kitchen.css'; // Make sure path is correct
+import '../../assets/kitchen.css'; // Make sure path is correct
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8080';
 
