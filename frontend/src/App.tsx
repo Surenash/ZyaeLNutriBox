@@ -57,6 +57,8 @@ export default function App() {
         {/* Universal Login */}
         <Route path="/login" element={<Login portalName="ZyaeL Portal Access" onLogin={() => {}} />} />
         <Route path="/signin" element={<Navigate to="/login" replace />} />
+        <Route path="/management" element={<Navigate to="/login" replace />} />
+
         
         {/* --- SECURED PORTAL ROUTES --- */}
         <Route path="/customer/*" element={

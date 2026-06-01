@@ -12,6 +12,20 @@ export function LandingPage2() {
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('token');
+  const userRole = localStorage.getItem('role') || '';
+  const userId = localStorage.getItem('token') || '';
+
+  const getPortalRoute = () => {
+    const role = userRole.toUpperCase();
+    if (userId.startsWith('MEDI')) return '/media';
+    if (role.includes('ADMIN') && !role.includes('KITCHEN')) return '/admin';
+    if (role.includes('KITCHEN')) return '/kitchen';
+    if (role.includes('NUTR')) return '/nutritionist';
+    if (role.includes('DRIV') || role.includes('DELIVERY')) return '/delivery';
+    return '/customer';
+  };
+
   // --- DYNAMIC STATE VARIABLES ---
   const [mealPlans, setMealPlans] = useState<any[]>([]);
   const [nutritionists, setNutritionists] = useState<any[]>([]);
@@ -165,18 +179,41 @@ export function LandingPage2() {
             <a href="#news" className="hover:text-[#006442] transition-all">News</a>
           </div>
           <div className="flex items-center gap-2 md:gap-4">
-            <button 
-              onClick={() => navigate("/login")}
-              className="text-[#006442] font-black uppercase tracking-widest text-[10px] md:text-xs h-9 md:h-12 px-3 md:px-6 hover:bg-green-50 rounded-full transition-colors"
-            >
-              Sign In
-            </button>
-            <button 
-              onClick={() => navigate("/signup")}
-              className="bg-[#006442] hover:bg-[#004d33] text-white rounded-full px-4 md:px-8 h-9 md:h-12 font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-green-900/20 transition-all hover:scale-105 active:scale-95"
-            >
-              Sign Up
-            </button>
+            {token ? (
+              <>
+                <button 
+                  onClick={() => navigate(getPortalRoute())}
+                  className="bg-[#006442] hover:bg-[#004d33] text-white rounded-full px-4 md:px-8 h-9 md:h-12 font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-green-900/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
+                >
+                  My Portal
+                </button>
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('role');
+                    window.location.reload();
+                  }}
+                  className="text-red-600 hover:text-red-700 font-black uppercase tracking-widest text-[10px] md:text-xs h-9 md:h-12 px-3 md:px-6 hover:bg-red-50 rounded-full transition-colors"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  onClick={() => navigate("/login")}
+                  className="text-[#006442] font-black uppercase tracking-widest text-[10px] md:text-xs h-9 md:h-12 px-3 md:px-6 hover:bg-green-50 rounded-full transition-colors"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={() => navigate("/signup")}
+                  className="bg-[#006442] hover:bg-[#004d33] text-white rounded-full px-4 md:px-8 h-9 md:h-12 font-black uppercase tracking-widest text-[10px] md:text-xs shadow-xl shadow-green-900/20 transition-all hover:scale-105 active:scale-95"
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -485,19 +522,19 @@ export function LandingPage2() {
                 <Home className="w-6 h-6" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Home</span>
               </Link>
-              <Link to="/login" className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
+              <Link to={token ? getPortalRoute() : "/login"} className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
                 <ShoppingCart className="w-6 h-6" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Cart</span>
               </Link>
-              <Link to="/login" className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
+              <Link to={token ? getPortalRoute() : "/login"} className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
                 <ShoppingBag className="w-6 h-6" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Orders</span>
               </Link>
-              <Link to="/login" className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
+              <Link to={token ? getPortalRoute() : "/login"} className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
                 <Truck className="w-6 h-6" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Track</span>
               </Link>
-              <Link to="/login" className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
+              <Link to={token ? getPortalRoute() : "/login"} className="flex flex-col items-center gap-1 text-slate-400 hover:text-[#006442] transition-colors">
                 <User className="w-6 h-6" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Profile</span>
               </Link>
