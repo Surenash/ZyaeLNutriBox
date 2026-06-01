@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Calendar, Activity, Clock, Video, User, Home, ShoppingCart, ShoppingBag, Truck, Download, Save, Edit2, X, CheckCircle2, Zap, Phone, FileText, Package } from 'lucide-react';
+import { MapPin, Calendar, Activity, Clock, Video, User, Home, ShoppingCart, ShoppingBag, Truck, Download, Save, Edit2, X, CheckCircle2, Zap, Phone, FileText, Package, TrendingUp, Flame, Target, Award, Droplets, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import '../../assets/Customer.css'; // Make sure this path is correct for your project!
@@ -267,80 +267,300 @@ function OrdersView() {
 }
 
 function TrackView() {
-  const [trackingData, setTrackingData] = useState<any>(null);
+  const [activeSection, setActiveSection] = useState<'overview' | 'meals' | 'insights'>('overview');
 
-  useEffect(() => {
-    fetch(`${API_BASE}/api/customer/today?user_id=${getUserId()}`)
-      .then(res => res.json())
-      .then(data => setTrackingData(data))
-      .catch(() => setTrackingData({ message: "Network error" }));
-  }, []);
+  // --- Rich Mock Data ---
+  const mockGoal = { type: 'Weight Loss', targetWeight: 68, currentWeight: 73.4, startWeight: 82, plan: 'PCOS Friendly', streak: 14 };
 
-  if (!trackingData) return <div className="text-center py-20 font-bold text-neutral-500 animate-pulse">Syncing timeline...</div>;
+  const weeklyWeight = [
+    { day: 'Mon', kg: 74.8 }, { day: 'Tue', kg: 74.3 }, { day: 'Wed', kg: 74.0 },
+    { day: 'Thu', kg: 73.9 }, { day: 'Fri', kg: 73.6 }, { day: 'Sat', kg: 73.5 }, { day: 'Sun', kg: 73.4 }
+  ];
+  const maxWeight = Math.max(...weeklyWeight.map(d => d.kg));
+  const minWeight = Math.min(...weeklyWeight.map(d => d.kg));
 
-  if (trackingData.message) return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-3xl font-black tracking-tighter mb-8 uppercase">Your Progress</h2>
-      <div className="cust-card text-center p-8">
-         <Package className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
-         <p className="text-neutral-500 font-bold">{trackingData.message}</p>
-      </div>
-    </div>
-  );
+  const todayNutrition = { calories: { consumed: 1320, target: 1600 }, protein: { consumed: 98, target: 110 }, carbs: { consumed: 118, target: 140 }, fats: { consumed: 38, target: 50 }, water: { consumed: 1.8, target: 2.5 } };
 
-  const totalCalories = (trackingData.macros?.protein * 4) + (trackingData.macros?.carbs * 4) + (trackingData.macros?.fats * 9);
+  const weeklyNutrition = [
+    { day: 'Mon', pct: 92 }, { day: 'Tue', pct: 87 }, { day: 'Wed', pct: 95 }, 
+    { day: 'Thu', pct: 78 }, { day: 'Fri', pct: 100 }, { day: 'Sat', pct: 88 }, { day: 'Sun', pct: 82 }
+  ];
+
+  const todayMeals = [
+    { time: '7:30 AM', name: 'Low-GI Oats + Cinnamon + Berries', kcal: 300, status: 'DELIVERED', type: 'Breakfast' },
+    { time: '10:30 AM', name: 'Flaxseed Smoothie', kcal: 180, status: 'DELIVERED', type: 'Mid-Morning' },
+    { time: '1:00 PM', name: 'Grilled Chicken + Cauliflower Rice', kcal: 420, status: 'IN_TRANSIT', type: 'Lunch' },
+    { time: '4:30 PM', name: 'Handful of Walnuts + Green Tea', kcal: 120, status: 'COOKING', type: 'Evening Snack' },
+    { time: '7:30 PM', name: 'Baked Fish + Steamed Greens', kcal: 380, status: 'PENDING', type: 'Dinner' },
+  ];
+
+  const healthInsights = [
+    { icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50', title: 'Weight Trend', value: '−8.6 kg total', desc: 'In 6 weeks. On track to hit goal in ~4 weeks.' },
+    { icon: Flame, color: 'text-orange-600', bg: 'bg-orange-50', title: 'Calorie Adherence', value: '91% avg', desc: 'Excellent. Staying within your deficit window.' },
+    { icon: Heart, color: 'text-rose-500', bg: 'bg-rose-50', title: 'PCOS Score', value: 'Low Risk', desc: 'Stable blood sugar indicators this week.' },
+    { icon: Droplets, color: 'text-blue-600', bg: 'bg-blue-50', title: 'Hydration', value: '1.8 / 2.5 L', desc: 'Drink 2 more glasses to hit today\'s target.' },
+  ];
+
+  const weightLostPct = Math.round(((mockGoal.startWeight - mockGoal.currentWeight) / (mockGoal.startWeight - mockGoal.targetWeight)) * 100);
+
+  const mealStatusConfig: Record<string, { color: string; bg: string; dot: string; label: string; Icon: any }> = {
+    DELIVERED: { color: 'text-emerald-600', bg: 'bg-emerald-50', dot: 'bg-emerald-400', label: 'Delivered', Icon: CheckCircle2 },
+    IN_TRANSIT: { color: 'text-amber-600', bg: 'bg-amber-50', dot: 'bg-amber-400', label: 'On the way', Icon: Truck },
+    COOKING:   { color: 'text-orange-600', bg: 'bg-orange-50', dot: 'bg-orange-400', label: 'Cooking', Icon: Zap },
+    PENDING:   { color: 'text-neutral-400', bg: 'bg-neutral-100', dot: 'bg-neutral-300', label: 'Scheduled', Icon: Clock },
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h2 className="text-3xl font-black tracking-tighter mb-8 uppercase text-neutral-900">Your Progress</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="cust-card p-8">
-          <h3 className="text-lg font-black mb-8 uppercase tracking-tight">Today's Nutrition</h3>
-          <div className="space-y-4">
-             <div className="flex justify-between items-center p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
-                <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Total Calories</span>
-                <span className="font-black text-lg text-emerald-600">{totalCalories || 0} kcal</span>
-             </div>
-             <div className="grid grid-cols-3 gap-4">
-                <div className="bg-blue-50 p-4 rounded-2xl text-center">
-                   <span className="block text-[10px] font-black uppercase tracking-widest text-blue-400 mb-1">Protein</span>
-                   <span className="font-black text-lg text-blue-600">{trackingData.macros?.protein || 0}g</span>
-                </div>
-                <div className="bg-amber-50 p-4 rounded-2xl text-center">
-                   <span className="block text-[10px] font-black uppercase tracking-widest text-amber-400 mb-1">Carbs</span>
-                   <span className="font-black text-lg text-amber-600">{trackingData.macros?.carbs || 0}g</span>
-                </div>
-                <div className="bg-rose-50 p-4 rounded-2xl text-center">
-                   <span className="block text-[10px] font-black uppercase tracking-widest text-rose-400 mb-1">Fats</span>
-                   <span className="font-black text-lg text-rose-600">{trackingData.macros?.fats || 0}g</span>
-                </div>
-             </div>
-             {trackingData.customInstructions && (
-               <div className="mt-4 p-3 bg-neutral-100 rounded-xl">
-                 <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-1">Dietary Request Saved:</p>
-                 <p className="text-xs text-neutral-700 font-medium">{trackingData.customInstructions}</p>
-               </div>
-             )}
-          </div>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+        <div>
+          <h2 className="text-3xl font-black tracking-tighter uppercase text-neutral-900">Your Progress</h2>
+          <p className="text-neutral-400 font-semibold text-sm mt-1">Plan: <span className="text-emerald-600 font-black">{mockGoal.plan}</span> · Goal: <span className="text-neutral-700 font-black">{mockGoal.type}</span></p>
         </div>
-
-        <div className="cust-card p-8 group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-[64px] -z-10 transition-colors" />
-          <div className="flex justify-between items-start mb-8">
-             <h3 className="text-lg font-black uppercase tracking-tight">Assigned Meal</h3>
-             {trackingData.otp && (
-               <div className="text-right">
-                 <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 block mb-1">Pickup OTP</span>
-                 <span className="bg-neutral-900 text-white px-2 py-1 rounded text-xs font-mono font-bold tracking-widest">{trackingData.otp}</span>
-               </div>
-             )}
-          </div>
-          <div className="space-y-4">
-             <MealStatusRow status={trackingData.status} title={trackingData.mealName} />
-          </div>
+        <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 px-4 py-2 rounded-full">
+          <Flame className="w-4 h-4 text-amber-500" />
+          <span className="text-amber-700 font-black text-sm">{mockGoal.streak}-day streak</span>
         </div>
       </div>
+
+      {/* Section Tabs */}
+      <div className="flex gap-2 mb-8 bg-neutral-100 p-1 rounded-2xl w-fit">
+        {(['overview', 'meals', 'insights'] as const).map(s => (
+          <button key={s} onClick={() => setActiveSection(s)}
+            className={`px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${
+              activeSection === s ? 'bg-white text-neutral-900 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
+            }`}>
+            {s}
+          </button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div key={activeSection} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }}>
+
+          {/* === OVERVIEW TAB === */}
+          {activeSection === 'overview' && (
+            <div className="space-y-6">
+
+              {/* Goal Progress Banner */}
+              <div className="cust-card p-8 bg-gradient-to-br from-emerald-600 to-teal-700 text-white border-0">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                  <div>
+                    <p className="text-emerald-200 text-[10px] font-black uppercase tracking-[0.3em] mb-2">Goal Progress</p>
+                    <div className="flex items-end gap-3 mb-1">
+                      <span className="text-5xl font-black">{mockGoal.currentWeight}</span>
+                      <span className="text-emerald-300 text-lg font-bold mb-1">kg now</span>
+                    </div>
+                    <p className="text-emerald-200 text-sm font-semibold">Started at {mockGoal.startWeight} kg · Target {mockGoal.targetWeight} kg</p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <div className="relative w-24 h-24">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="3"/>
+                        <circle cx="18" cy="18" r="15.9" fill="none" stroke="white" strokeWidth="3"
+                          strokeDasharray={`${weightLostPct} ${100 - weightLostPct}`} strokeLinecap="round"/>
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-xl font-black">{weightLostPct}%</span>
+                        <span className="text-[9px] font-black text-emerald-200 uppercase">Done</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <div className="flex justify-between text-[10px] font-black text-emerald-200 uppercase tracking-widest mb-2">
+                    <span>Start: {mockGoal.startWeight}kg</span><span>Target: {mockGoal.targetWeight}kg</span>
+                  </div>
+                  <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+                    <div className="h-full bg-white rounded-full transition-all" style={{ width: `${weightLostPct}%` }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Weight This Week */}
+              <div className="cust-card p-8">
+                <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 mb-6">Weight This Week</h3>
+                <div className="flex items-end justify-between gap-2 h-32">
+                  {weeklyWeight.map((d, i) => {
+                    const pct = ((d.kg - minWeight) / ((maxWeight - minWeight) || 1)) * 100;
+                    const barH = 20 + (100 - pct) * 0.8;
+                    const isToday = i === weeklyWeight.length - 1;
+                    return (
+                      <div key={d.day} className="flex-1 flex flex-col items-center gap-2">
+                        <span className="text-[10px] font-black text-neutral-500">{d.kg}</span>
+                        <div className={`w-full rounded-t-xl transition-all ${isToday ? 'bg-emerald-500' : 'bg-neutral-200'}`} style={{ height: `${barH}%` }} />
+                        <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? 'text-emerald-600' : 'text-neutral-400'}`}>{d.day}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Today's Nutrition */}
+              <div className="cust-card p-8">
+                <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 mb-6">Today's Nutrition</h3>
+                <div className="space-y-4">
+                  {[
+                    { label: 'Calories', consumed: todayNutrition.calories.consumed, target: todayNutrition.calories.target, unit: 'kcal', color: 'bg-emerald-500' },
+                    { label: 'Protein', consumed: todayNutrition.protein.consumed, target: todayNutrition.protein.target, unit: 'g', color: 'bg-blue-500' },
+                    { label: 'Carbs', consumed: todayNutrition.carbs.consumed, target: todayNutrition.carbs.target, unit: 'g', color: 'bg-amber-500' },
+                    { label: 'Fats', consumed: todayNutrition.fats.consumed, target: todayNutrition.fats.target, unit: 'g', color: 'bg-rose-500' },
+                    { label: 'Water', consumed: todayNutrition.water.consumed, target: todayNutrition.water.target, unit: 'L', color: 'bg-sky-500' },
+                  ].map(n => {
+                    const pct = Math.min(Math.round((n.consumed / n.target) * 100), 100);
+                    return (
+                      <div key={n.label}>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-black text-neutral-600 uppercase tracking-widest">{n.label}</span>
+                          <span className="text-xs font-black text-neutral-500">{n.consumed} / {n.target} {n.unit}</span>
+                        </div>
+                        <div className="w-full h-2.5 bg-neutral-100 rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full ${n.color}`} style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Weekly Adherence */}
+              <div className="cust-card p-8">
+                <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 mb-6">Weekly Plan Adherence</h3>
+                <div className="flex items-end gap-3">
+                  {weeklyNutrition.map((d, i) => {
+                    const isToday = i === weeklyNutrition.length - 1;
+                    return (
+                      <div key={d.day} className="flex-1 flex flex-col items-center gap-2">
+                        <span className="text-[10px] font-black text-neutral-500">{d.pct}%</span>
+                        <div className="w-full rounded-t-lg" style={{ height: `${d.pct * 0.6}px`, background: isToday ? '#10b981' : d.pct >= 90 ? '#6ee7b7' : '#d1fae5' }} />
+                        <span className={`text-[10px] font-black uppercase ${isToday ? 'text-emerald-600' : 'text-neutral-400'}`}>{d.day}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* === MEALS TAB === */}
+          {activeSection === 'meals' && (
+            <div className="space-y-4">
+              <div className="cust-card p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400">Today's Meal Timeline</h3>
+                  <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-widest border border-emerald-100">
+                    {todayMeals.filter(m => m.status === 'DELIVERED').length}/{todayMeals.length} Delivered
+                  </span>
+                </div>
+                <div className="relative">
+                  {/* Timeline line */}
+                  <div className="absolute left-[22px] top-4 bottom-4 w-0.5 bg-neutral-100" />
+                  <div className="space-y-4">
+                    {todayMeals.map((meal, i) => {
+                      const cfg = mealStatusConfig[meal.status];
+                      const Icon = cfg.Icon;
+                      return (
+                        <div key={i} className="flex items-start gap-4 relative">
+                          <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 z-10 shadow-sm ${cfg.bg} ${cfg.color}`}>
+                            <Icon className="w-5 h-5" />
+                          </div>
+                          <div className={`flex-1 p-4 rounded-2xl border ${meal.status === 'DELIVERED' ? 'bg-white border-neutral-100' : 'bg-neutral-50 border-neutral-100'}`}>
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-0.5">{meal.type} · {meal.time}</p>
+                                <p className={`font-black text-sm ${meal.status === 'DELIVERED' ? 'text-neutral-900' : 'text-neutral-500'}`}>{meal.name}</p>
+                              </div>
+                              <span className="text-[10px] font-black text-neutral-400 shrink-0">{meal.kcal} kcal</span>
+                            </div>
+                            <span className={`inline-block mt-2 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${cfg.bg} ${cfg.color}`}>
+                              {cfg.label}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Today's calorie summary */}
+              <div className="cust-card p-6">
+                <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 mb-4">Calorie Summary</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-100 text-center">
+                    <p className="text-2xl font-black text-neutral-900">{todayMeals.filter(m=>m.status==='DELIVERED').reduce((a,m)=>a+m.kcal,0)}</p>
+                    <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest mt-1">Consumed</p>
+                  </div>
+                  <div className="bg-neutral-50 p-4 rounded-2xl border border-neutral-100 text-center">
+                    <p className="text-2xl font-black text-amber-600">{todayMeals.filter(m=>m.status!=='DELIVERED').reduce((a,m)=>a+m.kcal,0)}</p>
+                    <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest mt-1">Remaining</p>
+                  </div>
+                  <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 text-center">
+                    <p className="text-2xl font-black text-emerald-600">{todayMeals.reduce((a,m)=>a+m.kcal,0)}</p>
+                    <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-1">Day Total</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* === INSIGHTS TAB === */}
+          {activeSection === 'insights' && (
+            <div className="space-y-6">
+              {/* Achievement badges */}
+              <div className="cust-card p-8">
+                <h3 className="text-sm font-black uppercase tracking-widest text-neutral-400 mb-6">Achievements</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {[
+                    { icon: '🔥', label: '14-Day Streak', sub: 'Consistency champ!', unlocked: true },
+                    { icon: '⚖️', label: '5kg Lost', sub: 'Halfway to goal', unlocked: true },
+                    { icon: '💧', label: 'Hydration Hero', sub: '7 days at 2.5L', unlocked: true },
+                    { icon: '🥗', label: '30-Day Streak', sub: 'Keep going!', unlocked: false },
+                    { icon: '🏆', label: 'Goal Achieved', sub: 'Reach 68kg', unlocked: false },
+                    { icon: '⭐', label: 'Review Star', sub: 'Leave a review', unlocked: false },
+                  ].map((badge, i) => (
+                    <div key={i} className={`p-4 rounded-2xl border text-center transition-all ${
+                      badge.unlocked ? 'bg-white border-emerald-100 shadow-sm' : 'bg-neutral-50 border-neutral-100 opacity-50 grayscale'
+                    }`}>
+                      <span className="text-3xl block mb-2">{badge.icon}</span>
+                      <p className="font-black text-xs text-neutral-900 mb-0.5">{badge.label}</p>
+                      <p className="text-[9px] font-bold text-neutral-400">{badge.sub}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Health Insights */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {healthInsights.map((insight, i) => {
+                  const Icon = insight.icon;
+                  return (
+                    <div key={i} className="cust-card p-6">
+                      <div className={`w-10 h-10 rounded-2xl ${insight.bg} flex items-center justify-center mb-4`}>
+                        <Icon className={`w-5 h-5 ${insight.color}`} />
+                      </div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-1">{insight.title}</p>
+                      <p className={`text-2xl font-black mb-1 ${insight.color}`}>{insight.value}</p>
+                      <p className="text-xs text-neutral-500 font-medium leading-relaxed">{insight.desc}</p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Nutritionist note */}
+              <div className="cust-card p-6 border-l-4 border-emerald-500">
+                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-2">📋 Note from Dr. Sneha Iyer</p>
+                <p className="text-sm text-neutral-700 font-medium leading-relaxed">
+                  "Great progress this week! Your insulin response is stabilizing beautifully. Keep avoiding refined sugars and try to get 8 hours of sleep — it makes a huge difference for PCOS management. See you at our next consult on Friday!"
+                </p>
+                <p className="text-[10px] font-bold text-neutral-400 mt-3 uppercase tracking-widest">Sent — 30 May 2026</p>
+              </div>
+            </div>
+          )}
+
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
