@@ -18,14 +18,18 @@ import { NewsPage } from './components/NewsPage';
 import { ArticlePage } from './components/ArticlePage';
 import { MediaPortal } from './portals/MediaPortal';
 
+import { ManagementPortal } from './components/ManagementPortal';
+import { useState } from 'react';
+
 // --- AIRTIGHT SECURITY WRAPPER ---
-function AuthWrapper({ allowedRoles, children }: { allowedRoles: string[], children: React.ReactNode }) {
+function AuthWrapper({ allowedRoles, portalName, children }: { allowedRoles: string[], portalName: string, children: React.ReactNode }) {
   const token = localStorage.getItem('token');
   const userRole = String(localStorage.getItem('role') || '').toUpperCase();
+  const [sessionUpdated, setSessionUpdated] = useState(0);
 
-  // 1. If not logged in at all, kick to login
+  // 1. If not logged in at all, render the inline role-specific login page
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Login portalName={portalName} onLogin={() => setSessionUpdated(prev => prev + 1)} />;
   }
 
   // 2. Strict Role Check
@@ -57,42 +61,42 @@ export default function App() {
         {/* Universal Login */}
         <Route path="/login" element={<Login portalName="ZyaeL Portal Access" onLogin={() => {}} />} />
         <Route path="/signin" element={<Navigate to="/login" replace />} />
-        <Route path="/management" element={<Navigate to="/login" replace />} />
+        <Route path="/management" element={<ManagementPortal />} />
 
         
         {/* --- SECURED PORTAL ROUTES --- */}
         <Route path="/customer/*" element={
-          <AuthWrapper allowedRoles={['CUSTOMER']}>
+          <AuthWrapper allowedRoles={['CUSTOMER']} portalName="Customer Portal">
             <CustomerPortal />
           </AuthWrapper>
         } />
         
         <Route path="/nutritionist/*" element={
-          <AuthWrapper allowedRoles={['NUTRITIONIST', 'NUTR']}>
+          <AuthWrapper allowedRoles={['NUTRITIONIST', 'NUTR']} portalName="Nutritionist Portal">
             <NutritionistPortal />
           </AuthWrapper>
         } />
         
         <Route path="/kitchen/*" element={
-          <AuthWrapper allowedRoles={['KITCHEN', 'KITCHEN_ADMIN']}>
+          <AuthWrapper allowedRoles={['KITCHEN', 'KITCHEN_ADMIN']} portalName="Kitchen KDS">
             <KitchenPortal />
           </AuthWrapper>
         } />
 
         <Route path="/media/*" element={
-          <AuthWrapper allowedRoles={['ADMIN', 'SUPER_ADMIN', 'MEDIA']}>
+          <AuthWrapper allowedRoles={['ADMIN', 'SUPER_ADMIN', 'MEDIA']} portalName="Media Workspace">
             <MediaPortal />
           </AuthWrapper>
         } />
         
         <Route path="/delivery/*" element={
-          <AuthWrapper allowedRoles={['DRIVER', 'DELIVERY']}>
+          <AuthWrapper allowedRoles={['DRIVER', 'DELIVERY']} portalName="Driver Portal">
             <DeliveryPortal />
           </AuthWrapper>
         } />
         
         <Route path="/admin/*" element={
-          <AuthWrapper allowedRoles={['ADMIN', 'SUPER_ADMIN']}>
+          <AuthWrapper allowedRoles={['ADMIN', 'SUPER_ADMIN']} portalName="Admin Platform">
             <AdminPortal />
           </AuthWrapper>
         } />

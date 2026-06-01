@@ -24,7 +24,8 @@ export function NutritionistPortal() {
 
   const handleLogout = () => { 
     localStorage.removeItem('token');
-    window.location.href = '/'; 
+    localStorage.removeItem('role');
+    window.location.href = '/nutritionist'; 
   };
 
   const fetchData = async () => {

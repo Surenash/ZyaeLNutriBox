@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8080'; 
@@ -7,6 +7,26 @@ export function Login({ portalName, onLogin }: { portalName: string; onLogin: ()
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userRole = String(localStorage.getItem('role') || '').trim().toUpperCase();
+    if (token) {
+      if (token.toUpperCase().startsWith('MEDI')) {
+        navigate('/media');
+      } else if (userRole.includes('ADMIN') && !userRole.includes('KITCHEN')) {
+        navigate('/admin');
+      } else if (userRole.includes('KITCHEN')) {
+        navigate('/kitchen');
+      } else if (userRole.includes('NUTR')) {
+        navigate('/nutritionist');
+      } else if (userRole.includes('DRIV') || userRole.includes('DELIVERY')) {
+        navigate('/delivery');
+      } else {
+        navigate('/customer');
+      }
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

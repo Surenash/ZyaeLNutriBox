@@ -22,7 +22,7 @@ export function DeliveryPortal() {
   const handleLogout = () => { 
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-    window.location.href = '/login'; 
+    window.location.href = '/delivery'; 
   };
 
   const fetchDashboardData = async () => {

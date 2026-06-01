@@ -14,7 +14,7 @@ export function MediaPortal() {
   const handleLogout = () => { 
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-    window.location.href = '/login'; 
+    window.location.href = '/media'; 
   };
 
   return (
