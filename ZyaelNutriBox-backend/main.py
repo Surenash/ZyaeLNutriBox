@@ -9,6 +9,46 @@ import models
 from routers import auth, customer, kitchen, delivery, reviews, nutritionist, article, admin, mealplan
 models.Base.metadata.create_all(bind=engine)
 
+# --- RUN DYNAMIC SCHEMA MIGRATIONS ---
+def run_migrations():
+    from sqlalchemy import inspect, text
+    inspector = inspect(engine)
+    
+    # 1. MealPlanCatalog
+    if 'MealPlanCatalog' in inspector.get_table_names():
+        cols = [c['name'] for c in inspector.get_columns('MealPlanCatalog')]
+        with engine.begin() as conn:
+            if 'isPromoted' not in cols:
+                conn.execute(text("ALTER TABLE MealPlanCatalog ADD COLUMN isPromoted BOOLEAN DEFAULT 0"))
+            if 'benefits' not in cols:
+                is_mysql = 'mysql' in engine.name
+                col_type = "JSON" if is_mysql else "TEXT"
+                conn.execute(text(f"ALTER TABLE MealPlanCatalog ADD COLUMN benefits {col_type} NULL"))
+            if 'calories' not in cols:
+                conn.execute(text("ALTER TABLE MealPlanCatalog ADD COLUMN calories INTEGER DEFAULT 0"))
+            if 'protein' not in cols:
+                conn.execute(text("ALTER TABLE MealPlanCatalog ADD COLUMN protein INTEGER DEFAULT 0"))
+            if 'carbs' not in cols:
+                conn.execute(text("ALTER TABLE MealPlanCatalog ADD COLUMN carbs INTEGER DEFAULT 0"))
+            if 'fats' not in cols:
+                conn.execute(text("ALTER TABLE MealPlanCatalog ADD COLUMN fats INTEGER DEFAULT 0"))
+            if 'sampleMeals' not in cols:
+                is_mysql = 'mysql' in engine.name
+                col_type = "JSON" if is_mysql else "TEXT"
+                conn.execute(text(f"ALTER TABLE MealPlanCatalog ADD COLUMN sampleMeals {col_type} NULL"))
+                
+    # 2. NutritionistProfile
+    if 'NutritionistProfile' in inspector.get_table_names():
+        cols = [c['name'] for c in inspector.get_columns('NutritionistProfile')]
+        with engine.begin() as conn:
+            if 'isPromoted' not in cols:
+                conn.execute(text("ALTER TABLE NutritionistProfile ADD COLUMN isPromoted BOOLEAN DEFAULT 0"))
+
+try:
+    run_migrations()
+except Exception as err:
+    print(f"Skipped/Failed to run auto-migrations: {err}")
+
 app = FastAPI(
     title="Zyael NutriBox API",
     description="Eat Healthy",

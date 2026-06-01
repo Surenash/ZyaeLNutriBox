@@ -68,15 +68,25 @@ export function LandingPage2() {
               title: plan.name,
               description: plan.description,
               currentPrice: plan.monthlyPrice,
-              originalPrice: Math.round(plan.monthlyPrice * 1.2), // Simple 20% markup for UI
+              originalPrice: Math.round(plan.monthlyPrice * 1.2),
               rating: rating,
               reviewCount: reviewCount,
-              // USE DYNAMIC DB IMAGE FIRST, FALLBACK IF EMPTY
-              image: plan.imageUrl || defaultFallbackImage 
+              image: plan.imageUrl || defaultFallbackImage,
+              isPromoted: plan.isPromoted,
+              benefits: plan.benefits,
+              sampleMeals: plan.sampleMeals,
+              macros: (plan.calories || plan.protein || plan.carbs || plan.fats) ? {
+                calories: plan.calories ? `${plan.calories} kcal` : null,
+                protein: plan.protein ? `${plan.protein}g` : null,
+                carbs: plan.carbs ? `${plan.carbs}g` : null,
+                fats: plan.fats ? `${plan.fats}g` : null,
+              } : null
             };
           }));
 
-          setMealPlans(plansWithRatings);
+          // Only show promoted plans on the landing page
+          const promotedPlans = plansWithRatings.filter((p: any) => p.isPromoted);
+          setMealPlans(promotedPlans.length > 0 ? promotedPlans : plansWithRatings);
 
           if (plansWithRatings.length > 0) {
             const highest = [...plansWithRatings].sort((a, b) => b.rating - a.rating)[0];
@@ -89,7 +99,10 @@ export function LandingPage2() {
         if (nutrisRes.ok) {
           const nutrisData = await nutrisRes.json();
           const approved = (nutrisData.data || []).filter((doc: any) => doc.isApproved);
-          setNutritionists(approved.map((doc: any) => ({
+          // Only show promoted nutritionists on the landing page
+          const promoted = approved.filter((doc: any) => doc.isPromoted);
+          const displayList = promoted.length > 0 ? promoted : approved;
+          setNutritionists(displayList.map((doc: any) => ({
             id: doc.userId,
             name: doc.fullName,
             specialization: doc.specialty || "Clinical Nutritionist",
@@ -580,7 +593,60 @@ export function LandingPage2() {
                     
                     <div className="p-8">
                       <p className="text-slate-600 text-lg mb-8 font-medium leading-relaxed">{selectedPlan.description}</p>
-                      
+
+                      {/* Macros Section */}
+                      {selectedPlan.macros && (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                          <div className="bg-green-50 p-4 rounded-2xl text-center border border-green-100">
+                            <p className="text-xl font-black text-[#006442]">{selectedPlan.macros.calories}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Calories</p>
+                          </div>
+                          <div className="bg-blue-50 p-4 rounded-2xl text-center border border-blue-100">
+                            <p className="text-xl font-black text-blue-700">{selectedPlan.macros.protein}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Protein</p>
+                          </div>
+                          <div className="bg-orange-50 p-4 rounded-2xl text-center border border-orange-100">
+                            <p className="text-xl font-black text-orange-700">{selectedPlan.macros.carbs}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Carbs</p>
+                          </div>
+                          <div className="bg-purple-50 p-4 rounded-2xl text-center border border-purple-100">
+                            <p className="text-xl font-black text-purple-700">{selectedPlan.macros.fats}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Fats</p>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        {/* Benefits Section */}
+                        {selectedPlan.benefits && selectedPlan.benefits.length > 0 && (
+                          <div>
+                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">Key Benefits</h4>
+                            <ul className="space-y-3">
+                              {selectedPlan.benefits.map((benefit: string, i: number) => (
+                                <li key={i} className="flex items-start gap-3">
+                                  <div className="bg-green-100 p-1 rounded-full mt-0.5"><CheckCircle className="w-3 h-3 text-green-700" /></div>
+                                  <span className="text-slate-700 font-medium text-sm">{benefit}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Sample Meals Section */}
+                        {selectedPlan.sampleMeals && selectedPlan.sampleMeals.length > 0 && (
+                          <div>
+                            <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">Sample Daily Meals</h4>
+                            <ul className="space-y-3">
+                              {selectedPlan.sampleMeals.map((meal: string, i: number) => (
+                                <li key={i} className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-slate-700 font-medium text-sm">
+                                  {meal}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+
                       <div className="mb-8">
                         <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">What's Included</h4>
                         <ul className="space-y-3">

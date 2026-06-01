@@ -135,15 +135,58 @@ function MealPlanManager() {
 
   useEffect(() => { fetchPlans(); }, []);
 
+  const togglePromoted = async (plan: any) => {
+    const newPromoted = !plan.isPromoted;
+    const payload = {
+      data: {
+        isPromoted: newPromoted
+      }
+    };
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/meal_plans/${plan.id}?user_id=${getAdminId()}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        fetchPlans();
+      } else {
+        alert("Failed to toggle promoted status");
+      }
+    } catch (e) {
+      alert("Network Error");
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
+
+    // Parse benefits
+    const benefitsRaw = formData.get('benefits') as string;
+    const benefitsList = benefitsRaw 
+      ? benefitsRaw.split('\n').map(b => b.trim()).filter(b => b.length > 0)
+      : [];
+
+    // Parse sample meals
+    const sampleMealsRaw = formData.get('sampleMeals') as string;
+    const sampleMealsList = sampleMealsRaw 
+      ? sampleMealsRaw.split('\n').map(m => m.trim()).filter(m => m.length > 0)
+      : [];
+
     const payload = {
       data: {
         name: formData.get('name'),
         description: formData.get('description'),
         monthlyPrice: parseFloat(formData.get('monthlyPrice') as string),
-        imageUrl: formData.get('imageUrl')
+        imageUrl: formData.get('imageUrl'),
+        isPromoted: formData.get('isPromoted') === 'true',
+        calories: parseInt(formData.get('calories') as string) || 0,
+        protein: parseInt(formData.get('protein') as string) || 0,
+        carbs: parseInt(formData.get('carbs') as string) || 0,
+        fats: parseInt(formData.get('fats') as string) || 0,
+        benefits: benefitsList,
+        sampleMeals: sampleMealsList
       }
     };
 
@@ -188,11 +231,22 @@ function MealPlanManager() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {plans.map((plan) => (
-          <div key={plan.id} className="admin-card p-5 border-rose-200 flex flex-col">
+          <div key={plan.id} className={`admin-card p-5 border flex flex-col relative overflow-hidden ${plan.isPromoted ? 'border-rose-500 shadow-md' : 'border-rose-200 shadow-sm'}`}>
+            {plan.isPromoted && (
+              <div className="absolute top-0 right-0 left-0 h-1.5 bg-rose-500" />
+            )}
             <div className="w-full h-32 mb-4 bg-neutral-100 rounded-lg overflow-hidden shrink-0">
               <img src={plan.imageUrl || 'https://via.placeholder.com/300x150?text=No+Image'} alt={plan.name} className="w-full h-full object-cover" />
             </div>
-            <h3 className="text-lg font-bold mb-2">{plan.name}</h3>
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="text-lg font-bold">{plan.name}</h3>
+              <button 
+                onClick={() => togglePromoted(plan)} 
+                className={`text-xs px-2.5 py-1 rounded font-bold shrink-0 transition-colors ${plan.isPromoted ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'}`}
+              >
+                {plan.isPromoted ? '★ Promoted' : '☆ Promote'}
+              </button>
+            </div>
             <p className="text-sm text-neutral-600 mb-4 h-10 overflow-hidden line-clamp-2">{plan.description}</p>
             <div className="flex justify-between items-center pt-4 mt-auto border-t border-neutral-100">
               <span className="font-bold text-lg">₹{plan.monthlyPrice}<span className="text-sm text-neutral-500">/mo</span></span>
@@ -207,12 +261,12 @@ function MealPlanManager() {
 
       {showModal && (
         <div className="admin-modal-overlay">
-           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl my-8">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold">{editingPlan?.id ? 'Edit Plan' : 'Create Plan'}</h3>
                 <button onClick={() => setShowModal(false)}><X className="w-5 h-5 text-neutral-400"/></button>
               </div>
-              <form onSubmit={handleSave} className="space-y-4 max-h-[60vh] overflow-y-auto px-1">
+              <form onSubmit={handleSave} className="space-y-4 max-h-[75vh] overflow-y-auto px-1">
                  <div>
                     <label className="block text-xs font-bold text-neutral-500 mb-1">Plan Name</label>
                     <input type="text" name="name" required defaultValue={editingPlan?.name} className="w-full p-2.5 border rounded-lg" />
@@ -221,14 +275,65 @@ function MealPlanManager() {
                     <label className="block text-xs font-bold text-neutral-500 mb-1">Description</label>
                     <textarea name="description" required defaultValue={editingPlan?.description} className="w-full p-2.5 border rounded-lg h-24"></textarea>
                  </div>
-                 <div>
-                    <label className="block text-xs font-bold text-neutral-500 mb-1">Monthly Price (₹)</label>
-                    <input type="number" step="0.01" name="monthlyPrice" required defaultValue={editingPlan?.monthlyPrice} className="w-full p-2.5 border rounded-lg" />
+                 <div className="grid grid-cols-2 gap-4">
+                   <div>
+                      <label className="block text-xs font-bold text-neutral-500 mb-1">Monthly Price (₹)</label>
+                      <input type="number" step="0.01" name="monthlyPrice" required defaultValue={editingPlan?.monthlyPrice} className="w-full p-2.5 border rounded-lg" />
+                   </div>
+                   <div className="flex items-center pt-5">
+                      <label className="flex items-center gap-2 text-sm font-bold text-neutral-600 select-none cursor-pointer">
+                        <input type="checkbox" name="isPromoted" defaultChecked={editingPlan?.isPromoted} value="true" className="w-4 h-4 accent-rose-600" />
+                        Promote on Landing Page
+                      </label>
+                   </div>
                  </div>
                  <div>
                     <label className="block text-xs font-bold text-neutral-500 mb-1">Image URL</label>
                     <input type="text" name="imageUrl" defaultValue={editingPlan?.imageUrl} placeholder="https://..." className="w-full p-2.5 border rounded-lg text-sm" />
                  </div>
+                 
+                 <div className="border-t border-neutral-100 pt-4">
+                    <h4 className="font-bold text-sm text-neutral-900 mb-3">Macronutrients (Target Goals)</h4>
+                    <div className="grid grid-cols-4 gap-3">
+                       <div>
+                          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Calories</label>
+                          <input type="number" name="calories" defaultValue={editingPlan?.calories || 0} className="w-full p-2 border rounded text-sm font-bold" />
+                       </div>
+                       <div>
+                          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Protein (g)</label>
+                          <input type="number" name="protein" defaultValue={editingPlan?.protein || 0} className="w-full p-2 border rounded text-sm font-bold" />
+                       </div>
+                       <div>
+                          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Carbs (g)</label>
+                          <input type="number" name="carbs" defaultValue={editingPlan?.carbs || 0} className="w-full p-2 border rounded text-sm font-bold" />
+                       </div>
+                       <div>
+                          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Fats (g)</label>
+                          <input type="number" name="fats" defaultValue={editingPlan?.fats || 0} className="w-full p-2 border rounded text-sm font-bold" />
+                       </div>
+                    </div>
+                 </div>
+
+                 <div>
+                    <label className="block text-xs font-bold text-neutral-500 mb-1">Key Benefits (One per line)</label>
+                    <textarea 
+                      name="benefits" 
+                      placeholder="e.g. Gain 3-5 kg lean muscle mass&#10;Enhanced workout performance" 
+                      defaultValue={editingPlan?.benefits ? editingPlan.benefits.join('\n') : ''} 
+                      className="w-full p-2.5 border rounded-lg text-sm h-24"
+                    />
+                 </div>
+
+                 <div>
+                    <label className="block text-xs font-bold text-neutral-500 mb-1">Sample Daily Meals (One per line)</label>
+                    <textarea 
+                      name="sampleMeals" 
+                      placeholder="e.g. Breakfast: Egg white omelette (450 kcal)&#10;Lunch: Grilled chicken breast (650 kcal)" 
+                      defaultValue={editingPlan?.sampleMeals ? editingPlan.sampleMeals.join('\n') : ''} 
+                      className="w-full p-2.5 border rounded-lg text-sm h-24"
+                    />
+                 </div>
+
                  <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
                     <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 border rounded-lg font-bold text-neutral-600">Cancel</button>
                     <button type="submit" className="px-6 py-2 bg-rose-600 text-white rounded-lg font-bold">Save Plan</button>
@@ -386,6 +491,29 @@ function NutritionistManager() {
 
   useEffect(() => { fetchNutritionists(); }, []);
 
+  const togglePromoted = async (nutri: any) => {
+    const newPromoted = !nutri.isPromoted;
+    const payload = {
+      data: {
+        isPromoted: newPromoted
+      }
+    };
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/nutritionist_profiles/${nutri.userId}?user_id=${getAdminId()}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        fetchNutritionists();
+      } else {
+        alert("Failed to toggle promoted status");
+      }
+    } catch (e) {
+      alert("Network Error");
+    }
+  };
+
   const handleApprove = async (id: string) => {
     if(!confirm("Verify this nutritionist?")) return;
     try {
@@ -398,7 +526,6 @@ function NutritionistManager() {
   const deleteDoctor = async (id: string) => {
     if(!confirm("Remove this nutritionist permanently? This will revoke their access.")) return;
     try {
-      // Delete the root USER record to trigger Cascade deletion properly
       const res = await fetch(`${API_BASE}/api/admin/users/${id}?user_id=${getAdminId()}`, { method: 'DELETE' });
       if(!res.ok) { 
         const err = await res.json(); 
@@ -420,6 +547,7 @@ function NutritionistManager() {
                 <th className="p-4">Specialty</th>
                 <th className="p-4">Phone</th>
                 <th className="p-4">Status</th>
+                <th className="p-4">Promoted</th>
                 <th className="p-4 text-right">Actions</th>
              </tr>
            </thead>
@@ -434,6 +562,15 @@ function NutritionistManager() {
                       <span className="text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full text-[10px] uppercase font-black">Approved</span>
                     ) : (
                       <span className="text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full text-[10px] uppercase font-black">Pending</span>
+                    )}
+                 </td>
+                 <td className="p-4">
+                    {n.isApproved ? (
+                      <button onClick={() => togglePromoted(n)} className={`text-xs px-2.5 py-1 rounded-full font-black uppercase tracking-widest transition-colors ${n.isPromoted ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'}`}>
+                        {n.isPromoted ? '★ Yes' : '☆ No'}
+                      </button>
+                    ) : (
+                      <span className="text-xs text-neutral-400 font-bold uppercase tracking-widest">N/A</span>
                     )}
                  </td>
                  <td className="p-4 text-right">

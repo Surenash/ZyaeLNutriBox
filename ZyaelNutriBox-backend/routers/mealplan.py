@@ -12,7 +12,18 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.MealPlanResponse])
 def get_all_mealplans(db: Session = Depends(get_db)):
-    """Fetch all meal plans (Public/Customer accessible)."""
+    """
+    Fetch meal plans for the public landing page.
+    Returns only promoted plans if any exist, otherwise falls back to all plans.
+    The frontend also filters client-side, so this provides defense-in-depth.
+    """
+    all_plans = db.query(models.MealPlanCatalog).all()
+    promoted = [p for p in all_plans if p.isPromoted]
+    return promoted if promoted else all_plans
+
+@router.get("/all", response_model=List[schemas.MealPlanResponse])
+def get_all_mealplans_admin(db: Session = Depends(get_db)):
+    """Fetch ALL meal plans (Admin panel use)."""
     return db.query(models.MealPlanCatalog).all()
 
 @router.put("/{plan_id}", response_model=schemas.MealPlanResponse)

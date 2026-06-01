@@ -71,6 +71,7 @@ class NutritionistProfile(Base):
     profilePictureUrl = Column(String(512), nullable=True)
     phoneNumber = Column(String(50), nullable=True)
     isApproved = Column(Boolean, default=False)
+    isPromoted = Column(Boolean, default=False)
 
 class DriverProfile(Base):
     __tablename__ = "DriverProfile"
@@ -89,6 +90,13 @@ class MealPlanCatalog(Base):
     description = Column(Text)
     monthlyPrice = Column(DECIMAL(10, 2), nullable=False)
     imageUrl = Column(String(512), nullable=True)
+    isPromoted = Column(Boolean, default=False)
+    benefits = Column(JSON, nullable=True)
+    calories = Column(Integer, default=0)
+    protein = Column(Integer, default=0)
+    carbs = Column(Integer, default=0)
+    fats = Column(Integer, default=0)
+    sampleMeals = Column(JSON, nullable=True)
 
 class CustomerSubscription(Base):
     __tablename__ = "CustomerSubscription"

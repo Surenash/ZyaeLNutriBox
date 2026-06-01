@@ -209,6 +209,13 @@ class MealPlanUpdate(BaseModel):
     description: Optional[str] = None
     monthlyPrice: Optional[float] = None
     imageUrl: Optional[str] = None
+    isPromoted: Optional[bool] = None
+    benefits: Optional[List[str]] = None
+    calories: Optional[int] = None
+    protein: Optional[int] = None
+    carbs: Optional[int] = None
+    fats: Optional[int] = None
+    sampleMeals: Optional[List[str]] = None
 
 class MealPlanResponse(BaseModel):
     id: int
@@ -216,6 +223,13 @@ class MealPlanResponse(BaseModel):
     description: str
     monthlyPrice: float
     imageUrl: Optional[str] = None
+    isPromoted: Optional[bool] = False
+    benefits: Optional[List[str]] = None
+    calories: Optional[int] = 0
+    protein: Optional[int] = 0
+    carbs: Optional[int] = 0
+    fats: Optional[int] = 0
+    sampleMeals: Optional[List[str]] = None
     
     class Config:
         orm_mode = True
